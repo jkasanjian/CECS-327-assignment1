@@ -31,9 +31,15 @@ public class Main {
 
 
     public static void main(String[] args) {
-        Integer i;
-        Main player = new Main();
-        player.mp3play("imperial.mp3");
+//        Integer i;
+//        Main player = new Main();
+//        player.mp3play("imperial.mp3");
+
+
+
+        String music_1 = "{'release': { 'id': '300848', 'name': 'Fear Itself' }, }";
+
+
     }
 
 }
