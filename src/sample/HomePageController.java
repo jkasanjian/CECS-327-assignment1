@@ -15,11 +15,20 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.ResourceBundle;
+import java.io.File;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.io.IOException;
+import java.io.InputStream;
+import javazoom.jl.player.*;
+import javazoom.jl.decoder.JavaLayerException;
 
 public class HomePageController implements Initializable {
 
@@ -46,9 +55,16 @@ public class HomePageController implements Initializable {
 
     HashMap <String, ObservableList<Song>> playlists = new HashMap<String, ObservableList<Song>>();
 
+    private MediaPlayer mediaPlayer;
+
+    private Media media;
+
     @Override
     public void initialize(URL location, ResourceBundle resources){
         songTable = populateTable(getAllSongs());
+        String songFile = "Radioactive.mp3";
+        media = new Media(Paths.get(songFile).toUri().toString());
+        mediaPlayer = new MediaPlayer(media);
     }
 
     public ObservableList<Song> getAllSongs(){
@@ -59,6 +75,10 @@ public class HomePageController implements Initializable {
     }
 
     public TableView<Song> populateTable(ObservableList<Song> songs){
+
+        songTable.getItems().clear();
+        songTable.getColumns().clear();
+
         // Song Name Column
         TableColumn<Song,String> nameColumn = new TableColumn<>("Name: ");
         nameColumn.setMinWidth(400);
@@ -79,8 +99,8 @@ public class HomePageController implements Initializable {
         yearColumn.setMinWidth(200);
         yearColumn.setCellValueFactory(new PropertyValueFactory<>("yearReleased"));
 
-        songTable.setItems(songs);
         songTable.getColumns().addAll(nameColumn, artistColumn, durationColumn, yearColumn);
+        songTable.setItems(songs);
 
         return songTable;
     }
@@ -91,8 +111,6 @@ public class HomePageController implements Initializable {
         if(event.getSource() == songButton) {
             populateTable(getAllSongs());
         } else if(event.getSource() == artistButton){
-            songTable.getItems().clear();
-            songTable.getColumns().clear();
         } else if(event.getSource() == createPlaylist){
             openCreatePlaylistWindow();
         } else if(event.getSource() == deletePlaylist){
@@ -101,11 +119,26 @@ public class HomePageController implements Initializable {
     }
 
     @FXML
-    public void clickSong(MouseEvent event)
+    public void clickSong(MouseEvent click)
     {
-        if (event.getClickCount() == 2) //Checking double click
+        if (click.getClickCount() == 2) //Checking double click
         {
-            System.out.println(songTable.getSelectionModel().getSelectedItem().getName());
+            String songName = songTable.getSelectionModel().getSelectedItem().getName();
+            System.out.println(songName);
+            if(songName.equals("Radioactive")){
+                mediaPlayer.play();
+            }
+        }
+    }
+
+    @FXML
+    public void clickPlaylist(MouseEvent click)
+    {
+        if (click.getClickCount() == 2) //Checking double click
+        {
+            String selectedPlaylist = displayPlaylists.getSelectionModel().getSelectedItem();
+            ObservableList<Song> selectedPlaylistSongs = playlists.get(selectedPlaylist);
+            populateTable(selectedPlaylistSongs);
         }
     }
 
@@ -134,6 +167,36 @@ public class HomePageController implements Initializable {
         newWindow.setScene(new Scene(root));
         newWindow.show();
     }
+
+    public void deletePlaylist(String playlistName){
+        for(int i = 0; i < displayPlaylists.getItems().size(); i++){
+            if(displayPlaylists.getItems().get((i)) == playlistName){
+                displayPlaylists.getItems().remove(i);
+            }
+        }
+        playlists.remove(playlistName);
+    }
+
+//    /**
+//     * Play a given audio file.
+//     * @param audioFilePath Path of the audio file.
+//     */
+//    public void mp3play(String file) {
+//        try {
+//            // It uses CECS327InputStream as InputStream to play the song
+//            InputStream is = new CECS327InputStream(file);
+//            Player mp3player = new Player(is);
+//            mp3player.play();
+//        }
+//        catch (JavaLayerException exception)
+//        {
+//            exception.printStackTrace();
+//        }
+//        catch (IOException exception)
+//        {
+//            exception.printStackTrace();
+//        }
+//    }
 
 
 

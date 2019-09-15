@@ -24,10 +24,9 @@ public class DeletePlaylistController {
     public void button(ActionEvent event) throws IOException {
 
         if(event.getSource() == submitButton) {
-//            String playlistName = getPlaylist.getText();
-//            ObservableList<Song> playlistSongs = FXCollections.observableArrayList();
-//            hpc.addNewPlaylist(playlistName, playlistSongs);
-//            ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
+            String playlistName = playlists.getSelectionModel().getSelectedItem();
+            hpc.deletePlaylist(playlistName);
+            ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
         }
     }
 
