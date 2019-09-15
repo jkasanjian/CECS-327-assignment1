@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import model.Profiles;
 
 public class SignInController {
     @FXML
@@ -34,6 +35,8 @@ public class SignInController {
         String username;
         String password;
 
+        Profiles profiles = Profiles.GetInstance();
+
         username = this.gUserNameTextField.getText();
         password = this.gPasswordTextField.getText();
 
@@ -45,6 +48,13 @@ public class SignInController {
         }
 
         //TODO: Create JSON and check if it exists
+
+        if( !profiles.verify(username, password) ) {
+            Alert alert = new Alert( Alert.AlertType.ERROR );
+            alert.setContentText( "username or password is incorrect" );
+            alert.show();
+            return;
+        }
     }
 
 

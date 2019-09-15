@@ -10,6 +10,9 @@ import java.util.Scanner;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * Interface that allows manipulation of Profile json objects
+ */
 public class ProfileAccounts {
 
     private final String FILE_NAME = "profiles.json";
@@ -29,6 +32,19 @@ public class ProfileAccounts {
         for(Profile profile : profiles) {
             if(profile.getUsername().equalsIgnoreCase(username))
                 return true;
+        }
+        return false;
+    }
+
+    public boolean verify(String username, String password) {
+        if(!contains(username)) return false;
+        for (Profile profile: profiles) {
+            if (profile.getUsername().equalsIgnoreCase(username)) {
+                if (profile.getPassword().equals(password))
+                    return true;
+                else
+                    return false;
+            }
         }
         return false;
     }
