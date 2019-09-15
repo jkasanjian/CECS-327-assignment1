@@ -29,7 +29,18 @@ public class Profiles {
         saveProfiles(profiles);
     }
 
-    public void addProfile(Profile profile) {
+    private boolean contains(String username) {
+        for(Profile profile : profiles) {
+            if(profile.getUsername().equalsIgnoreCase(username))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean addProfile(Profile profile) {
+        if (contains(profile.getUsername())) {
+            return false;
+        }
         Gson gson = new Gson();
         File file = new File(FILE_NAME);
         String currJson = "";
@@ -62,6 +73,7 @@ public class Profiles {
             e.printStackTrace();
             System.exit(1);
         }
+        return true;
     }
 
     public void saveProfiles(List<Profile> profiles) {
