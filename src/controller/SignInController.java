@@ -1,14 +1,14 @@
 package controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import model.Profiles;
+
 
 public class SignInController extends Controller {
     @FXML
@@ -48,8 +48,6 @@ public class SignInController extends Controller {
             return;
         }
 
-        //TODO: Create JSON and check if it exists
-
         if( !profiles.verify(username, password) ) {
             Alert alert = new Alert( Alert.AlertType.ERROR );
             alert.setContentText( "username or password is incorrect" );
@@ -61,8 +59,7 @@ public class SignInController extends Controller {
     @FXML
     public void signupview( MouseEvent e) {
         System.out.println("sign up view");
-        LoadFXML(e, "Sign up", "/view/account.fxml");
-        //TODO: Create Account Registration FXML Form
+        LoadFXML(e, "Sign up", "/view/Sign_Up.fxml");
     }
 
 }
