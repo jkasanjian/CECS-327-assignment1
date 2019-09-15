@@ -1,4 +1,4 @@
-package model.profile;
+package model;
 
 public class Profile {
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="gBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SignInController">
+   <center>
+      <VBox alignment="CENTER" maxWidth="300.0" prefWidth="300.0">
+         <children>
+            <Label fx:id="gUserNameLabel" alignment="BASELINE_LEFT" contentDisplay="CENTER" text="User Name" wrapText="true" />
+            <TextField fx:id="gUserNameTextField" maxWidth="300.0" prefWidth="300.0" text="Chip" />
+            <Label fx:id="gPasswordLabel" text="Password" wrapText="true">
+               <VBox.margin>
+                  <Insets top="8.0" />
+               </VBox.margin></Label>
+            <PasswordField fx:id="gPasswordTextField" text="********" />
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="gSignInButton" maxWidth="150.0" mnemonicParsing="false" onMouseClicked="#authorize" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #ACB8FF; -fx-background-radius: 0;" text="Sign In" textFill="WHITE">
+                     <HBox.margin>
+                        <Insets top="16.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="gSignUpButton" maxWidth="150.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #ACB8FF; -fx-background-radius: 0;" text="Sign Up" textFill="WHITE">
+                     <HBox.margin>
+                        <Insets top="16.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

@@ -1,17 +1,31 @@
-import java.io.IOException;
-import java.io.InputStream;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import javazoom.jl.player.*;
-import javazoom.jl.decoder.JavaLayerException;
+
+public class Main extends Application {
+
+    @Override
+    public void start(Stage stage) throws java.io.IOException{
+        Parent root = FXMLLoader.load(getClass().getResource("/view/Sign_In.fxml"));
+
+        Scene scene = new Scene(root);
+        stage.setTitle("Sign In / Sign Up");
+        stage.setScene(scene);
+        stage.show();
+    }
 
 
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-public class Main {
 
     /**
      * Play a given audio file.
      * @param audioFilePath Path of the audio file.
-     */
     void mp3play(String file) {
         try {
             // It uses CECS327InputStream as InputStream to play the song
@@ -30,7 +44,6 @@ public class Main {
     }
 
 
-    /*
     public static void main(String[] args) {
         Integer i;
         Main player = new Main();
