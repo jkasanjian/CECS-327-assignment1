@@ -92,7 +92,7 @@ public class ProfileAccounts {
         return true;
     }
 
-    public void saveProfiles(List<Profile> profiles) {
+    protected void saveProfiles(List<Profile> profiles) {
         Gson gson = new Gson();
         File file = new File(FILE_NAME);
         assert profiles != null;
@@ -107,10 +107,13 @@ public class ProfileAccounts {
         printWriter.close();
     }
 
-    public void loadProfiles() {
+    protected void loadProfiles() {
         Gson gson = new Gson();
         File file = new File(FILE_NAME);
-        assert file.exists();
+        if( !file.exists() ) {
+            profiles = new ArrayList<>();
+            return;
+        }
         try {
             Scanner sc = new Scanner(file);
             String jsonString = "";
