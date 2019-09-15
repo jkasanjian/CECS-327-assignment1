@@ -25,7 +25,7 @@
                         <Insets top="16.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="gSignUpButton" maxWidth="150.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #ACB8FF; -fx-background-radius: 0;" text="Sign Up" textFill="WHITE">
+                  <Button fx:id="gSignUpButton" maxWidth="150.0" mnemonicParsing="false" onMouseClicked="#signupview" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: #ACB8FF; -fx-background-radius: 0;" text="Sign Up" textFill="WHITE">
                      <HBox.margin>
                         <Insets top="16.0" />
                      </HBox.margin>

@@ -1,6 +1,7 @@
 package controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -9,7 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import model.Profiles;
 
-public class SignInController {
+public class SignInController extends Controller {
     @FXML
     Label gUserNameLabel;
     @FXML
@@ -57,9 +58,11 @@ public class SignInController {
         }
     }
 
-
-
-
-
+    @FXML
+    public void signupview( MouseEvent e) {
+        System.out.println("sign up view");
+        LoadFXML(e, "Sign up", "/view/account.fxml");
+        //TODO: Create Account Registration FXML Form
+    }
 
 }
