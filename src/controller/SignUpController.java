@@ -13,13 +13,9 @@ public class SignUpController extends Controller {
 
     @FXML
     PasswordField passwordField;
-    
-
-    public SignUpController(){ };
 
     @FXML
     public void handleSubmitButtonAction( ActionEvent e ){
-        System.out.println("HELLO");
         String username;
         String password;
 
@@ -44,5 +40,7 @@ public class SignUpController extends Controller {
 
         Profile profile = new Profile(username, password);
         profiles.addProfile(profile);
+
+        LoadFXML(e, "Sign in", "/view/Sign_In.fxml");
     }
 }
