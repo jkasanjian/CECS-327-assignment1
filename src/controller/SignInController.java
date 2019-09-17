@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import model.Profile;
 import model.Profiles;
 
 
@@ -54,6 +55,13 @@ public class SignInController extends Controller {
             alert.show();
             return;
         }
+
+        // TODO:: Load profile scene view and set static USER
+        // LoadFXML(e, "MyProfile", "/view/ProfileAccount.fxml")
+
+        Profile profile = new Profile(username, password);
+
+        System.out.println("Current User: " + profile.getUsername());
     }
 
     @FXML

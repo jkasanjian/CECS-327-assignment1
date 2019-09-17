@@ -11,26 +11,26 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * Interface that allows manipulation of Profile json objects
+ * Interface that allows manipulation of ProfileAccount json objects
  */
 public class ProfileAccounts {
 
-    private final String FILE_NAME = "profiles.json";
+    private final String FILE_NAME = "profileAccounts.json";
 
-    private List<Profile> profiles;
+    private List<ProfileAccount> profileAccounts;
 
     public ProfileAccounts() {
         loadProfiles();
     }
 
     public void deleteProfile(String username) {
-        profiles.removeIf(u -> (u.getUsername().equals(username)));
-        saveProfiles(profiles);
+        profileAccounts.removeIf(u -> (u.getUsername().equals(username)));
+        saveProfiles(profileAccounts);
     }
 
     public boolean contains(String username) {
-        for(Profile profile : profiles) {
-            if(profile.getUsername().equalsIgnoreCase(username))
+        for(ProfileAccount profileAccount : profileAccounts) {
+            if(profileAccount.getUsername().equalsIgnoreCase(username))
                 return true;
         }
         return false;
@@ -38,9 +38,9 @@ public class ProfileAccounts {
 
     public boolean verify(String username, String password) {
         if(!contains(username)) return false;
-        for (Profile profile: profiles) {
-            if (profile.getUsername().equalsIgnoreCase(username)) {
-                if (profile.getPassword().equals(password))
+        for (ProfileAccount profileAccount : profileAccounts) {
+            if (profileAccount.getUsername().equalsIgnoreCase(username)) {
+                if (profileAccount.getPassword().equals(password))
                     return true;
                 else
                     return false;
@@ -49,12 +49,12 @@ public class ProfileAccounts {
         return false;
     }
 
-    public List<Profile> getProfiles() {
-        return profiles;
+    public List<ProfileAccount> getProfileAccounts() {
+        return profileAccounts;
     }
 
-    public boolean addProfile(Profile profile) {
-        if (contains(profile.getUsername())) {
+    public boolean addProfile(ProfileAccount profileAccount) {
+        if (contains(profileAccount.getUsername())) {
             return false;
         }
         Gson gson = new Gson();
@@ -72,18 +72,18 @@ public class ProfileAccounts {
             }
         }
         try {
-            List<Profile> oldList;
-            List<Profile> newList = new ArrayList<>();
+            List<ProfileAccount> oldList;
+            List<ProfileAccount> newList = new ArrayList<>();
             if(file.exists() && file.length() > 0) {
-                oldList = gson.fromJson(currJson, new TypeToken<List<Profile>>(){}.getType());
+                oldList = gson.fromJson(currJson, new TypeToken<List<ProfileAccount>>(){}.getType());
                 newList.addAll(oldList);
             }
-            newList.add(profile);
+            newList.add(profileAccount);
             newJson = gson.toJson(newList);
             PrintWriter printWriter = new PrintWriter(file);
             printWriter.print(newJson);
             printWriter.close();
-            profiles = newList;
+            profileAccounts = newList;
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -92,10 +92,10 @@ public class ProfileAccounts {
         return true;
     }
 
-    protected void saveProfiles(List<Profile> profiles) {
+    protected void saveProfiles(List<ProfileAccount> profileAccounts) {
         Gson gson = new Gson();
         File file = new File(FILE_NAME);
-        assert profiles != null;
+        assert profileAccounts != null;
         PrintWriter printWriter = null;
         try {
             printWriter = new PrintWriter(file);
@@ -103,7 +103,7 @@ public class ProfileAccounts {
             e.printStackTrace();
             System.exit(1);
         }
-        printWriter.print(gson.toJson(profiles));
+        printWriter.print(gson.toJson(profileAccounts));
         printWriter.close();
     }
 
@@ -111,7 +111,7 @@ public class ProfileAccounts {
         Gson gson = new Gson();
         File file = new File(FILE_NAME);
         if( !file.exists() ) {
-            profiles = new ArrayList<>();
+            profileAccounts = new ArrayList<>();
             return;
         }
         try {
@@ -120,7 +120,7 @@ public class ProfileAccounts {
             while(sc.hasNextLine()) {
                 jsonString += sc.nextLine();
             }
-            profiles = gson.fromJson(jsonString, new TypeToken<List<Profile>>(){}.getType());
+            profileAccounts = gson.fromJson(jsonString, new TypeToken<List<ProfileAccount>>(){}.getType());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             System.exit(1);

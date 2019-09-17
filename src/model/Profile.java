@@ -1,44 +1,14 @@
 package model;
 
-public class Profile {
+public class Profile extends ProfileAccount {
 
-    private String username;
-    private String password;
-    private Playlist playlist;
-
-    public Profile(String username, String password, Playlist playlist) {
-        this.username = username;
-        this.password = password;
-        this.playlist = playlist;
+    public Profile(String user, String password) {
+        super(user, password);
     }
 
-    public Profile(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
+    private static final Profile profile = new Profile("", "");
 
-    public String getUsername() {
-        return username;
+    public static Profile GetInstance() {
+        return profile;
     }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Playlist getPlaylist() {
-        return playlist;
-    }
-
-    public void setPlaylist(Playlist playlist) {
-        this.playlist = playlist;
-    }
-
 }

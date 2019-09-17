@@ -3,7 +3,7 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import model.Profile;
+import model.ProfileAccount;
 import model.Profiles;
 
 public class SignUpController extends Controller {
@@ -38,8 +38,8 @@ public class SignUpController extends Controller {
             return;
         }
 
-        Profile profile = new Profile(username, password);
-        profiles.addProfile(profile);
+        ProfileAccount profileAccount = new ProfileAccount(username, password);
+        profiles.addProfile(profileAccount);
 
         LoadFXML(e, "Sign in", "/view/Sign_In.fxml");
     }
