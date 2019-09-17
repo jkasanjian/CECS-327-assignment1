@@ -1,18 +1,17 @@
-package sample;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ListView;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 
-public class CreatePlaylistController {
-
+public class DeletePlaylistController {
     @FXML
-    TextField getPlaylist;
+    ChoiceBox<String> playlists;
 
     @FXML
     Button submitButton;
@@ -23,14 +22,18 @@ public class CreatePlaylistController {
     public void button(ActionEvent event) throws IOException {
 
         if(event.getSource() == submitButton) {
-            String playlistName = getPlaylist.getText();
-            ObservableList<Song> playlistSongs = FXCollections.observableArrayList();
-            hpc.addNewPlaylist(playlistName, playlistSongs);
+            String playlistName = playlists.getSelectionModel().getSelectedItem();
+            hpc.deletePlaylist(playlistName);
             ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
         }
     }
 
     public void setPrevController(HomePageController hpc){
         this.hpc = hpc;
+    }
+
+    public void setListOfPlaylists(ListView playlists){
+
+        this.playlists.getItems().addAll(playlists.getItems());
     }
 }
