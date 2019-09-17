@@ -11,15 +11,30 @@ public class MusicClass {
         this.song = song;
     }
 
-    public Release getRelease() {
+    public Release getReleaseObj() {
         return release;
     }
 
-    public Artist getArtist() {
+    public Artist getArtistObj() {
         return artist;
     }
 
-    public Song getSong() {
+    public Song getSongObj() {
         return song;
     }
+
+    public String getSongTitle(){
+        return song.getTitle();
+    }
+
+    public String getSongArtist(){
+        return artist.getName();
+    }
+
+    public String getSongID(){
+        return song.getId();
+    }
+
+
+
 }

@@ -38,36 +38,37 @@ public class Main {
 
 
     public static void main(String[] args) {
+        ArrayList<MusicClass> master = readMusicJSON();
+
+        // testing
+        MusicClass song1 = master.get(0);
+        System.out.println(song1.getSongTitle());
+        System.out.println(song1.getSongArtist());
+        System.out.println(song1.getSongID());
+
+    }
 
 
-
+    public static ArrayList<MusicClass> readMusicJSON(){
         Gson gson = new Gson();
         String fileName = "music.json";
 
         try{
 
             Type musicClassType = new TypeToken<ArrayList<MusicClass>>(){}.getType();
-            List<MusicClass> musicList = gson.fromJson(new FileReader(fileName), musicClassType);
-            // musicList has list of MusicClass objects
-
-            // testing: getting name of third song
-            MusicClass first = musicList.get(2);
-            System.out.println(first.getSong().getTitle());
+            ArrayList<MusicClass> musicList = gson.fromJson(new FileReader(fileName), musicClassType);
+            // musicList has ArrayList of MusicClass objects
+             return musicList;
         }
         catch(FileNotFoundException e){
             System.out.println("File not found.");
         }
-
-
-
-
-
-
-
-
-
-
+        return new ArrayList<>();
     }
+
+
+
+
 
 }
 
