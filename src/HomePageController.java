@@ -50,6 +50,9 @@ public class HomePageController implements Initializable {
     Button deletePlaylist;
 
     @FXML
+    Button addSongToPlaylist;
+
+    @FXML
     ListView<String> displayPlaylists;
 
     HashMap <String, ObservableList<MusicClass>> playlists = new HashMap<String, ObservableList<MusicClass>>();
@@ -63,32 +66,16 @@ public class HomePageController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources){
         master = readMusicJSON();
-        songTable = populateTable(getAllSongs());
+        songTable = populateTable(master);
         String songFile = "Radioactive.mp3";
         //media = new Media(Paths.get(songFile).toUri().toString());
         //mediaPlayer = new MediaPlayer(media);
     }
 
-    public ObservableList<MusicClass> getAllSongs(){
-//        for (int i = 0; i < master.size(); i++){
-//
-//        }
-//        ObservableList<Song> songs = FXCollections.observableArrayList();
-//        return songs;
-        return master;
-    }
-
     public TableView<MusicClass> populateTable(ObservableList<MusicClass> songs){
 
-        songTable.getItems().clear();
-        songTable.getColumns().clear();
-
-        System.out.println(songs.get(3).getArtistObj().getName());
-
-//        // Song Name Column
-//        TableColumn<MusicClass,String> idColumn = new TableColumn<>("ID: ");
-//        idColumn.setMinWidth(400);
-//        idColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("songID"));
+//        songTable.getColumns().clear();
+//        songTable.getItems().clear();
 
         // Song Name Column
         TableColumn<MusicClass,String> nameColumn = new TableColumn<>("Name: ");
@@ -111,7 +98,7 @@ public class HomePageController implements Initializable {
         yearColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,Integer>("songYear"));
 
         songTable.getColumns().addAll(nameColumn, artistColumn, durationColumn, yearColumn);
-        songTable.setItems(master);
+        songTable.setItems(songs);
 
         return songTable;
     }
@@ -120,8 +107,10 @@ public class HomePageController implements Initializable {
     public void button(ActionEvent event) throws IOException{
 
         if(event.getSource() == songButton) {
-            populateTable(getAllSongs());
+            populateTable(master);
         } else if(event.getSource() == artistButton){
+        } else if (event.getSource() == addSongToPlaylist){
+            openAddSongToPlaylistWindow();
         } else if(event.getSource() == createPlaylist){
             openCreatePlaylistWindow();
         } else if(event.getSource() == deletePlaylist){
@@ -174,9 +163,29 @@ public class HomePageController implements Initializable {
         DeletePlaylistController dpc = loader.getController();
         dpc.setPrevController(this);
         dpc.setListOfPlaylists(displayPlaylists);
+        dpc.setAction("delete");
         Stage newWindow = new Stage();
         newWindow.setScene(new Scene(root));
         newWindow.show();
+    }
+
+    public void openAddSongToPlaylistWindow() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("DeletePlaylist.fxml"));
+        Parent root = loader.load();
+        DeletePlaylistController dpc = loader.getController();
+        dpc.setPrevController(this);
+        dpc.setListOfPlaylists(displayPlaylists);
+        dpc.setAction("add");
+        Stage newWindow = new Stage();
+        newWindow.setScene(new Scene(root));
+        newWindow.show();
+    }
+
+    public void addNewSongToPlaylist(String playlistName){
+       ObservableList<MusicClass> mc = playlists.get(playlistName);
+       MusicClass selectedSong = songTable.getSelectionModel().getSelectedItem();
+       mc.add(selectedSong);
+       playlists.put(playlistName,mc);
     }
 
     public void deletePlaylist(String playlistName){

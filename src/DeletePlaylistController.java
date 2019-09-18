@@ -18,13 +18,21 @@ public class DeletePlaylistController {
 
     HomePageController hpc;
 
+    String action;
+
     @FXML
     public void button(ActionEvent event) throws IOException {
 
         if(event.getSource() == submitButton) {
-            String playlistName = playlists.getSelectionModel().getSelectedItem();
-            hpc.deletePlaylist(playlistName);
-            ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
+            if(action.equals("delete")) {
+                String playlistName = playlists.getSelectionModel().getSelectedItem();
+                hpc.deletePlaylist(playlistName);
+                ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
+            }else if(action.equals("add")){
+                String playlistName = playlists.getSelectionModel().getSelectedItem();
+                hpc.addNewSongToPlaylist(playlistName);
+                ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
+            }
         }
     }
 
@@ -35,5 +43,9 @@ public class DeletePlaylistController {
     public void setListOfPlaylists(ListView playlists){
 
         this.playlists.getItems().addAll(playlists.getItems());
+    }
+
+    public void setAction(String action){
+        this.action = action;
     }
 }
