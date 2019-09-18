@@ -23,7 +23,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import java.io.IOException;
@@ -147,6 +146,7 @@ public class HomePageController implements Initializable {
         Parent root = loader.load();
         CreatePlaylistController cpc = loader.getController();
         cpc.setPrevController(this);
+        cpc.setPlaylist(playlists);
         Stage newWindow = new Stage();
         newWindow.setScene(new Scene(root));
         newWindow.show();
@@ -202,7 +202,6 @@ public class HomePageController implements Initializable {
         String fileName = "CECS-327-assignment1/music.json";
 
         try {
-
             Type musicClassType = new TypeToken<ObservableList<MusicClass>>() {
             }.getType();
             ArrayList<MusicClass> musicList = gson.fromJson(new FileReader(fileName), musicClassType);
