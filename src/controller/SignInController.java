@@ -12,35 +12,23 @@ import model.Profiles;
 
 
 public class SignInController extends Controller {
-    @FXML
-    Label gUserNameLabel;
-    @FXML
-    TextField gUserNameTextField;
-    @FXML
-    Label gPasswordLabel;
-    @FXML
-    TextField gPasswordTextField;
-    @FXML
-    Button gSignInButton;
-    @FXML
-    Button gSignUpButton;
 
     @FXML
-    public void initialize(){
-    }
-
-    public SignInController(){ };
+    TextField userField;
 
     @FXML
-    public void authorize( MouseEvent e ){
+    TextField passwordField;
+
+    @FXML
+    public void authorize( ActionEvent e ){
         System.out.println("HELLO");
         String username;
         String password;
 
         Profiles profiles = Profiles.GetInstance();
 
-        username = this.gUserNameTextField.getText();
-        password = this.gPasswordTextField.getText();
+        username = this.userField.getText();
+        password = this.passwordField.getText();
 
         if( username.isEmpty() || password.isEmpty() ){
             Alert alert = new Alert( Alert.AlertType.ERROR );
@@ -65,7 +53,7 @@ public class SignInController extends Controller {
     }
 
     @FXML
-    public void signupview( MouseEvent e) {
+    public void signupview( ActionEvent e) {
         System.out.println("sign up view");
         LoadFXML(e, "Sign up", "/view/Sign_Up.fxml");
     }

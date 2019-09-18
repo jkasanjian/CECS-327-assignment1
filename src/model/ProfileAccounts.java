@@ -15,7 +15,7 @@ import com.google.gson.reflect.TypeToken;
  */
 public class ProfileAccounts {
 
-    private final String FILE_NAME = "profileAccounts.json";
+    private final String FILE_NAME = "profiles.json";
 
     private List<ProfileAccount> profileAccounts;
 
