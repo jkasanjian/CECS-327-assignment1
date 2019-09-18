@@ -1,6 +1,5 @@
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,10 +16,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -67,9 +66,9 @@ public class HomePageController implements Initializable {
     public void initialize(URL location, ResourceBundle resources){
         master = readMusicJSON();
         songTable = populateTable(master);
-        String songFile = "Radioactive.mp3";
-        //media = new Media(Paths.get(songFile).toUri().toString());
-        //mediaPlayer = new MediaPlayer(media);
+        String songFile = "CECS-327-assignment1/imperial.mp3";
+        media = new Media(Paths.get(songFile).toUri().toString());
+        mediaPlayer = new MediaPlayer(media);
     }
 
     public TableView<MusicClass> populateTable(ObservableList<MusicClass> songs){
@@ -125,9 +124,10 @@ public class HomePageController implements Initializable {
         {
             String songName = songTable.getSelectionModel().getSelectedItem().getSongTitle();
             System.out.println(songName);
-//            if(songName.equals("Radioactive")){
-//                mediaPlayer.play();
-//            }
+            if(songName.equals("I Didn't Mean To")){
+                new Thread(String.valueOf(mediaPlayer)).start();
+                mediaPlayer.play();
+            }
         }
     }
 
