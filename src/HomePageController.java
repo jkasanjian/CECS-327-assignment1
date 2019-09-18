@@ -1,5 +1,6 @@
-package sample;
-
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,20 +16,18 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
-import java.io.IOException;
+
+import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URL;
-import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.ResourceBundle;
-import java.io.File;
+
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import java.io.IOException;
-import java.io.InputStream;
-import javazoom.jl.player.*;
-import javazoom.jl.decoder.JavaLayerException;
 
 public class HomePageController implements Initializable {
 
@@ -36,7 +35,7 @@ public class HomePageController implements Initializable {
     VBox songList;
 
     @FXML
-    TableView<Song> songTable;
+    TableView<MusicClass> songTable;
 
     @FXML
     Button songButton;
@@ -53,54 +52,66 @@ public class HomePageController implements Initializable {
     @FXML
     ListView<String> displayPlaylists;
 
-    HashMap <String, ObservableList<Song>> playlists = new HashMap<String, ObservableList<Song>>();
+    HashMap <String, ObservableList<MusicClass>> playlists = new HashMap<String, ObservableList<MusicClass>>();
 
     private MediaPlayer mediaPlayer;
 
     private Media media;
 
+    private ObservableList<MusicClass> master;
+
     @Override
     public void initialize(URL location, ResourceBundle resources){
+        master = readMusicJSON();
         songTable = populateTable(getAllSongs());
         String songFile = "Radioactive.mp3";
-        media = new Media(Paths.get(songFile).toUri().toString());
-        mediaPlayer = new MediaPlayer(media);
+        //media = new Media(Paths.get(songFile).toUri().toString());
+        //mediaPlayer = new MediaPlayer(media);
     }
 
-    public ObservableList<Song> getAllSongs(){
-        ObservableList<Song> songs = FXCollections.observableArrayList();
-        songs.add(new Song("Radioactive", "Imagine Dragons", "3:10", "2012"));
-        songs.add(new Song("Rescue Me", "One Republic", "2:39", "2019"));
-        return songs;
+    public ObservableList<MusicClass> getAllSongs(){
+//        for (int i = 0; i < master.size(); i++){
+//
+//        }
+//        ObservableList<Song> songs = FXCollections.observableArrayList();
+//        return songs;
+        return master;
     }
 
-    public TableView<Song> populateTable(ObservableList<Song> songs){
+    public TableView<MusicClass> populateTable(ObservableList<MusicClass> songs){
 
         songTable.getItems().clear();
         songTable.getColumns().clear();
 
+        System.out.println(songs.get(3).getArtistObj().getName());
+
+//        // Song Name Column
+//        TableColumn<MusicClass,String> idColumn = new TableColumn<>("ID: ");
+//        idColumn.setMinWidth(400);
+//        idColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("songID"));
+
         // Song Name Column
-        TableColumn<Song,String> nameColumn = new TableColumn<>("Name: ");
+        TableColumn<MusicClass,String> nameColumn = new TableColumn<>("Name: ");
         nameColumn.setMinWidth(400);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("songTitle"));
 
         // Song Artist Column
-        TableColumn<Song,String> artistColumn = new TableColumn<>("Artist: ");
-        artistColumn.setMinWidth(200);
-        artistColumn.setCellValueFactory(new PropertyValueFactory<>("artist"));
+        TableColumn<MusicClass,String> artistColumn = new TableColumn<>("Artist: ");
+        artistColumn.setMinWidth(400);
+        artistColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("artistName"));
 
         // Song Duration Column
-        TableColumn<Song,String> durationColumn = new TableColumn<>("Duration: ");
+        TableColumn<MusicClass,Double> durationColumn = new TableColumn<>("Duration: ");
         durationColumn.setMinWidth(200);
-        durationColumn.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        durationColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,Double>("durationTime"));
 
         // Song Year Released Column
-        TableColumn<Song,String> yearColumn = new TableColumn<>("Year: ");
+        TableColumn<MusicClass,Integer> yearColumn = new TableColumn<>("Year: ");
         yearColumn.setMinWidth(200);
-        yearColumn.setCellValueFactory(new PropertyValueFactory<>("yearReleased"));
+        yearColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,Integer>("songYear"));
 
         songTable.getColumns().addAll(nameColumn, artistColumn, durationColumn, yearColumn);
-        songTable.setItems(songs);
+        songTable.setItems(master);
 
         return songTable;
     }
@@ -123,11 +134,11 @@ public class HomePageController implements Initializable {
     {
         if (click.getClickCount() == 2) //Checking double click
         {
-            String songName = songTable.getSelectionModel().getSelectedItem().getName();
+            String songName = songTable.getSelectionModel().getSelectedItem().getSongTitle();
             System.out.println(songName);
-            if(songName.equals("Radioactive")){
-                mediaPlayer.play();
-            }
+//            if(songName.equals("Radioactive")){
+//                mediaPlayer.play();
+//            }
         }
     }
 
@@ -137,7 +148,7 @@ public class HomePageController implements Initializable {
         if (click.getClickCount() == 2) //Checking double click
         {
             String selectedPlaylist = displayPlaylists.getSelectionModel().getSelectedItem();
-            ObservableList<Song> selectedPlaylistSongs = playlists.get(selectedPlaylist);
+            ObservableList<MusicClass> selectedPlaylistSongs = playlists.get(selectedPlaylist);
             populateTable(selectedPlaylistSongs);
         }
     }
@@ -152,7 +163,7 @@ public class HomePageController implements Initializable {
         newWindow.show();
     }
 
-    public void addNewPlaylist(String playlistName, ObservableList<Song> playlistSongs){
+    public void addNewPlaylist(String playlistName, ObservableList<MusicClass> playlistSongs){
         displayPlaylists.getItems().add(playlistName);
         playlists.put(playlistName, playlistSongs);
     }
@@ -175,6 +186,24 @@ public class HomePageController implements Initializable {
             }
         }
         playlists.remove(playlistName);
+    }
+
+    public static ObservableList<MusicClass> readMusicJSON() {
+        Gson gson = new Gson();
+        String fileName = "CECS-327-assignment1/music.json";
+
+        try {
+
+            Type musicClassType = new TypeToken<ObservableList<MusicClass>>() {
+            }.getType();
+            ArrayList<MusicClass> musicList = gson.fromJson(new FileReader(fileName), musicClassType);
+            ObservableList<MusicClass> musicOList = FXCollections.observableArrayList(musicList);
+            // musicList has ArrayList of MusicClass objects
+            return musicOList;
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.");
+        }
+        return null;
     }
 
 //    /**

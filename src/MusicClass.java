@@ -27,14 +27,20 @@ public class MusicClass {
         return song.getTitle();
     }
 
-    public String getSongArtist(){
+    public String getArtistName(){
         return artist.getName();
+    }
+
+    public double getDurationTime(){
+        return song.getDuration();
+    }
+
+    public int getSongYear(){
+        return song.getYear();
     }
 
     public String getSongID(){
         return song.getId();
     }
-
-
 
 }

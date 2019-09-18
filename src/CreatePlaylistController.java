@@ -1,5 +1,3 @@
-package sample;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,7 +22,7 @@ public class CreatePlaylistController {
 
         if(event.getSource() == submitButton) {
             String playlistName = getPlaylist.getText();
-            ObservableList<Song> playlistSongs = FXCollections.observableArrayList();
+            ObservableList<MusicClass> playlistSongs = FXCollections.observableArrayList();
             hpc.addNewPlaylist(playlistName, playlistSongs);
             ((Stage)(((Button)event.getSource()).getScene().getWindow())).close();
         }
