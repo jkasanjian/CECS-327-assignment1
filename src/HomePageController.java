@@ -76,13 +76,18 @@ public class HomePageController implements Initializable {
 //        songTable.getItems().clear();
 
         // Song Name Column
+        TableColumn<MusicClass,String> songIDColumn = new TableColumn<>("Song ID: ");
+        songIDColumn.setMinWidth(200);
+        songIDColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("songID"));
+
+        // Song Name Column
         TableColumn<MusicClass,String> nameColumn = new TableColumn<>("Name: ");
         nameColumn.setMinWidth(400);
         nameColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("songTitle"));
 
         // Song Artist Column
         TableColumn<MusicClass,String> artistColumn = new TableColumn<>("Artist: ");
-        artistColumn.setMinWidth(400);
+        artistColumn.setMinWidth(200);
         artistColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("artistName"));
 
         // Song Duration Column
@@ -95,7 +100,7 @@ public class HomePageController implements Initializable {
         yearColumn.setMinWidth(200);
         yearColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,Integer>("songYear"));
 
-        songTable.getColumns().addAll(nameColumn, artistColumn, durationColumn, yearColumn);
+        songTable.getColumns().addAll(songIDColumn,nameColumn, artistColumn, durationColumn, yearColumn);
         songTable.setItems(songs);
 
         return songTable;
