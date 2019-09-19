@@ -40,15 +40,5 @@ public class Main extends Application {
         {
             exception.printStackTrace();
         }
-    }
-
-
-    public static void main(String[] args) {
-        Integer i;
-        Main player = new Main();
-        player.mp3play("imperial.mp3");
-    }
     */
-
 }
-

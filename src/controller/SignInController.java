@@ -50,6 +50,7 @@ public class SignInController extends Controller {
         Profile profile = new Profile(username, password);
 
         System.out.println("Current User: " + profile.getUsername());
+        LoadFXML(e, "Home Page", "/view/HomePage.fxml");
     }
 
     @FXML
