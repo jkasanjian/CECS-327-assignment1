@@ -30,6 +30,9 @@ import java.io.IOException;
 import java.util.function.Predicate;
 
 
+/**
+ * Controller class corresponding to the home page fxml.
+ */
 public class HomePageController implements Initializable {
 
     @FXML
@@ -68,6 +71,11 @@ public class HomePageController implements Initializable {
     private ObservableList<MusicClass> master;
     private String currentPlaylist;
 
+    /**
+     * Initializes the table and the event listeners.
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources){
         master = readMusicJSON();
@@ -85,6 +93,11 @@ public class HomePageController implements Initializable {
 
     }
 
+    /**
+     * Populates the table view with a given list.
+     * @param songs The list of songs that should be shown in the table view.
+     * @return The tableview populated with the corresponding collumns and songs.
+     */
     public TableView<MusicClass> populateTable(ObservableList<MusicClass> songs){
 
 //        songTable.getColumns().clear();
@@ -121,6 +134,11 @@ public class HomePageController implements Initializable {
         return songTable;
     }
 
+    /**
+     * Handles any button pressing events.
+     * @param event The event that happens from a corresponding button press.
+     * @throws IOException
+     */
     @FXML
     public void button(ActionEvent event) throws IOException{
 
@@ -137,6 +155,10 @@ public class HomePageController implements Initializable {
         }
     }
 
+    /**
+     * If song is double clicked on table view it plays a song.
+     * @param click
+     */
     @FXML
     public void clickSong(MouseEvent click)
     {
@@ -151,6 +173,10 @@ public class HomePageController implements Initializable {
         }
     }
 
+    /**
+     * If playlist is double clicked it populates the table with the songs from the playlist.
+     * @param click
+     */
     @FXML
     public void clickPlaylist(MouseEvent click)
     {
@@ -163,6 +189,10 @@ public class HomePageController implements Initializable {
         }
     }
 
+    /**
+     * Filters the table view with the search text field.
+     * @param value
+     */
     public void filter(String value){
         String lowerCase = value.toLowerCase();
         FilteredList<MusicClass> filteredData;
@@ -183,6 +213,10 @@ public class HomePageController implements Initializable {
         songTable.setItems(filteredData);
     }
 
+    /**
+     * Loads the create playlist window.
+     * @throws IOException
+     */
     public void openCreatePlaylistWindow() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CreatePlaylist.fxml"));
         Parent root = loader.load();
@@ -194,6 +228,11 @@ public class HomePageController implements Initializable {
         newWindow.show();
     }
 
+    /**
+     * Adds a new playlist to the account.
+     * @param playlistName Name of playlist.
+     * @param playlistSongs Songs.
+     */
     public void addNewPlaylist(String playlistName, ObservableList<MusicClass> playlistSongs){
         displayPlaylists.getItems().add(playlistName);
         playlists.put(playlistName, playlistSongs);
@@ -239,6 +278,10 @@ public class HomePageController implements Initializable {
         playlists.remove(playlistName);
     }
 
+    /**
+     * Reads JSON file to retrieve music.
+     * @return
+     */
     public static ObservableList<MusicClass> readMusicJSON() {
         Gson gson = new Gson();
         String fileName = "music.json";

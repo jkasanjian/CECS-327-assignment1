@@ -11,6 +11,10 @@ import model.Profile;
 import model.Profiles;
 
 
+/**
+ * Controller handling the sign in view. Provides functionality and authorization for signing in and
+ * provides functionality for going to the sign up page if no account.
+ */
 public class SignInController extends Controller {
 
     @FXML
@@ -19,9 +23,12 @@ public class SignInController extends Controller {
     @FXML
     TextField passwordField;
 
+    /**
+     * Authorizes the user name and password from the inputs when the sign in button is clicked.
+     * @param e The event from the clicking of the sign in button.
+     */
     @FXML
     public void authorize( ActionEvent e ){
-        System.out.println("HELLO");
         String username;
         String password;
 
@@ -53,6 +60,10 @@ public class SignInController extends Controller {
         LoadFXML(e, "Home Page", "/view/HomePage.fxml");
     }
 
+    /**
+     * Goes to the sign up view.
+     * @param e
+     */
     @FXML
     public void signupview( ActionEvent e) {
         System.out.println("sign up view");
