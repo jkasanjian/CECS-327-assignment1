@@ -3,6 +3,7 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import model.ProfileAccount;
 import model.SingletonProfiles;
 
@@ -50,5 +51,17 @@ public class SignUpController extends Controller {
         singletonProfiles.addProfile(profileAccount);
 
         LoadFXML(e, "Sign in", "/view/Sign_In.fxml");
+    }
+
+    @FXML
+    public void enter( MouseEvent e ){
+        Button button = (Button)e.getSource();
+        button.setStyle("-fx-background-color: #70C2FF");
+    }
+
+    @FXML
+    public void exit( MouseEvent e ){
+        Button button = (Button)e.getSource();
+        button.setStyle("-fx-background-color: #668FE8");
     }
 }

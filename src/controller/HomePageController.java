@@ -317,6 +317,18 @@ public class HomePageController implements Initializable {
         return null;
     }
 
+    @FXML
+    public void enter( MouseEvent e ){
+        Button button = (Button)e.getSource();
+        button.setStyle("-fx-background-color: #70C2FF");
+    }
+
+    @FXML
+    public void exit( MouseEvent e ){
+        Button button = (Button)e.getSource();
+        button.setStyle("-fx-background-color: #668FE8");
+    }
+
 //    /**
 //     * Play a given audio file.
 //     * @param audioFilePath Path of the audio file.

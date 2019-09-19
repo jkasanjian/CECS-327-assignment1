@@ -3,9 +3,11 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import model.SingletonProfile;
 import model.SingletonProfiles;
+import javafx.scene.input.MouseEvent;
 
 
 /**
@@ -71,4 +73,15 @@ public class SignInController extends Controller {
         LoadFXML(e, "Sign up", "/view/Sign_Up.fxml");
     }
 
+    @FXML
+    public void enter( MouseEvent e ){
+        Button button = (Button)e.getSource();
+        button.setStyle("-fx-background-color: #70C2FF");
+    }
+
+    @FXML
+    public void exit( MouseEvent e ){
+        Button button = (Button)e.getSource();
+        button.setStyle("-fx-background-color: #668FE8");
+    }
 }

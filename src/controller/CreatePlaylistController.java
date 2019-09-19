@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import model.MusicClass;
 
@@ -65,5 +66,17 @@ public class CreatePlaylistController implements Initializable {
 
     public void setPlaylist(HashMap<String, ObservableList<MusicClass>> playlists){
         this.playlists = playlists;
+    }
+
+    @FXML
+    public void enter( MouseEvent e ){
+        Button button = (Button)e.getSource();
+        button.setStyle("-fx-background-color: #70C2FF");
+    }
+
+    @FXML
+    public void exit( MouseEvent e ){
+        Button button = (Button)e.getSource();
+        button.setStyle("-fx-background-color: #668FE8");
     }
 }

@@ -25,7 +25,7 @@
    <children>
 
       <!-- Add Header Label -->
-      <Label text="Log in / Sign up" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.rowSpan="1">
+      <Label text="Log In / Sign Up" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.rowSpan="1">
          <font>
             <Font name="Arial" size="24" />
          </font>
@@ -58,8 +58,8 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="signInButton" defaultButton="true" onAction="#authorize" mnemonicParsing="false" prefHeight="27.0" prefWidth="89.0" text="Sign in" textFill="#d36c6c" />
-            <Button fx:id="signUpButton" onAction="#signupview" mnemonicParsing="false" prefHeight="27.0" prefWidth="89.0" text="Sign up" textFill="#d36c6c" GridPane.columnIndex="1" />
+            <Button fx:id="signInButton" defaultButton="true" mnemonicParsing="false" onAction="#authorize" onMouseEntered="#enter" onMouseExited="#exit" prefHeight="27.0" prefWidth="89.0" style="-fx-background-color: #668FE8;" text="Sign In" textFill="WHITE" />
+            <Button fx:id="signUpButton" mnemonicParsing="false" onAction="#signupview" onMouseEntered="#enter" onMouseExited="#exit" prefHeight="27.0" prefWidth="89.0" style="-fx-background-color: #668FE8;" text="Sign Up" textFill="WHITE" GridPane.columnIndex="1" />
          </children>
       </GridPane>
    </children>

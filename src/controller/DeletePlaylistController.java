@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -20,6 +21,9 @@ public class DeletePlaylistController {
     HomePageController hpc;
 
     String action;
+
+    @FXML
+    public void initialize(){}
 
     @FXML
     public void button(ActionEvent event) throws IOException {
@@ -48,5 +52,17 @@ public class DeletePlaylistController {
 
     public void setAction(String action){
         this.action = action;
+    }
+
+    @FXML
+    public void enter( MouseEvent e ){
+        Button button = (Button)e.getSource();
+        button.setStyle("-fx-background-color: #70C2FF");
+    }
+
+    @FXML
+    public void exit( MouseEvent e ){
+        Button button = (Button)e.getSource();
+        button.setStyle("-fx-background-color: #668FE8");
     }
 }
