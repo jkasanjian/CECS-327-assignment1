@@ -1,14 +1,14 @@
 package model;
 
-public class Profile extends ProfileAccount {
+public class SingletonProfile extends ProfileAccount {
 
-    public Profile(String user, String password) {
+    public SingletonProfile(String user, String password) {
         super(user, password);
     }
 
-    private static final Profile profile = new Profile("", "");
+    private static final SingletonProfile SINGLETON_PROFILE = new SingletonProfile("", "");
 
-    public static Profile GetInstance() {
-        return profile;
+    public static SingletonProfile GetInstance() {
+        return SINGLETON_PROFILE;
     }
 }

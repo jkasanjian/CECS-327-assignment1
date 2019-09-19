@@ -107,6 +107,21 @@ public class ProfileAccounts {
         printWriter.close();
     }
 
+    public void sync(ProfileAccount profile) {
+        for (int i = 0; i < profileAccounts.size(); i++) {
+            if (profileAccounts.get(i).getUsername().equals(profile.getUsername())) {
+                profileAccounts.set(i, profile);
+                break;
+            }
+        }
+//        try {
+//            throw new Exception("Cannot sync...profile cannot be found " + profile.getUsername());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        saveProfiles(profileAccounts);
+    }
+
     protected void loadProfiles() {
         Gson gson = new Gson();
         File file = new File(FILE_NAME);

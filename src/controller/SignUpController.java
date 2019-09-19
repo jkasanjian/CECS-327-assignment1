@@ -4,7 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import model.ProfileAccount;
-import model.Profiles;
+import model.SingletonProfiles;
 
 public class SignUpController extends Controller {
 
@@ -19,7 +19,7 @@ public class SignUpController extends Controller {
         String username;
         String password;
 
-        Profiles profiles = Profiles.GetInstance();
+        SingletonProfiles singletonProfiles = SingletonProfiles.GetInstance();
 
         username = this.userField.getText();
         password = this.passwordField.getText();
@@ -31,7 +31,7 @@ public class SignUpController extends Controller {
             return;
         }
 
-        if( profiles.contains(username) ) {
+        if( singletonProfiles.contains(username) ) {
             Alert alert = new Alert( Alert.AlertType.ERROR );
             alert.setContentText( "Username already exists" );
             alert.show();
@@ -39,7 +39,7 @@ public class SignUpController extends Controller {
         }
 
         ProfileAccount profileAccount = new ProfileAccount(username, password);
-        profiles.addProfile(profileAccount);
+        singletonProfiles.addProfile(profileAccount);
 
         LoadFXML(e, "Sign in", "/view/Sign_In.fxml");
     }

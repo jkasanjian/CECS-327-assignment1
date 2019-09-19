@@ -1,10 +1,10 @@
 package model;
 
-public class Profiles extends ProfileAccounts {
+public class SingletonProfiles extends ProfileAccounts {
 
-    private static final Profiles profiles = new Profiles();
+    private static final SingletonProfiles SINGLETON_PROFILES = new SingletonProfiles();
 
-    public static Profiles GetInstance() {
-        return profiles;
+    public static SingletonProfiles GetInstance() {
+        return SINGLETON_PROFILES;
     }
 }

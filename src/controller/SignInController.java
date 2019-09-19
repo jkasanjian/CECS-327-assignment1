@@ -3,12 +3,9 @@ package controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import model.Profile;
-import model.Profiles;
+import model.SingletonProfile;
+import model.SingletonProfiles;
 
 
 public class SignInController extends Controller {
@@ -25,7 +22,7 @@ public class SignInController extends Controller {
         String username;
         String password;
 
-        Profiles profiles = Profiles.GetInstance();
+        SingletonProfiles singletonProfiles = SingletonProfiles.GetInstance();
 
         username = this.userField.getText();
         password = this.passwordField.getText();
@@ -37,19 +34,21 @@ public class SignInController extends Controller {
             return;
         }
 
-        if( !profiles.verify(username, password) ) {
+        if( !singletonProfiles.verify(username, password) ) {
             Alert alert = new Alert( Alert.AlertType.ERROR );
             alert.setContentText( "username or password is incorrect" );
             alert.show();
             return;
         }
 
-        // TODO:: Load profile scene view and set static USER
+        // TODO:: Load singletonProfile scene view and set static USER
         // LoadFXML(e, "MyProfile", "/view/ProfileAccount.fxml")
 
-        Profile profile = new Profile(username, password);
+        SingletonProfile singletonProfile = SingletonProfile.GetInstance();
+        singletonProfile.setUsername(username);
+        singletonProfile.setPassword(password);
 
-        System.out.println("Current User: " + profile.getUsername());
+        System.out.println("Current User: " + singletonProfile.getUsername());
         LoadFXML(e, "Home Page", "/view/HomePage.fxml");
     }
 

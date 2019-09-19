@@ -25,10 +25,12 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 
 public class HomePageController implements Initializable {
@@ -164,6 +166,9 @@ public class HomePageController implements Initializable {
     public void addNewPlaylist(String playlistName, ObservableList<MusicClass> playlistSongs){
         displayPlaylists.getItems().add(playlistName);
         playlists.put(playlistName, playlistSongs);
+        SingletonProfile profile = SingletonProfile.GetInstance();
+        profile.addNewPlaylist(playlistName, playlistSongs);
+        SingletonProfiles.GetInstance().sync(profile);
     }
 
     public void openDeletePlaylistWindow() throws IOException {
@@ -195,6 +200,9 @@ public class HomePageController implements Initializable {
        MusicClass selectedSong = songTable.getSelectionModel().getSelectedItem();
        mc.add(selectedSong);
        playlists.put(playlistName,mc);
+       SingletonProfile profile = SingletonProfile.GetInstance();
+       profile.addToPlaylist(playlistName, selectedSong);
+       SingletonProfiles.GetInstance().sync(profile);
     }
 
     public void deletePlaylist(String playlistName){
@@ -204,6 +212,9 @@ public class HomePageController implements Initializable {
             }
         }
         playlists.remove(playlistName);
+        SingletonProfile profile = SingletonProfile.GetInstance();
+        profile.removePlaylist(playlistName);
+        SingletonProfiles.GetInstance().sync(profile);
     }
 
     public static ObservableList<MusicClass> readMusicJSON() {
