@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * Model class for Artist
+ * Mapped to JSON nested object 'artist' for each song in JSON file
+ */
 public class Artist {
 
     private double terms_freq;
@@ -13,7 +17,20 @@ public class Artist {
     private String similar;
     private double hotttnesss;
 
-
+    /**
+     * Constructor for Artist class
+     * Parameters for each entry in JSON file under nested object 'artist'
+     * @param terms_freq
+     * @param terms
+     * @param name
+     * @param familiarity
+     * @param longitude
+     * @param id
+     * @param location
+     * @param latitude
+     * @param similar
+     * @param hotttnesss
+     */
     public Artist(double terms_freq, String terms, String name, double familiarity, double longitude, String id, String location, double latitude, String similar, double hotttnesss) {
         this.terms_freq = terms_freq;
         this.terms = terms;
