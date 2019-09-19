@@ -93,6 +93,13 @@ public class HomePageController implements Initializable {
             });
         });
 
+        SingletonProfile singletonProfile = SingletonProfile.GetInstance();
+
+        for (Playlist playlist : singletonProfile.getPlaylists()) {
+            displayPlaylists.getItems().add(playlist.getName());
+            playlists.put(playlist.getName(), FXCollections.observableArrayList(playlist.getMusicClassList()));
+        }
+
     }
 
     /**

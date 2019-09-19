@@ -54,6 +54,8 @@ public class SignInController extends Controller {
         SingletonProfile singletonProfile = SingletonProfile.GetInstance();
         singletonProfile.setUsername(username);
         singletonProfile.setPassword(password);
+        singletonProfile.setPlaylists(singletonProfiles.getPlaylist(username));
+
 
         System.out.println("Current User: " + singletonProfile.getUsername());
         LoadFXML(e, "Home Page", "/view/HomePage.fxml");

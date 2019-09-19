@@ -141,4 +141,13 @@ public class ProfileAccounts {
             System.exit(1);
         }
     }
+
+    public List<Playlist> getPlaylist(String username) {
+        for (ProfileAccount profileAccount : profileAccounts) {
+            if (profileAccount.getUsername().equals(username)) {
+                return profileAccount.getPlaylists();
+            }
+        }
+        return null;
+    }
 }
