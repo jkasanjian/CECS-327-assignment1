@@ -23,11 +23,22 @@ public class ProfileAccounts {
         loadProfiles();
     }
 
-    public void deleteProfile(String username) {
-        profileAccounts.removeIf(u -> (u.getUsername().equals(username)));
+
+    /**
+     * Delete profile with the passed in username in profiles.json
+     * @param username
+     */
+    public boolean deleteProfile(String username) {
+        boolean res = profileAccounts.removeIf(u -> (u.getUsername().equals(username)));
         saveProfiles(profileAccounts);
+        return res;
     }
 
+    /**
+     * Checks if the username exists in profile.json
+     * @param username
+     * @return
+     */
     public boolean contains(String username) {
         for(ProfileAccount profileAccount : profileAccounts) {
             if(profileAccount.getUsername().equalsIgnoreCase(username))
@@ -36,6 +47,13 @@ public class ProfileAccounts {
         return false;
     }
 
+    /**
+     * Verifies if the username exists in profiles.json, then verifies if the password
+     * matches the user password in profiles.json
+     * @param username
+     * @param password
+     * @return true if verified false otherwise
+     */
     public boolean verify(String username, String password) {
         if(!contains(username)) return false;
         for (ProfileAccount profileAccount : profileAccounts) {
@@ -53,6 +71,11 @@ public class ProfileAccounts {
         return profileAccounts;
     }
 
+    /**
+     * Adds a ProfileAccount object to profiles.json
+     * @param profileAccount object to be added to profiles.json
+     * @return true if object is successfully added otherwise false
+     */
     public boolean addProfile(ProfileAccount profileAccount) {
         if (contains(profileAccount.getUsername())) {
             return false;
@@ -92,6 +115,10 @@ public class ProfileAccounts {
         return true;
     }
 
+    /**
+     * This method will save and overwrite the current profiles.json file with param profileAccounts
+     * @param profileAccounts profile accounts that contains information to write profiles.json
+     */
     protected void saveProfiles(List<ProfileAccount> profileAccounts) {
         Gson gson = new Gson();
         File file = new File(FILE_NAME);
@@ -107,6 +134,10 @@ public class ProfileAccounts {
         printWriter.close();
     }
 
+    /**
+     * Syncs the profile account with current profiles.json
+     * @param profile profile account to be synced
+     */
     public void sync(ProfileAccount profile) {
         for (int i = 0; i < profileAccounts.size(); i++) {
             if (profileAccounts.get(i).getUsername().equals(profile.getUsername())) {
@@ -114,14 +145,12 @@ public class ProfileAccounts {
                 break;
             }
         }
-//        try {
-//            throw new Exception("Cannot sync...profile cannot be found " + profile.getUsername());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         saveProfiles(profileAccounts);
     }
 
+    /**
+     * Syncs the object's data with profiles.json
+     */
     protected void loadProfiles() {
         Gson gson = new Gson();
         File file = new File(FILE_NAME);

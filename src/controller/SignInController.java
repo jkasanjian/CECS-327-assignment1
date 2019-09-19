@@ -50,9 +50,6 @@ public class SignInController extends Controller {
             return;
         }
 
-        // TODO:: Load singletonProfile scene view and set static USER
-        // LoadFXML(e, "MyProfile", "/view/ProfileAccount.fxml")
-
         SingletonProfile singletonProfile = SingletonProfile.GetInstance();
         singletonProfile.setUsername(username);
         singletonProfile.setPassword(password);

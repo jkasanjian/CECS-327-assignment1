@@ -62,3 +62,4 @@ nb-configuration.xml
 ##########################
 .DS_Store
 testmusic.json
+*.json
