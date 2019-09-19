@@ -1,5 +1,7 @@
 package controller;
 
+import javafx.collections.transformation.FilteredList;
+import javafx.scene.control.*;
 import model.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -11,10 +13,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -31,8 +29,12 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import java.io.IOException;
 import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 
+/**
+ * Controller class corresponding to the home page fxml.
+ */
 public class HomePageController implements Initializable {
 
     @FXML
@@ -59,6 +61,9 @@ public class HomePageController implements Initializable {
     @FXML
     ListView<String> displayPlaylists;
 
+    @FXML
+    TextField gSearchTextField;
+
     HashMap <String, ObservableList<MusicClass>> playlists = new HashMap<String, ObservableList<MusicClass>>();
 
     private MediaPlayer mediaPlayer;
@@ -66,16 +71,35 @@ public class HomePageController implements Initializable {
     private Media media;
 
     private ObservableList<MusicClass> master;
+    private String currentPlaylist;
 
+    /**
+     * Initializes the table and the event listeners.
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources){
         master = readMusicJSON();
         songTable = populateTable(master);
+        currentPlaylist = "master";
         String songFile = "imperial.mp3";
         media = new Media(Paths.get(songFile).toUri().toString());
         mediaPlayer = new MediaPlayer(media);
+
+        gSearchTextField.setOnKeyPressed(e ->{
+            gSearchTextField.textProperty().addListener((observable, oldValue, newValue) ->{
+                filter(newValue);
+            });
+        });
+
     }
 
+    /**
+     * Populates the table view with a given list.
+     * @param songs The list of songs that should be shown in the table view.
+     * @return The tableview populated with the corresponding collumns and songs.
+     */
     public TableView<MusicClass> populateTable(ObservableList<MusicClass> songs){
 
 //        songTable.getColumns().clear();
@@ -112,11 +136,17 @@ public class HomePageController implements Initializable {
         return songTable;
     }
 
+    /**
+     * Handles any button pressing events.
+     * @param event The event that happens from a corresponding button press.
+     * @throws IOException
+     */
     @FXML
     public void button(ActionEvent event) throws IOException{
 
         if(event.getSource() == songButton) {
             populateTable(master);
+            currentPlaylist = "master";
         } else if(event.getSource() == artistButton){
         } else if (event.getSource() == addSongToPlaylist){
             openAddSongToPlaylistWindow();
@@ -127,6 +157,10 @@ public class HomePageController implements Initializable {
         }
     }
 
+    /**
+     * If song is double clicked on table view it plays a song.
+     * @param click
+     */
     @FXML
     public void clickSong(MouseEvent click)
     {
@@ -141,17 +175,50 @@ public class HomePageController implements Initializable {
         }
     }
 
+    /**
+     * If playlist is double clicked it populates the table with the songs from the playlist.
+     * @param click
+     */
     @FXML
     public void clickPlaylist(MouseEvent click)
     {
         if (click.getClickCount() == 2) //Checking double click
         {
             String selectedPlaylist = displayPlaylists.getSelectionModel().getSelectedItem();
+            currentPlaylist = selectedPlaylist;
             ObservableList<MusicClass> selectedPlaylistSongs = playlists.get(selectedPlaylist);
             populateTable(selectedPlaylistSongs);
         }
     }
 
+    /**
+     * Filters the table view with the search text field.
+     * @param value
+     */
+    public void filter(String value){
+        String lowerCase = value.toLowerCase();
+        FilteredList<MusicClass> filteredData;
+        if(currentPlaylist == "master")
+            filteredData = new FilteredList<>(master);
+        else
+            filteredData = new FilteredList<>(playlists.get(currentPlaylist));
+
+        filteredData.setPredicate((Predicate<? super MusicClass>) musicClass ->{
+            if (value.isEmpty() || value == null) return true;
+            if (musicClass.getSongID().contains(value)) return true;
+            if (musicClass.getSongTitle().toLowerCase().contains(lowerCase)) return true;
+            if (musicClass.getArtistName().toLowerCase().contains(lowerCase)) return true;
+
+            return false;
+        });
+
+        songTable.setItems(filteredData);
+    }
+
+    /**
+     * Loads the create playlist window.
+     * @throws IOException
+     */
     public void openCreatePlaylistWindow() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CreatePlaylist.fxml"));
         Parent root = loader.load();
@@ -163,6 +230,11 @@ public class HomePageController implements Initializable {
         newWindow.show();
     }
 
+    /**
+     * Adds a new playlist to the account.
+     * @param playlistName Name of playlist.
+     * @param playlistSongs Songs.
+     */
     public void addNewPlaylist(String playlistName, ObservableList<MusicClass> playlistSongs){
         displayPlaylists.getItems().add(playlistName);
         playlists.put(playlistName, playlistSongs);
@@ -217,6 +289,10 @@ public class HomePageController implements Initializable {
         SingletonProfiles.GetInstance().sync(profile);
     }
 
+    /**
+     * Reads JSON file to retrieve music.
+     * @return
+     */
     public static ObservableList<MusicClass> readMusicJSON() {
         Gson gson = new Gson();
         String fileName = "music.json";

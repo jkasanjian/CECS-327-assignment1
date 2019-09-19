@@ -6,6 +6,10 @@ import javafx.scene.control.*;
 import model.ProfileAccount;
 import model.SingletonProfiles;
 
+/**
+ * Controller handling the sign up view. Provides functionality for signing up and
+ * provides functionality for going to the sign in page after.
+ * */
 public class SignUpController extends Controller {
 
     @FXML
@@ -14,6 +18,10 @@ public class SignUpController extends Controller {
     @FXML
     PasswordField passwordField;
 
+    /**
+     * Button handler for signing up. Creates an account if information is good.
+     * @param e
+     */
     @FXML
     public void handleSubmitButtonAction( ActionEvent e ){
         String username;
