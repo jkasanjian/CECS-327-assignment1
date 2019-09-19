@@ -1,5 +1,7 @@
 package controller;
 
+import javafx.collections.transformation.FilteredList;
+import javafx.scene.control.*;
 import model.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -11,10 +13,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
@@ -29,6 +27,7 @@ import java.util.ResourceBundle;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import java.io.IOException;
+import java.util.function.Predicate;
 
 
 public class HomePageController implements Initializable {
@@ -57,6 +56,9 @@ public class HomePageController implements Initializable {
     @FXML
     ListView<String> displayPlaylists;
 
+    @FXML
+    TextField gSearchTextField;
+
     HashMap <String, ObservableList<MusicClass>> playlists = new HashMap<String, ObservableList<MusicClass>>();
 
     private MediaPlayer mediaPlayer;
@@ -64,14 +66,23 @@ public class HomePageController implements Initializable {
     private Media media;
 
     private ObservableList<MusicClass> master;
+    private String currentPlaylist;
 
     @Override
     public void initialize(URL location, ResourceBundle resources){
         master = readMusicJSON();
         songTable = populateTable(master);
+        currentPlaylist = "master";
         String songFile = "imperial.mp3";
         media = new Media(Paths.get(songFile).toUri().toString());
         mediaPlayer = new MediaPlayer(media);
+
+        gSearchTextField.setOnKeyPressed(e ->{
+            gSearchTextField.textProperty().addListener((observable, oldValue, newValue) ->{
+                filter(newValue);
+            });
+        });
+
     }
 
     public TableView<MusicClass> populateTable(ObservableList<MusicClass> songs){
@@ -115,6 +126,7 @@ public class HomePageController implements Initializable {
 
         if(event.getSource() == songButton) {
             populateTable(master);
+            currentPlaylist = "master";
         } else if(event.getSource() == artistButton){
         } else if (event.getSource() == addSongToPlaylist){
             openAddSongToPlaylistWindow();
@@ -145,9 +157,30 @@ public class HomePageController implements Initializable {
         if (click.getClickCount() == 2) //Checking double click
         {
             String selectedPlaylist = displayPlaylists.getSelectionModel().getSelectedItem();
+            currentPlaylist = selectedPlaylist;
             ObservableList<MusicClass> selectedPlaylistSongs = playlists.get(selectedPlaylist);
             populateTable(selectedPlaylistSongs);
         }
+    }
+
+    public void filter(String value){
+        String lowerCase = value.toLowerCase();
+        FilteredList<MusicClass> filteredData;
+        if(currentPlaylist == "master")
+            filteredData = new FilteredList<>(master);
+        else
+            filteredData = new FilteredList<>(playlists.get(currentPlaylist));
+
+        filteredData.setPredicate((Predicate<? super MusicClass>) musicClass ->{
+            if (value.isEmpty() || value == null) return true;
+            if (musicClass.getSongID().contains(value)) return true;
+            if (musicClass.getSongTitle().toLowerCase().contains(lowerCase)) return true;
+            if (musicClass.getArtistName().toLowerCase().contains(lowerCase)) return true;
+
+            return false;
+        });
+
+        songTable.setItems(filteredData);
     }
 
     public void openCreatePlaylistWindow() throws IOException {

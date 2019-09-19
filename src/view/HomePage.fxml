@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -9,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1500.0" style="-fx-background-color: #3D4956;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomePageController">
+<AnchorPane prefHeight="700.0" prefWidth="1500.0" style="-fx-background-color: #3D4956;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.HomePageController">
    <children>
       <SplitPane dividerPositions="0.20066889632107024" layoutY="59.0" pickOnBounds="false" prefHeight="589.0" prefWidth="1497.0" style="-fx-background-color: #536475#536475;">
         <items>
@@ -48,6 +52,7 @@
             <Font name="Hiragino Sans W6" size="28.0" />
          </font>
       </Label>
-      <Button fx:id="addSongToPlaylist" layoutX="1353.0" layoutY="654.0" mnemonicParsing="false" onAction="#button" text="Add model.Song to Playlist" />
+      <Button fx:id="addSongToPlaylist" layoutX="1353.0" layoutY="654.0" mnemonicParsing="false" onAction="#button" text="Add Song to Playlist" />
+      <TextField fx:id="gSearchTextField" layoutX="1235.0" layoutY="21.0" prefHeight="25.0" prefWidth="262.0" promptText="Search" />
    </children>
 </AnchorPane>
