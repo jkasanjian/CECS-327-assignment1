@@ -1,5 +1,9 @@
 package model;
 
+/**
+ * Model class for Song
+ * Mapped to JSON nested object 'song' for each song in JSON file
+ */
 public class Song {
 
     private double key;
@@ -26,7 +30,33 @@ public class Song {
     private double time_signature;
     private double loudness;
 
-
+    /**
+     * Constructor for Song class
+     * Parameters for each entry in JSON file under nested object 'song'
+     * @param key
+     * @param mode_confidence
+     * @param artist_mbtags_count
+     * @param key_confidence
+     * @param tatums_start
+     * @param year
+     * @param duration
+     * @param hotttnesss
+     * @param beats_start
+     * @param time_signature_confidence
+     * @param title
+     * @param bars_confidence
+     * @param id
+     * @param bars_start
+     * @param artist_mbtags
+     * @param start_of_fade_out
+     * @param tempo
+     * @param end_of_fade_in
+     * @param beats_confidence
+     * @param tatums_confidence
+     * @param mode
+     * @param time_signature
+     * @param loudness
+     */
     public Song(double key, double mode_confidence, double artist_mbtags_count, double key_confidence, double tatums_start, int year, double duration, double hotttnesss, double beats_start, double time_signature_confidence, String title, double bars_confidence, String id, double bars_start, String artist_mbtags, double start_of_fade_out, double tempo, double end_of_fade_in, double beats_confidence, double tatums_confidence, int mode, double time_signature, double loudness) {
         this.key = key;
         this.mode_confidence = mode_confidence;
