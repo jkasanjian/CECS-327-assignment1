@@ -12,6 +12,12 @@ public class ProfileAccount {
     private String password;
     private List<Playlist> playlists;
 
+    public ProfileAccount() {
+        username = "";
+        password = "";
+        playlists = new ArrayList<>();
+    }
+
     public ProfileAccount(String username, String password, List<Playlist> playlists) {
         this.username = username;
         this.password = password;
@@ -48,6 +54,11 @@ public class ProfileAccount {
         this.playlists = playlists;
     }
 
+    /**
+     * Adds a song to the List<Playlist> playlists attribute
+     * @param playlistName name of the playlist
+     * @param selectedSong song to add to the playlist
+     */
     public void addToPlaylist(String playlistName, MusicClass selectedSong) {
         for (Playlist playlist : playlists) {
             if (playlist.getName().equals(playlistName)) {
@@ -62,11 +73,20 @@ public class ProfileAccount {
         }
     }
 
+    /**
+     * Adds new playlist to the List<Playlist> playlists attribute
+     * @param playlistName name of the playlist
+     * @param playlistSongs contents of the playlist as an ObservableList<MusicClass>
+     */
     public void addNewPlaylist(String playlistName, ObservableList<MusicClass> playlistSongs) {
         List<MusicClass> playlistSongsAsList = playlistSongs.stream().collect(Collectors.toList());
         playlists.add(new Playlist(playlistName, playlistSongsAsList));
     }
 
+    /**
+     * Removes playlist from List<Playlist> playlists attribute
+     * @param playlistName the name of the playlist to be removed
+     */
     public void removePlaylist(String playlistName) {
         boolean gotRemoved = playlists.removeIf(x -> x.getName().equals(playlistName));
         if (!gotRemoved) {
