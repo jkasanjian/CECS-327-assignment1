@@ -22,10 +22,9 @@ import com.google.gson.JsonParser;
 
 
 
-public class Dispatcher implements DispatcherInterface {
-    HashMap<String, Object> ListOfObjects;
+public class Dispatcher extends Thread implements DispatcherInterface {
+    public static HashMap<String, Object> ListOfObjects;
     
-
     public Dispatcher()
     {
         ListOfObjects = new HashMap<String, Object>();
@@ -116,6 +115,10 @@ public class Dispatcher implements DispatcherInterface {
         }
      
         return jsonReturn.toString();
+    }
+
+    public void run(){
+
     }
 
     /* 

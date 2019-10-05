@@ -38,13 +38,14 @@ public class Main {
      *  The function test the classes Dispatcher, SongDispatcher 
      *  and CECS327InputStream. Proxy is incomplete.
     */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
         Integer i;
         Gson gson = new Gson();
         Dispatcher dispatcher = new Dispatcher();
         SongDispatcher songDispatcher = new SongDispatcher();
-        
-        dispatcher.registerObject(songDispatcher, "SongServices");  
+        dispatcher.registerObject(songDispatcher, "SongServices");
+        CommunicationModule comm = new CommunicationModule( 2345 );
+        comm.listen();
         //ProxyInterface proxy = new Proxy(dispatcher);
 
         //Main player = new Main();
