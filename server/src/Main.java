@@ -42,8 +42,11 @@ public class Main {
         Integer i;
         Gson gson = new Gson();
         Dispatcher dispatcher = new Dispatcher();
-        SongDispatcher songDispatcher = new SongDispatcher();
+        SongDispatcher songDispatcher       = new SongDispatcher();
+        AccountDispatcher accountDispatcher = new AccountDispatcher();
+
         dispatcher.registerObject(songDispatcher, "SongServices");
+        dispatcher.registerObject(accountDispatcher, "LoginServices");
         CommunicationModule comm = new CommunicationModule( 2345 );
         comm.listen();
         //ProxyInterface proxy = new Proxy(dispatcher);

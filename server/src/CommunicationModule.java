@@ -13,6 +13,7 @@ public class CommunicationModule{
     private byte[] buffer;
     private byte[] service;
     private Queue<DatagramPacket> queue;
+    //TODO: Create history with a hashmap.
 
     public CommunicationModule(int port) throws IOException{
         buffer = new byte[FRAGMENT_SIZE];
