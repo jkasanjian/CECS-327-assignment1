@@ -15,13 +15,13 @@ public class CommunicationModule{
     private Queue<DatagramPacket> queue;
     //TODO: Create history with a hashmap.
 
-    public CommunicationModule(int port) throws IOException{
+    public CommunicationModule(int port, Dispatcher dispatch) throws IOException{
         buffer = new byte[FRAGMENT_SIZE];
         queue  = new LinkedList<>();
 
         socket     = new DatagramSocket( port );
         packet     = new DatagramPacket( buffer,  buffer.length );
-        dispatcher = new Dispatcher();
+        dispatcher = dispatch;
 
         new Thread( () -> {
             while(true){

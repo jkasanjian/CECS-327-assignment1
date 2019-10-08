@@ -23,7 +23,7 @@ import com.google.gson.JsonParser;
 
 
 public class Dispatcher extends Thread implements DispatcherInterface {
-    public static HashMap<String, Object> ListOfObjects;
+    public HashMap<String, Object> ListOfObjects;
     
     public Dispatcher()
     {
