@@ -1,5 +1,5 @@
-/**
-* The Proxy implements ProxyInterface class. The class is incomplete 
+package rpc; /**
+* The rpc.Proxy implements rpc.ProxyInterface class. The class is incomplete
 * 
 * @author  Oscar Morales-Ponce
 * @version 0.15

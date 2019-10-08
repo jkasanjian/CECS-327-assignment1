@@ -8,12 +8,13 @@
 */
 
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 import com.google.gson.JsonObject;
-import java.util.concurrent.Semaphore; 
+import rpc.ProxyInterface;
+
+import java.util.concurrent.Semaphore;
 
 
 
