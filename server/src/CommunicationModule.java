@@ -25,8 +25,10 @@ public class CommunicationModule{
 
         new Thread( () -> {
             while(true){
-                if( !queue.isEmpty() ){
-                    send();
+                synchronized ( queue ){
+                    if( !queue.isEmpty() ){
+                        send();
+                    }
                 }
             }
         }).start();
