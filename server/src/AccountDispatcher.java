@@ -21,6 +21,7 @@ public class AccountDispatcher {
     }
 
     public String registerAccount( String username, String password ){
+        System.out.println(username + " " + password);
         if( profiles.contains(username) ){
             return null;
         }else{

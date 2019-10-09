@@ -86,7 +86,7 @@ public class Dispatcher extends Thread implements DispatcherInterface {
                     case "java.lang.Integer":
                         parameter[i] =  Integer.parseInt(strParam[i]);
                         break;
-                    case "String":
+                    case "java.lang.String":
                         parameter[i] = new String(strParam[i]);
                         break;
                 }
@@ -112,6 +112,7 @@ public class Dispatcher extends Thread implements DispatcherInterface {
         {
         //    System.out.println(e);
             jsonReturn.addProperty("error", "Error on " + jsonRequest.get("objectName").getAsString() + "." + jsonRequest.get("remoteMethod").getAsString());
+            e.printStackTrace();
         }
      
         return jsonReturn.toString();

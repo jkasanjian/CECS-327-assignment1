@@ -54,6 +54,7 @@ public class CommunicationModule{
     private void send(){
         DatagramPacket response;
         try{
+
             synchronized ( queue ){
                 response = queue.poll();
             }
