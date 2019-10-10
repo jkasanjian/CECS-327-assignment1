@@ -83,9 +83,9 @@ public class HomePageController implements Initializable {
         master = readMusicJSON();
         songTable = populateTable(master);
         currentPlaylist = "master";
-        String songFile = "imperial.mp3";
-        media = new Media(Paths.get(songFile).toUri().toString());
-        mediaPlayer = new MediaPlayer(media);
+        //String songFile = "imperial.mp3";
+        //media = new Media(Paths.get(songFile).toUri().toString());
+        //mediaPlayer = new MediaPlayer(media);
 
         gSearchTextField.setOnKeyPressed(e ->{
             gSearchTextField.textProperty().addListener((observable, oldValue, newValue) ->{

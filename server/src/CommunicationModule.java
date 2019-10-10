@@ -93,7 +93,6 @@ public class CommunicationModule{
             synchronized ( outgoing_queue ){
                 response = outgoing_queue.poll();
             }
-
             socket.send( response );
         }catch(Exception exception){
 

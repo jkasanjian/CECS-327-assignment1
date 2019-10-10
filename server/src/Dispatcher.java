@@ -12,14 +12,9 @@ import java.lang.reflect.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 
-
-
+import com.google.gson.*;
+import model.ProfileAccount;
 
 
 public class Dispatcher extends Thread implements DispatcherInterface {
@@ -106,8 +101,11 @@ public class Dispatcher extends Thread implements DispatcherInterface {
                         ret = (String)method.invoke(object, parameter);
                         break;
                 }
-                jsonReturn.addProperty("ret", ret);
-   
+
+            Gson gson = new GsonBuilder().create();
+            JsonObject obj = parser.parse(ret).getAsJsonObject();
+            jsonReturn.add("ret", obj);
+
         } catch (InvocationTargetException | IllegalAccessException e)
         {
         //    System.out.println(e);

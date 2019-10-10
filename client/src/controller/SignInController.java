@@ -1,11 +1,13 @@
 package controller;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import model.ProfileAccount;
 import model.SingletonProfile;
 import model.SingletonProfiles;
 import javafx.scene.input.MouseEvent;
@@ -45,22 +47,17 @@ public class SignInController extends Controller {
             return;
         }
 
-        if( !singletonProfiles.verify(username, password) ) {
-            Alert alert = new Alert( Alert.AlertType.ERROR );
-            alert.setContentText( "username or password is incorrect" );
-            alert.show();
-            return;
-        }
-
-        SingletonProfile singletonProfile = SingletonProfile.GetInstance();
-        singletonProfile.setUsername(username);
-        singletonProfile.setPassword(password);
-//        singletonProfile.setPlaylists(singletonProfiles.getPlaylist(username));
         Proxy proxy = Proxy.GetInstance();
         JsonObject ret = proxy.synchExecution("loginAccount", new String[]{"abc", "abc"});
+        Gson gson = new Gson();
+        ProfileAccount acc = gson.fromJson( ret.get("ret"), ProfileAccount.class );
+        System.out.println( acc.getUsername() );
+        SingletonProfile profile = SingletonProfile.GetInstance();
+        profile.setUsername(acc.getUsername());
+        profile.setPassword(acc.getPassword());
+        profile.setSessionID(acc.getSessionID());
+        profile.setPlaylists(acc.getPlaylists());
 
-
-        System.out.println("Current User: " + singletonProfile.getUsername());
         LoadFXML(e, "Home Page", "/view/HomePage.fxml");
     }
 

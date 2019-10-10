@@ -57,8 +57,10 @@ public class SignUpController extends Controller {
         Proxy proxy = Proxy.GetInstance();
         Gson gson = new Gson();
         JsonObject ret = proxy.synchExecution("registerAccount", new String[]{username, password});
+        System.out.println( ret.get("ret"));
+        ProfileAccount acc = gson.fromJson( ret.get("ret"), ProfileAccount.class );
 
-        if(gson.fromJson(ret.toString(), ProfileAccount.class).getUsername().length() == 0) {
+        if(acc.getUsername().length() == 0) {
             Alert alert = new Alert( Alert.AlertType.ERROR);
             alert.setContentText("Invalid username or password.");
             alert.show();

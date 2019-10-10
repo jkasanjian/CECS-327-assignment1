@@ -29,11 +29,13 @@ public class AccountDispatcher {
     public String registerAccount( String username, String password ){
         System.out.println(username + " " + password);
         if( profiles.contains(username) ){
-            return null;
+            Gson gson = new Gson();
+            return gson.toJson( new ProfileAccount() );
         }else{
             ProfileAccount account = new ProfileAccount(username, password);
             profiles.addProfile( account );
             Gson gson = new Gson();
+            System.out.println(gson.toJson(account));
             return gson.toJson( account );
         }
     }
