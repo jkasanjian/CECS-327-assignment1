@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 
 public class Proxy implements ProxyInterface {
@@ -25,7 +26,7 @@ public class Proxy implements ProxyInterface {
     public JsonObject synchExecution(String remoteMethod, String[] param) throws Exception {
         JsonObject jsonRequest = CatalogServices.getRemoteReference(remoteMethod, param);
         if(jsonRequest == null) {
-            throw new Exception("Remote Method: " + remoteMethod + ", params: " + param.toString() + " not found\n");
+            throw new Exception("Remote Method: " + remoteMethod + ", params: " + Arrays.toString(param) + " not found\n");
         }
         String strRet =  this.communicationModule.syncSend(jsonRequest.toString());
         JsonParser parser = new JsonParser();

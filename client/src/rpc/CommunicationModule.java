@@ -48,6 +48,7 @@ public class CommunicationModule{
         DatagramPacket recv = new DatagramPacket(buffer, buffer.length);
         socket.receive(recv);
 
+
         return new String(recv.getData(), 0, recv.getLength());
     }
 

@@ -65,7 +65,7 @@ public class CECS327InputStream extends InputStream {
      * frament in nextBuf
      * @param fileName The name of the file
     */
-    public CECS327InputStream(Long fileName, ProxyInterface proxy) throws IOException {
+    public CECS327InputStream(Long fileName, ProxyInterface proxy) throws Exception {
         sem = new Semaphore(1); 
         try
         {
@@ -89,7 +89,7 @@ public class CECS327InputStream extends InputStream {
      * getNextBuff reads the buffer. It gets the data using
      * the remote method getSongChunk
     */
-    protected void getBuff(int fragment) throws IOException
+    protected void getBuff(int fragment) throws Exception
     {
         new Thread()
         {
@@ -98,7 +98,12 @@ public class CECS327InputStream extends InputStream {
                 param[0] = String.valueOf(fileName);
                 param[1] = String.valueOf(fragment);
 
-                JsonObject jsonRet = proxy.synchExecution("getSongChunk", param);
+                JsonObject jsonRet = null;
+                try {
+                    jsonRet = proxy.synchExecution("getSongChunk", param);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 String s = jsonRet.get("ret").getAsString();
                 nextBuf = Base64.getDecoder().decode(s);
                 sem.release(); 
@@ -132,9 +137,13 @@ public class CECS327InputStream extends InputStream {
           }
 	      for (int i=0; i< FRAGMENT_SIZE; i++)
 		      buf[i] = nextBuf[i];
-          
-	      getBuff(fragment);
-	      fragment++;
+
+          try {
+              getBuff(fragment);
+          } catch (Exception e) {
+              e.printStackTrace();
+          }
+          fragment++;
 	  }
 	  int p = pos % FRAGMENT_SIZE;
 	  pos ++;
@@ -180,9 +189,17 @@ public class CECS327InputStream extends InputStream {
 
         pos += k;
         fragment = (int)Math.floor(pos / FRAGMENT_SIZE);
-        getBuff(fragment);
+        try {
+            getBuff(fragment);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         fragment++;
-        getBuff(fragment);
+        try {
+            getBuff(fragment);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return k;
     }
 
@@ -220,9 +237,17 @@ public class CECS327InputStream extends InputStream {
     public synchronized void reset() throws IOException {
         pos = mark;
         fragment = (int)Math.floor(pos / FRAGMENT_SIZE);
-        getBuff(fragment);
+        try {
+            getBuff(fragment);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         fragment++;
-        getBuff(fragment);
+        try {
+            getBuff(fragment);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 	
     /**

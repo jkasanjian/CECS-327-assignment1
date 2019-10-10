@@ -11,8 +11,8 @@ public class CatalogServices {
 
     public static void init() {
         remoteObjects = new HashMap<>();
-        remoteObjects.put("login", new String[]{"LoginServices", "username", "password"});
-        remoteObjects.put("register", new String[]{"LoginServices", "username", "password"});
+        remoteObjects.put("loginAccount", new String[]{"LoginServices", "username", "password"});
+        remoteObjects.put("registerAccount", new String[]{"LoginServices", "username", "password"});
     }
 
     public static JsonObject getRemoteReference(String remoteMethod, String[] params) {
@@ -35,6 +35,6 @@ public class CatalogServices {
 
     private static boolean verifyMethod(String remoteMethod, String[] params) {
         if(!remoteObjects.containsKey(remoteMethod)) return false;
-        return remoteObjects.get(remoteMethod).length == params.length;
+        return remoteObjects.get(remoteMethod).length == params.length+1;
     }
 }
