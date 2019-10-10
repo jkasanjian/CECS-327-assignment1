@@ -1,23 +1,29 @@
 import com.google.gson.Gson;
 import model.ProfileAccount;
-import model.SingletonProfile;
 import model.SingletonProfiles;
 
 public class AccountDispatcher {
     private SingletonProfiles profiles;
+    private SessionManager manager;
 
-    public AccountDispatcher(){
+    public AccountDispatcher() {
         profiles = SingletonProfiles.GetInstance();
+        manager  = new SessionManager();
     }
 
     public String loginAccount( String username, String password ){
+        ProfileAccount account;
+
         if( profiles.verify( username, password ) ){
-            ProfileAccount account = new ProfileAccount( username, password, profiles.getPlaylist(username) );
-            Gson gson = new Gson();
-            return gson.toJson( account );
+            int session = manager.getSessionID();
+            manager.addSession( Integer.toString(session), username );
+            account = new ProfileAccount( username, password, session, profiles.getPlaylist(username) );
         }else{
-            return null;
+            account = new ProfileAccount();
         }
+
+        Gson gson = new Gson();
+        return gson.toJson(account);
     }
 
     public String registerAccount( String username, String password ){
