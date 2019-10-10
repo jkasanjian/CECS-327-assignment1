@@ -1,58 +1,74 @@
 package rpc;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.net.*;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Scanner;
 
 public class CommunicationModule{
     public final int FRAGMENT_SIZE = 8192;
-    private int serverPort = 8000;
+    private int serverPort;
     private InetAddress serverAddress;
     private DatagramSocket socket;
-    private DatagramPacket packet;
-    private byte[] buffer;
-    private byte[] service;
-    private Queue<DatagramPacket> queue;
-    private Proxy proxy;
+    private Queue<DatagramPacket> asyncQueue;
 
-    public CommunicationModule(int serverPort) throws IOException{
-        buffer = new byte[FRAGMENT_SIZE];
-        queue  = new LinkedList<>();
+    public CommunicationModule(int serverPort) throws UnknownHostException, SocketException {
         this.serverPort = serverPort;
         serverAddress = InetAddress.getLocalHost();
-        socket     = new DatagramSocket(  );
-        packet     = new DatagramPacket( buffer,  buffer.length );
-        proxy      = new Proxy();
+        socket = new DatagramSocket();
 
-        while (true) {
-            
-        }
-    }
+        asyncQueue = new LinkedList<>();
 
-    public void listen() throws IOException{
-        while(true){
-            socket.receive( packet );
-            String received = new String( packet.getData(), 0, packet.getLength() );
-
-        }
-    }
-
-    private void send(byte[] data){
-        new Thread( () -> {
-            packet = new DatagramPacket(data, data.length, serverAddress, serverPort);
-            try{
-                synchronized ( queue ){
-                    packet = queue.poll();
+        new Thread(()->{
+            DatagramPacket packet;
+            while (true) {
+                while (!asyncQueue.isEmpty()) {
+                    asyncSend();
                 }
-
-                socket.send( packet );
-            }catch(Exception exception){
-
             }
         }).start();
+
+    }
+
+    public CommunicationModule(int serverPort, String serverAddress) throws UnknownHostException, SocketException {
+        this.serverPort = serverPort;
+        this.serverAddress = InetAddress.getByName(serverAddress);
+        socket = new DatagramSocket();
+        asyncQueue = new LinkedList<>();
+
+    }
+
+
+    public synchronized String syncSend(String s) throws IOException {
+        byte[] buffer = s.getBytes();
+        DatagramPacket send = new DatagramPacket(buffer, buffer.length, serverAddress, serverPort);
+        socket.send(send);
+
+        buffer = new byte[FRAGMENT_SIZE];
+        DatagramPacket recv = new DatagramPacket(buffer, buffer.length);
+        socket.receive(recv);
+
+        return new String(recv.getData(), 0, recv.getLength());
+    }
+
+    public void asyncSend(String s) {
+        byte[] buffer = s.getBytes();
+        DatagramPacket send = new DatagramPacket(buffer, buffer.length, serverAddress, serverPort);
+        synchronized (asyncQueue) {
+            asyncQueue.add(send);
+        }
+    }
+
+    private void asyncSend() {
+        DatagramPacket response;
+        synchronized ( asyncQueue ){
+            response = asyncQueue.poll();
+        }
+        try {
+            socket.send( response );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

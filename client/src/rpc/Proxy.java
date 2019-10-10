@@ -9,56 +9,36 @@ package rpc; /**
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.io.IOException;
+
 
 public class Proxy implements ProxyInterface {
 
-    //Dispatcher dispacher;   // This is only for test. it should use the Communication  Module
-    public Proxy( /*Dispatcher dispacher */)
+    private CommunicationModule communicationModule;
+
+    public Proxy(CommunicationModule communicationModule)
     {
-        //this.dispacher = dispacher;
-    }
-    
-    /*
-    * Executes the  remote method "remoteMethod". The method blocks until
-    * it receives the reply of the message. 
-    */
-    public JsonObject synchExecution(String remoteMethod, String[] param)
-    {
-        JsonObject jsonRequest = new JsonObject();
-        JsonObject jsonParam = new JsonObject();
-        
-        jsonRequest.addProperty("remoteMethod", remoteMethod);
-        jsonRequest.addProperty("objectName", "SongServices");
-        // It is hardcoded. Instead it should be dynamic using  RemoteRef
-        if (remoteMethod.equals("getSongChunk"))
-        {
-            
-            jsonParam.addProperty("song", param[0]);
-            jsonParam.addProperty("fragment", param[1]);       
-        
-        }
-        if (remoteMethod.equals("getFileSize"))
-        {
-            jsonParam.addProperty("song", param[0]);        
-        }
-        jsonRequest.add("param", jsonParam);
-        
-        JsonParser parser = new JsonParser();
-        //String strRet =  this.dispacher.dispatch(jsonRequest.toString());
-        
-        //return parser.parse(/*strRet*/).getAsJsonObject();
-        return jsonRequest;
+        this.communicationModule = communicationModule;
+        CatalogServices.init();
     }
 
-    /*
-    * Executes the  remote method remoteMethod and returns without waiting
-    * for the reply. It does similar to synchExecution but does not 
-    * return any value
-    * 
-    */
-    public void asynchExecution(String remoteMethod, String[] param)
+    public JsonObject synchExecution(String remoteMethod, String[] param) throws Exception {
+        JsonObject jsonRequest = CatalogServices.getRemoteReference(remoteMethod, param);
+        if(jsonRequest == null) {
+            throw new Exception("Remote Method: " + remoteMethod + ", params: " + param.toString() + " not found\n");
+        }
+        String strRet =  this.communicationModule.syncSend(jsonRequest.toString());
+        JsonParser parser = new JsonParser();
+        return parser.parse(strRet).getAsJsonObject();
+    }
+
+    public void asynchExecution(String remoteMethod, String[] param) throws Exception
     {
-        return;
+        JsonObject jsonRequest = CatalogServices.getRemoteReference(remoteMethod, param);
+        if(jsonRequest == null) {
+            throw new Exception("Remote Method: " + remoteMethod + ", params: " + param.toString() + " not found\n");
+        }
+        this.communicationModule.asyncSend(jsonRequest.toString());
     }
 }
 
