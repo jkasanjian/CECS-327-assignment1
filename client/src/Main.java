@@ -3,6 +3,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import rpc.CommunicationModule;
+import rpc.Proxy;
+
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 
 public class Main extends Application {
@@ -17,7 +22,11 @@ public class Main extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SocketException, UnknownHostException {
+        CommunicationModule communicationModule = CommunicationModule.GetInstance();
+        communicationModule.init(2345);
+        Proxy proxy = Proxy.GetInstance();
+        proxy.init(communicationModule);
         launch(args);
     }
 

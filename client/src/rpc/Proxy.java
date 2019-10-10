@@ -17,7 +17,25 @@ public class Proxy implements ProxyInterface {
 
     private CommunicationModule communicationModule;
 
-    public Proxy(CommunicationModule communicationModule)
+    private static Proxy proxy = null;
+
+    public void init(CommunicationModule communicationModule) {
+        this.communicationModule = communicationModule;
+        CatalogServices.init();
+    }
+
+    public static Proxy GetInstance() {
+        if (proxy == null) {
+            proxy = new Proxy();
+        }
+        return proxy;
+    }
+
+    private Proxy() {
+        communicationModule = null;
+    }
+
+    private Proxy(CommunicationModule communicationModule)
     {
         this.communicationModule = communicationModule;
         CatalogServices.init();

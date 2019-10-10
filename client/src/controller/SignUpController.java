@@ -1,6 +1,8 @@
 package controller;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -36,30 +38,32 @@ public class SignUpController extends Controller {
 
         SingletonProfiles singletonProfiles = SingletonProfiles.GetInstance();
 
-        CommunicationModule communicationModule = new CommunicationModule(2345);
-        Proxy proxy = new Proxy(communicationModule);
-
         username = this.userField.getText();
         password = this.passwordField.getText();
 
-        JsonObject obj = proxy.synchExecution("registerAccount", new String[]{username, password});
+//        if( username.isEmpty() || password.isEmpty() ){
+//            Alert alert = new Alert( Alert.AlertType.ERROR );
+//            alert.setContentText( "You must input both a user name and password to sign up.");
+//            alert.show();
+//            return;
+//        }
+//
+//        if( singletonProfiles.contains(username) ) {
+//            Alert alert = new Alert( Alert.AlertType.ERROR );
+//            alert.setContentText( "Username already exists" );
+//            alert.show();
+//            return;
+//        }
+        Proxy proxy = Proxy.GetInstance();
+        Gson gson = new Gson();
+        JsonObject ret = proxy.synchExecution("registerAccount", new String[]{username, password});
 
-        if( username.isEmpty() || password.isEmpty() ){
-            Alert alert = new Alert( Alert.AlertType.ERROR );
-            alert.setContentText( "You must input both a user name and password to sign up.");
+        if(gson.fromJson(ret.toString(), ProfileAccount.class).getUsername().length() == 0) {
+            Alert alert = new Alert( Alert.AlertType.ERROR);
+            alert.setContentText("Invalid username or password.");
             alert.show();
             return;
         }
-
-        if( singletonProfiles.contains(username) ) {
-            Alert alert = new Alert( Alert.AlertType.ERROR );
-            alert.setContentText( "Username already exists" );
-            alert.show();
-            return;
-        }
-
-        ProfileAccount profileAccount = new ProfileAccount(username, password);
-        singletonProfiles.addProfile(profileAccount);
 
         LoadFXML(e, "Sign in", "/view/Sign_In.fxml");
 

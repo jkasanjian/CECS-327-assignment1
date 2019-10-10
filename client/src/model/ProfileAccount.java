@@ -97,4 +97,11 @@ public class ProfileAccount {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "username: " + username + "\n"
+                + "password: " + password + "\n"
+                + "playlist: " + playlists;
+    }
 }

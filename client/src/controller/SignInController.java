@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.gson.JsonObject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -8,6 +9,7 @@ import javafx.scene.control.TextField;
 import model.SingletonProfile;
 import model.SingletonProfiles;
 import javafx.scene.input.MouseEvent;
+import rpc.Proxy;
 
 
 /**
@@ -27,7 +29,7 @@ public class SignInController extends Controller {
      * @param e The event from the clicking of the sign in button.
      */
     @FXML
-    public void authorize( ActionEvent e ){
+    public void authorize( ActionEvent e ) throws Exception {
         String username;
         String password;
 
@@ -53,7 +55,9 @@ public class SignInController extends Controller {
         SingletonProfile singletonProfile = SingletonProfile.GetInstance();
         singletonProfile.setUsername(username);
         singletonProfile.setPassword(password);
-        singletonProfile.setPlaylists(singletonProfiles.getPlaylist(username));
+//        singletonProfile.setPlaylists(singletonProfiles.getPlaylist(username));
+        Proxy proxy = Proxy.GetInstance();
+        JsonObject ret = proxy.synchExecution("loginAccount", new String[]{"abc", "abc"});
 
 
         System.out.println("Current User: " + singletonProfile.getUsername());
