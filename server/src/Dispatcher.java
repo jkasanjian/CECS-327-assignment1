@@ -112,6 +112,7 @@ public class Dispatcher extends Thread implements DispatcherInterface {
         {
         //    System.out.println(e);
             jsonReturn.addProperty("error", "Error on " + jsonRequest.get("objectName").getAsString() + "." + jsonRequest.get("remoteMethod").getAsString());
+            e.printStackTrace();
         }
      
         return jsonReturn.toString();

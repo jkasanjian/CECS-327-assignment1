@@ -1,11 +1,17 @@
 package controller;
 
+import com.google.gson.JsonObject;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import model.ProfileAccount;
 import model.SingletonProfiles;
+import rpc.CommunicationModule;
+import rpc.Proxy;
+
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 /**
  * Controller handling the sign up view. Provides functionality for signing up and
@@ -24,14 +30,19 @@ public class SignUpController extends Controller {
      * @param e
      */
     @FXML
-    public void handleSubmitButtonAction( ActionEvent e ){
+    public void handleSubmitButtonAction( ActionEvent e ) throws Exception {
         String username;
         String password;
 
         SingletonProfiles singletonProfiles = SingletonProfiles.GetInstance();
 
+        CommunicationModule communicationModule = new CommunicationModule(2345);
+        Proxy proxy = new Proxy(communicationModule);
+
         username = this.userField.getText();
         password = this.passwordField.getText();
+
+        JsonObject obj = proxy.synchExecution("registerAccount", new String[]{username, password});
 
         if( username.isEmpty() || password.isEmpty() ){
             Alert alert = new Alert( Alert.AlertType.ERROR );
@@ -51,6 +62,7 @@ public class SignUpController extends Controller {
         singletonProfiles.addProfile(profileAccount);
 
         LoadFXML(e, "Sign in", "/view/Sign_In.fxml");
+
     }
 
     @FXML
