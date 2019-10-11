@@ -11,7 +11,7 @@ public class AccountDispatcher {
         manager  = new SessionManager();
     }
 
-    public String loginAccount( String username, String password ){
+    public String logIn( String username, String password ){
         ProfileAccount account;
 
         if( profiles.verify( username, password ) ){
