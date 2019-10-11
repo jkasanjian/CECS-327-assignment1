@@ -48,14 +48,14 @@ public class SignInController extends Controller {
         }
 
         Proxy proxy = Proxy.GetInstance();
-        JsonObject ret = proxy.synchExecution("loginAccount", new String[]{"abc", "abc"});
+        JsonObject ret = proxy.synchExecution("logIn", new String[]{username, password});
+        System.out.println(ret.toString());
         Gson gson = new Gson();
         ProfileAccount acc = gson.fromJson( ret.get("ret"), ProfileAccount.class );
         System.out.println( acc.getUsername() );
         SingletonProfile profile = SingletonProfile.GetInstance();
         profile.setUsername(acc.getUsername());
         profile.setPassword(acc.getPassword());
-        profile.setSessionID(acc.getSessionID());
         profile.setPlaylists(acc.getPlaylists());
 
         LoadFXML(e, "Home Page", "/view/HomePage.fxml");

@@ -57,7 +57,6 @@ public class SignUpController extends Controller {
         Proxy proxy = Proxy.GetInstance();
         Gson gson = new Gson();
         JsonObject ret = proxy.synchExecution("registerAccount", new String[]{username, password});
-        System.out.println( ret.get("ret"));
         ProfileAccount acc = gson.fromJson( ret.get("ret"), ProfileAccount.class );
 
         if(acc.getUsername().length() == 0) {
