@@ -55,7 +55,7 @@ public class PlaylistDispatcher {
             try {
                 list.add(playlist.getMusicClassList().get(i));
             } catch (Exception e) {
-
+                break;
             }
         }
         return new Gson().toJson(list);
