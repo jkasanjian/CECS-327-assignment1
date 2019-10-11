@@ -1,0 +1,166 @@
+[
+  {
+    "remoteMethod" : "logIn",
+    "objectName" : "LoginServices",
+    "params" : [
+        {
+          "name" : "username",
+          "type" : "String"
+       },
+       {
+          "name" : "password",
+          "type" : "String"
+        }
+    ],
+    "call_semantic" : "At-least-once",
+    "returnType" : "String"
+  },
+
+
+  {
+    "remoteMethod" : "registerAccount",
+    "objectName" : "LoginServices",
+    "params" : [
+      {
+        "name" : "username",
+        "type" : "String"
+      },
+      {
+        "name" : "password",
+        "type" : "String"
+      }
+    ],
+    "call_semantic" : "At-most-once",
+    "returnType" : "String"
+  },
+
+
+  {
+    "remoteMethod" : "createPlaylist",
+    "objectName" : "PlaylistServices",
+    "params" : [
+      {
+        "name" : "username",
+        "type" : "String"
+
+      },
+      {
+        "name" : "playlistName",
+        "type" : "String"
+      }
+    ],
+    "call_semantic" : "At-most-once",
+    "returnType" : "String"
+  },
+
+
+  {
+    "remoteMethod" : "deletePlaylist",
+    "objectName" : "PlaylistServices",
+    "params" : [
+      {
+        "name" : "username",
+        "type" : "String"
+      },
+      {
+        "name" : "playlistName",
+        "type" : "String"
+      }
+    ],
+    "call_semantic" : "Maybe",
+    "returnType" : "boolean"
+  },
+
+
+  {
+    "remoteMethod" : "addSongToPlaylist",
+    "objectName" : "PlaylistServices",
+    "params" : [
+      {
+        "name" : "username",
+        "type" : "String"
+      },
+      {
+        "name" : "playlistName",
+        "type" : "String"
+      },
+      {
+        "name" : "songID",
+        "type" : "String"
+      }
+    ],
+    "call_semantic" : "At-most-one",
+    "returnType" : "String"
+  },
+
+
+  {
+    "remoteMethod" : "removeSongFromPlaylist",
+    "objectName" : "PlaylistServices",
+    "params" : [
+      {
+        "name" : "username",
+        "type" : "String"
+      },
+      {
+        "name" : "playlistName",
+        "type" : "String"
+      },
+      {
+        "name" : "songID",
+        "type" : "String"
+      }
+    ],
+    "call_semantic" : "Maybe",
+    "returnType" : "boolean"
+  },
+
+
+  {
+    "remoteMethod" : "getPage",
+    "objectName" : "PlaylistServices",
+    "params" : [
+      {
+        "name" : "username",
+        "type" : "String"
+      },
+      {
+        "name" : "playlistName",
+        "type" : "String"
+      },
+      {
+        "name" : "index",
+        "type" : "int"
+      }
+    ],
+    "call_semantic" : "At-least-once",
+    "returnType" : "String"
+  },
+
+
+  {
+    "remoteMethod" : "search",
+    "objectName" : "PlaylistServices",
+    "params" : [
+      {
+        "name" : "username",
+        "type" : "String"
+      },
+      {
+        "name" : "playlistName",
+        "type" : "String"
+      },
+      {
+        "name" : "query",
+        "type" : "String"
+      }
+    ],
+    "call_semantic" : "Maybe",
+    "returnType" : "String"
+  }
+
+
+
+
+
+]
