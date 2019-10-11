@@ -34,6 +34,10 @@ public class PlaylistDispatcher {
         return new Gson().toJson(profile);
     }
 
+    /**
+     * @param songId
+     * @return MusicClass that is referenced by songId
+     */
     private MusicClass getMusicClass(String songId) {
         return null;
     }
@@ -43,7 +47,6 @@ public class PlaylistDispatcher {
 //        ProfileAccount profile = profiles.getProfile(username);
 //        profile.removePlaylist(playlistName);
 //    }
-
     public String getPage( String username, String playlistName, int index ){
         ProfileAccount profile = profiles.getProfile(username);
         Playlist playlist = profile.getPlaylist(playlistName);
