@@ -318,12 +318,13 @@ public class HomePageController implements Initializable {
      * @param playlistName Name of playlist.
      * @param playlistSongs Songs.
      */
-    public void addNewPlaylist(String playlistName, ObservableList<MusicClass> playlistSongs){
+    public void addNewPlaylist(String playlistName, ObservableList<MusicClass> playlistSongs) throws IOException {
         displayPlaylists.getItems().add(playlistName);
         playlists.put(playlistName, playlistSongs);
         SingletonProfile profile = SingletonProfile.GetInstance();
         profile.addNewPlaylist(playlistName, playlistSongs);
-        SingletonProfiles.GetInstance().sync(profile);
+        Proxy.GetInstance().synchExecution("createPlaylist",
+                new String[]{profile.getSessionID(), playlistName});
     }
 
     public void openDeletePlaylistWindow() throws IOException {
@@ -360,7 +361,7 @@ public class HomePageController implements Initializable {
        SingletonProfiles.GetInstance().sync(profile);
     }
 
-    public void deletePlaylist(String playlistName){
+    public void deletePlaylist(String playlistName) throws IOException {
         for(int i = 0; i < displayPlaylists.getItems().size(); i++){
             if(displayPlaylists.getItems().get((i)) == playlistName){
                 displayPlaylists.getItems().remove(i);
@@ -369,7 +370,8 @@ public class HomePageController implements Initializable {
         playlists.remove(playlistName);
         SingletonProfile profile = SingletonProfile.GetInstance();
         profile.removePlaylist(playlistName);
-        SingletonProfiles.GetInstance().sync(profile);
+        Proxy.GetInstance().asynchExecution("deletePlaylist",
+                new String[]{SingletonProfile.GetInstance().getSessionID(), playlistName});
     }
 
     /**

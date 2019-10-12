@@ -10,7 +10,7 @@ public class CommunicationModule{
     private int serverPort;
     private InetAddress serverAddress;
     private DatagramSocket socket;
-    private Queue<DatagramPacket> asyncQueue;
+    private volatile Queue<DatagramPacket> asyncQueue;
 
     private static CommunicationModule communicationModule = null;
 
@@ -36,6 +36,15 @@ public class CommunicationModule{
         asyncQueue = new LinkedList<>();
         serverPort = 9000;
         socket.setSoTimeout(500);
+
+        new Thread(()->{
+            DatagramPacket packet;
+            while (true) {
+                while (!asyncQueue.isEmpty()) {
+                    asyncSend();
+                }
+            }
+        }).start();
     }
 
     private CommunicationModule(int serverPort) throws UnknownHostException, SocketException {
