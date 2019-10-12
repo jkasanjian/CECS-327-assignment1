@@ -111,4 +111,11 @@ public class ProfileAccount {
         }
     }
 
+    public Playlist getPlaylist(String playlistName) {
+        for(Playlist playlist : playlists) {
+            if(playlist.getName().equals(playlistName))
+                return playlist;
+        }
+        return null;
+    }
 }
