@@ -41,7 +41,7 @@
     "params" : [
       {
         "name" : "sessionID",
-        "type" : "String"
+        "type" : "int"
       },
       {
         "name" : "playlistName",
@@ -62,8 +62,8 @@
     "objectName" : "PlaylistServices",
     "params" : [
       {
-        "name" : "username",
-        "type" : "String"
+        "name" : "sessionID",
+        "type" : "int"
 
       },
       {
@@ -81,8 +81,8 @@
     "objectName" : "PlaylistServices",
     "params" : [
       {
-        "name" : "username",
-        "type" : "String"
+        "name" : "sessionID",
+        "type" : "int"
       },
       {
         "name" : "playlistName",
@@ -99,8 +99,8 @@
     "objectName" : "PlaylistServices",
     "params" : [
       {
-        "name" : "username",
-        "type" : "String"
+        "name" : "sessionID",
+        "type" : "int"
       },
       {
         "name" : "playlistName",
@@ -121,8 +121,8 @@
     "objectName" : "PlaylistServices",
     "params" : [
       {
-        "name" : "username",
-        "type" : "String"
+        "name" : "sessionID",
+        "type" : "int"
       },
       {
         "name" : "playlistName",
@@ -143,8 +143,8 @@
     "objectName" : "PlaylistServices",
     "params" : [
       {
-        "name" : "username",
-        "type" : "String"
+        "name" : "sessionID",
+        "type" : "int"
       },
       {
         "name" : "playlistName",
@@ -165,8 +165,8 @@
     "objectName" : "PlaylistServices",
     "params" : [
       {
-        "name" : "username",
-        "type" : "String"
+        "name" : "sessionID",
+        "type" : "int"
       },
       {
         "name" : "playlistName",

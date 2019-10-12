@@ -59,6 +59,10 @@ public class ProfileAccount {
         return sessionID;
     }
 
+    public void setSessionID( String session ){
+        this.sessionID = session;
+    }
+
     public List<Playlist> getPlaylists() {
         return playlists;
     }
@@ -111,4 +115,11 @@ public class ProfileAccount {
         }
     }
 
+    public Playlist getPlaylist(String playlistName) {
+        for(Playlist playlist : playlists) {
+            if(playlist.getName().equals(playlistName))
+                return playlist;
+        }
+        return null;
+    }
 }
