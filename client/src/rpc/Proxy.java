@@ -43,11 +43,41 @@ public class Proxy implements ProxyInterface {
     }
 
 
+
     /*
     * Executes the  remote method "remoteMethod". The method blocks until
     * it receives the reply of the message. 
     */
     public JsonObject synchExecution(String remoteMethod, String[] param) throws IOException {
+        JsonObject jsonRequest = packRequest(remoteMethod, param);
+
+        JsonParser parser = new JsonParser();
+        String strRet =  this.communicationModule.syncSend(jsonRequest.toString());
+        return parser.parse(strRet).getAsJsonObject();
+    }
+
+    /*
+     * Executes the  remote method remoteMethod and returns without waiting
+     * for the reply. It does similar to synchExecution but does not
+     * return any value
+     *
+     */
+    public void asynchExecution(String remoteMethod, String[] param) throws IOException{
+        JsonObject jsonRequest = packRequest(remoteMethod, param);
+        this.communicationModule.asyncSend(jsonRequest.toString());
+    }
+
+
+    /**
+     * Builds a JSON object for a request
+     * Used byt both synchExecution(..) and asynchExecution(..)
+     * @param remoteMethod String - name of remote method to be executed
+     * @param param String[] array of parameters
+     * @return JsonObject with correct properties from catalog
+     * @throws IOException if catalog.json is not found
+     */
+
+    public static JsonObject packRequest(String remoteMethod, String[] param) throws IOException {
         JsonObject jsonRequest = new JsonObject();
         JsonObject jsonParam = new JsonObject();
 
@@ -72,12 +102,16 @@ public class Proxy implements ProxyInterface {
         jsonRequest.add("param", jsonParam);
         jsonRequest.addProperty("call_semantic", remoteMethodObj.getCall_semantic());
 
-        JsonParser parser = new JsonParser();
-        String strRet =  this.communicationModule.syncSend(jsonRequest.toString());
-        return parser.parse(strRet).getAsJsonObject();
+        return jsonRequest;
     }
 
 
+    /**
+     * Reads catalog.json and gets the desired Catalog object
+     * Will never return null because remoteMethod is in catalog.json
+     * @param remoteMethod String - name of remote method to be executed
+     * @return Catalog object with given name
+     */
     public static Catalog getCatalogMethod(String remoteMethod){
         ArrayList<Catalog> catalogList = readCatalog();
         for(Catalog c : catalogList){
@@ -105,18 +139,6 @@ public class Proxy implements ProxyInterface {
         return null;
     }
 
-
-
-    /*
-    * Executes the  remote method remoteMethod and returns without waiting
-    * for the reply. It does similar to synchExecution but does not 
-    * return any value
-    * 
-    */
-    public void asynchExecution(String remoteMethod, String[] param)
-    {
-        return;
-    }
 }
 
 
