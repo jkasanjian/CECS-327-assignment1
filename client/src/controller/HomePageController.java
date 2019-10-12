@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.gson.JsonObject;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.*;
 import model.*;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import rpc.Proxy;
+
 import java.io.IOException;
 import java.util.stream.Collectors;
 import java.util.function.Predicate;
@@ -71,7 +74,10 @@ public class HomePageController implements Initializable {
     private Media media;
 
     private ObservableList<MusicClass> master;
+
     private String currentPlaylist;
+
+    private int pageNumber;
 
     /**
      * Initializes the table and the event listeners.
@@ -80,7 +86,18 @@ public class HomePageController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources){
-        master = readMusicJSON();
+        pageNumber = 1;
+        Proxy proxy = Proxy.GetInstance();
+        try {
+            JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", "", Integer.toString(pageNumber)});
+            Gson gson = new Gson();
+            Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
+            ObservableList<MusicClass> musicOList = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
+            master = musicOList;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         songTable = populateTable(master);
         currentPlaylist = "master";
         //String songFile = "imperial.mp3";
