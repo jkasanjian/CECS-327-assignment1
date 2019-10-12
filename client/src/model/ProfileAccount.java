@@ -10,12 +10,21 @@ public class ProfileAccount {
 
     private String username;
     private String password;
+    private String sessionID;
     private List<Playlist> playlists;
 
     public ProfileAccount() {
         username = "";
         password = "";
+        sessionID = "";
         playlists = new ArrayList<>();
+    }
+
+    public ProfileAccount(String username, String password, int sessionID, List<Playlist> playlists) {
+        this.username = username;
+        this.password = password;
+        this.sessionID = Integer.toString(sessionID);
+        this.playlists = playlists;
     }
 
     public ProfileAccount(String username, String password, List<Playlist> playlists) {
@@ -44,6 +53,14 @@ public class ProfileAccount {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getSessionID(){
+        return sessionID;
+    }
+
+    public void setSessionID( String session ){
+        this.sessionID = session;
     }
 
     public List<Playlist> getPlaylists() {
@@ -98,10 +115,4 @@ public class ProfileAccount {
         }
     }
 
-    @Override
-    public String toString() {
-        return "username: " + username + "\n"
-                + "password: " + password + "\n"
-                + "playlist: " + playlists;
-    }
 }
