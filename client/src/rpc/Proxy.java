@@ -74,7 +74,6 @@ public class Proxy implements ProxyInterface {
 
         JsonParser parser = new JsonParser();
         String strRet =  this.communicationModule.syncSend(jsonRequest.toString());
-        System.out.println((strRet));
         return parser.parse(strRet).getAsJsonObject();
     }
 
@@ -101,7 +100,7 @@ public class Proxy implements ProxyInterface {
         }
 
         catch(FileNotFoundException e){
-            System.out.println("File not found.");
+            System.out.println("HERE File not found.");
         }
         return null;
     }

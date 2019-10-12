@@ -57,6 +57,9 @@ public class SignInController extends Controller {
         profile.setUsername(acc.getUsername());
         profile.setPassword(acc.getPassword());
         profile.setPlaylists(acc.getPlaylists());
+        profile.setSessionID(acc.getSessionID());
+
+        System.out.println("SessionID: " + profile.getSessionID());
 
         LoadFXML(e, "Home Page", "/view/HomePage.fxml");
     }
