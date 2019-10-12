@@ -26,7 +26,7 @@ public class PlaylistDispatcher {
         System.out.println("Reached PlayList Dispatcher");
         if (playlistName.equals("")) {
             Gson gson = new Gson();
-            String fileName = "music.json";
+            String fileName = "server/music.json";
             int songsUpperBound = pageNumber * 20;
             int songsLowerBound = songsUpperBound - 20;
             System.out.println(songsLowerBound + " - " + songsUpperBound);
@@ -44,7 +44,8 @@ public class PlaylistDispatcher {
             int songsUpperBound = pageNumber * 20;
             int songsLowerBound = songsUpperBound - 20;
             List<MusicClass> playlist = new ArrayList<MusicClass>();
-            singletonProfile = SingletonProfile.GetInstance();
+            ProfileAccount profile = profiles.getProfile(sessionID);
+            System.out.println(profile.getUsername());
             for (Playlist p : singletonProfile.getPlaylists()) {
                 if (p.getName().equals(playlistName)) {
                     playlist = p.getMusicClassList();

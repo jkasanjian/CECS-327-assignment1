@@ -74,7 +74,6 @@ public class Proxy implements ProxyInterface {
 
         JsonParser parser = new JsonParser();
         String strRet =  this.communicationModule.syncSend(jsonRequest.toString());
-        System.out.println((strRet));
         return parser.parse(strRet).getAsJsonObject();
     }
 
