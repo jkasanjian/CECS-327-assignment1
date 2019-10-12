@@ -2,20 +2,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SessionManager {
-    private static Map<String,String> sessionMap;
-    private static int sessionID;
+    private static Map<Integer, String> sessionMap;
 
     public SessionManager(){
         sessionMap = new HashMap<>();
-        sessionID = 0;
     }
 
-    public int getSessionID(){
-        return sessionID++;
+    public int getSessionID( String username ){
+        String time = java.time.LocalTime.now().toString();
+        int hash = (username+time).hashCode();
+        if ( sessionMap.containsKey(hash) ){
+            if( sessionMap.get(hash).equals(username) ){
+                return hash;
+            }
+        }else{
+            sessionMap.put(hash, username);
+        }
+        return hash;
     }
 
-    public void addSession( String sessionID, String username ){
-        sessionMap.put( sessionID, username );
+    public String getActiveUsername(int sessionID){
+        if( sessionMap.containsKey(sessionID) ){
+            return sessionMap.get(sessionID);
+        }
+            return null;
     }
 
     public void removeSession( String sessionID ){
