@@ -59,6 +59,10 @@ public class ProfileAccount {
         return sessionID;
     }
 
+    public void setSessionID( String session ){
+        this.sessionID = session;
+    }
+
     public List<Playlist> getPlaylists() {
         return playlists;
     }

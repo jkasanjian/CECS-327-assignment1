@@ -17,6 +17,7 @@ public class AccountDispatcher {
         if( profiles.verify( username, password ) ){
             int session = manager.getSessionID(username);
             account = new ProfileAccount( username, password, session, profiles.getPlaylist(username) );
+            account.setSessionID( Integer.toString(session) );
         }else{
             account = new ProfileAccount();
         }

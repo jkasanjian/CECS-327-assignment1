@@ -2,6 +2,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
 import model.*;
+import model.MusicClass;
+import model.Playlist;
+import model.SingletonProfile;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
