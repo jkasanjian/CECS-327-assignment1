@@ -52,7 +52,14 @@ public class SignInController extends Controller {
         System.out.println(ret.toString());
         Gson gson = new Gson();
         ProfileAccount acc = gson.fromJson( ret.get("ret"), ProfileAccount.class );
-        System.out.println( acc.getUsername() );
+
+        if( acc.getUsername().equals("") ) {
+            Alert alert = new Alert( Alert.AlertType.ERROR );
+            alert.setContentText( "Username or Password is invalid" );
+            alert.show();
+            return;
+        }
+
         SingletonProfile profile = SingletonProfile.GetInstance();
         profile.setUsername(acc.getUsername());
         profile.setPassword(acc.getPassword());

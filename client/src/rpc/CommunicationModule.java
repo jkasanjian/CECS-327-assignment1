@@ -35,6 +35,7 @@ public class CommunicationModule{
         socket = new DatagramSocket();
         asyncQueue = new LinkedList<>();
         serverPort = 9000;
+        socket.setSoTimeout(100);
     }
 
     private CommunicationModule(int serverPort) throws UnknownHostException, SocketException {
@@ -67,10 +68,18 @@ public class CommunicationModule{
     public synchronized String syncSend(String s) throws IOException {
         byte[] buffer = s.getBytes();
         DatagramPacket send = new DatagramPacket(buffer, buffer.length, serverAddress, serverPort);
-        socket.send(send);
-        buffer = new byte[FRAGMENT_SIZE];
-        DatagramPacket recv = new DatagramPacket(buffer, buffer.length);
-        socket.receive(recv);
+        DatagramPacket recv;
+        while(true) {
+            try {
+                socket.send(send);
+                buffer = new byte[FRAGMENT_SIZE];
+                recv = new DatagramPacket(buffer, buffer.length);
+                socket.receive(recv);
+                break;
+            } catch (SocketTimeoutException e) {
+                e.printStackTrace();
+            }
+        }
 
         return new String(recv.getData(), 0, recv.getLength());
     }
