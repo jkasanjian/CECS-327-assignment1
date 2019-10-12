@@ -47,6 +47,7 @@ public class Main {
 
         dispatcher.registerObject(songDispatcher, "SongServices");
         dispatcher.registerObject(accountDispatcher, "LoginServices");
+        dispatcher.registerObject(playlistDispatcher, "PlaylistServices");
         CommunicationModule comm = new CommunicationModule( 2345 , dispatcher );
         comm.listen();
         //ProxyInterface proxy = new Proxy(dispatcher);
