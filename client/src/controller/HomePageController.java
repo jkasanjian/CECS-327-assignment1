@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.*;
@@ -67,6 +68,10 @@ public class HomePageController implements Initializable {
     @FXML
     TextField gSearchTextField;
 
+    @FXML Button prevPageButton;
+
+    @FXML Button nextPageButton;
+
     HashMap <String, ObservableList<MusicClass>> playlists = new HashMap<String, ObservableList<MusicClass>>();
 
     private MediaPlayer mediaPlayer;
@@ -126,8 +131,8 @@ public class HomePageController implements Initializable {
      */
     public TableView<MusicClass> populateTable(ObservableList<MusicClass> songs){
 
-//        songTable.getColumns().clear();
-//        songTable.getItems().clear();
+        songTable.getColumns().clear();
+        songTable.getItems().clear();
 //
 //        // model.Song Name Column
 //        TableColumn<MusicClass,String> songIDColumn = new TableColumn<>("Song ID: ");
@@ -178,6 +183,46 @@ public class HomePageController implements Initializable {
             openCreatePlaylistWindow();
         } else if(event.getSource() == deletePlaylist){
             openDeletePlaylistWindow();
+        } else if(event.getSource() == prevPageButton){
+            pageNumber -= 1;
+            Proxy proxy = Proxy.GetInstance();
+            try {
+                JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", "", Integer.toString(pageNumber)});
+                Gson gson = new Gson();
+                Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
+                ObservableList<MusicClass> musicOList = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
+                master = musicOList;
+                populateTable(master);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(pageNumber == 1){
+                prevPageButton.setVisible(false);
+                nextPageButton.setVisible(true);
+            }else{
+                prevPageButton.setVisible(true);
+                nextPageButton.setVisible(true);
+            }
+        } else if(event.getSource() == nextPageButton){
+            pageNumber += 1;
+            Proxy proxy = Proxy.GetInstance();
+            try {
+                JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", "", Integer.toString(pageNumber)});
+                Gson gson = new Gson();
+                Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
+                ObservableList<MusicClass> musicOList = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
+                master = musicOList;
+                populateTable(master);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(master.size() < 20){
+                prevPageButton.setVisible(true);
+                nextPageButton.setVisible(false);
+            }else{
+                prevPageButton.setVisible(true);
+                nextPageButton.setVisible(true);
+            }
         }
     }
 
