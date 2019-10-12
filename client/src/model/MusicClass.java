@@ -52,10 +52,15 @@ public class MusicClass {
 
     /**
      * Gets the duration of the music from the nested object song
-     * @return double with duration of song in seconds
+     * @return string with duration of song in format minutes : seconds
      */
-    public double getDurationTime(){
-        return song.getDuration();
+    public String getDurationTime(){
+
+        double minutes = song.getDuration() / 60;
+        int minutesInt = (int) Math.floor(minutes);
+        int seconds = (int) ((minutes - minutesInt) * 60);
+        return String.valueOf(minutesInt) + ":" + String.valueOf(seconds);
+
     }
 
     /**

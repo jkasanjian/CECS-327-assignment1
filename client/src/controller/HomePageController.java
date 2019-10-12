@@ -84,6 +84,8 @@ public class HomePageController implements Initializable {
 
     private int pageNumber;
 
+    private String sessionID;
+
     /**
      * Initializes the table and the event listeners.
      * @param location
@@ -94,6 +96,9 @@ public class HomePageController implements Initializable {
         pageNumber = 1;
         currentPlaylist = "";
         Proxy proxy = Proxy.GetInstance();
+        SingletonProfile singletonProfile = SingletonProfile.GetInstance();
+        sessionID = singletonProfile.getSessionID();
+        System.out.println(sessionID);
         try {
             JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", currentPlaylist, Integer.toString(pageNumber)});
             Gson gson = new Gson();
@@ -114,8 +119,6 @@ public class HomePageController implements Initializable {
                 filter(newValue);
             });
         });
-
-        SingletonProfile singletonProfile = SingletonProfile.GetInstance();
 
         for (Playlist playlist : singletonProfile.getPlaylists()) {
             displayPlaylists.getItems().add(playlist.getName());
@@ -150,9 +153,9 @@ public class HomePageController implements Initializable {
         artistColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("artistName"));
 
         // model.Song Duration Column
-        TableColumn<MusicClass,Double> durationColumn = new TableColumn<>("Duration: ");
+        TableColumn<MusicClass,String> durationColumn = new TableColumn<>("Duration: ");
         durationColumn.setMinWidth(200);
-        durationColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,Double>("durationTime"));
+        durationColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("durationTime"));
 
         // model.Song Year Released Column
         TableColumn<MusicClass,Integer> yearColumn = new TableColumn<>("Year: ");
@@ -188,7 +191,7 @@ public class HomePageController implements Initializable {
             pageNumber -= 1;
             Proxy proxy = Proxy.GetInstance();
             try {
-                JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", currentPlaylist, Integer.toString(pageNumber)});
+                JsonObject ret = proxy.synchExecution("getSongs", new String[]{sessionID, currentPlaylist, Integer.toString(pageNumber)});
                 Gson gson = new Gson();
                 Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
                 ObservableList<MusicClass> musicOList = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
@@ -208,7 +211,7 @@ public class HomePageController implements Initializable {
             pageNumber += 1;
             Proxy proxy = Proxy.GetInstance();
             try {
-                JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", currentPlaylist, Integer.toString(pageNumber)});
+                JsonObject ret = proxy.synchExecution("getSongs", new String[]{sessionID, currentPlaylist, Integer.toString(pageNumber)});
                 Gson gson = new Gson();
                 Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
                 ObservableList<MusicClass> musicOList = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
@@ -259,7 +262,7 @@ public class HomePageController implements Initializable {
 
             Proxy proxy = Proxy.GetInstance();
             try {
-                JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", currentPlaylist, Integer.toString(pageNumber)});
+                JsonObject ret = proxy.synchExecution("getSongs", new String[]{sessionID, currentPlaylist, Integer.toString(pageNumber)});
                 Gson gson = new Gson();
                 Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
                 ObservableList<MusicClass> selectedPlaylistSongs = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
