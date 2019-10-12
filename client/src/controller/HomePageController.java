@@ -150,9 +150,9 @@ public class HomePageController implements Initializable {
         artistColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("artistName"));
 
         // model.Song Duration Column
-        TableColumn<MusicClass,Double> durationColumn = new TableColumn<>("Duration: ");
+        TableColumn<MusicClass,String> durationColumn = new TableColumn<>("Duration: ");
         durationColumn.setMinWidth(200);
-        durationColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,Double>("durationTime"));
+        durationColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("durationTime"));
 
         // model.Song Year Released Column
         TableColumn<MusicClass,Integer> yearColumn = new TableColumn<>("Year: ");
