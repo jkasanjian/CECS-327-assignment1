@@ -1,14 +1,11 @@
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.FileReader;
-
 import java.io.FileNotFoundException;
 import javazoom.jl.player.*;
 import javazoom.jl.decoder.JavaLayerException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
-
 
 public class Main {
    
@@ -44,6 +41,7 @@ public class Main {
         Dispatcher dispatcher = new Dispatcher();
         SongDispatcher songDispatcher       = new SongDispatcher();
         AccountDispatcher accountDispatcher = new AccountDispatcher();
+        PlaylistDispatcher playlistDispatcher = new PlaylistDispatcher();
 
         dispatcher.registerObject(songDispatcher, "SongServices");
         dispatcher.registerObject(accountDispatcher, "LoginServices");

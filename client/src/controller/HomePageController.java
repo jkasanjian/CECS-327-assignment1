@@ -92,9 +92,10 @@ public class HomePageController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources){
         pageNumber = 1;
+        currentPlaylist = "";
         Proxy proxy = Proxy.GetInstance();
         try {
-            JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", "", Integer.toString(pageNumber)});
+            JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", currentPlaylist, Integer.toString(pageNumber)});
             Gson gson = new Gson();
             Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
             ObservableList<MusicClass> musicOList = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
@@ -104,7 +105,6 @@ public class HomePageController implements Initializable {
         }
 
         songTable = populateTable(master);
-        currentPlaylist = "master";
         //String songFile = "imperial.mp3";
         //media = new Media(Paths.get(songFile).toUri().toString());
         //mediaPlayer = new MediaPlayer(media);
@@ -175,7 +175,8 @@ public class HomePageController implements Initializable {
 
         if(event.getSource() == songButton) {
             populateTable(master);
-            currentPlaylist = "master";
+            currentPlaylist = "";
+            pageNumber = 1;
         } else if(event.getSource() == artistButton){
         } else if (event.getSource() == addSongToPlaylist){
             openAddSongToPlaylistWindow();
@@ -187,7 +188,7 @@ public class HomePageController implements Initializable {
             pageNumber -= 1;
             Proxy proxy = Proxy.GetInstance();
             try {
-                JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", "", Integer.toString(pageNumber)});
+                JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", currentPlaylist, Integer.toString(pageNumber)});
                 Gson gson = new Gson();
                 Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
                 ObservableList<MusicClass> musicOList = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
@@ -207,7 +208,7 @@ public class HomePageController implements Initializable {
             pageNumber += 1;
             Proxy proxy = Proxy.GetInstance();
             try {
-                JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", "", Integer.toString(pageNumber)});
+                JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", currentPlaylist, Integer.toString(pageNumber)});
                 Gson gson = new Gson();
                 Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
                 ObservableList<MusicClass> musicOList = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
@@ -255,8 +256,18 @@ public class HomePageController implements Initializable {
         {
             String selectedPlaylist = displayPlaylists.getSelectionModel().getSelectedItem();
             currentPlaylist = selectedPlaylist;
-            ObservableList<MusicClass> selectedPlaylistSongs = playlists.get(selectedPlaylist);
-            populateTable(selectedPlaylistSongs);
+
+            Proxy proxy = Proxy.GetInstance();
+            try {
+                JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", currentPlaylist, Integer.toString(pageNumber)});
+                Gson gson = new Gson();
+                Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
+                ObservableList<MusicClass> selectedPlaylistSongs = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
+                populateTable(selectedPlaylistSongs);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

@@ -179,13 +179,4 @@ public class ProfileAccounts {
         }
         return null;
     }
-
-    public ProfileAccount getProfile(String username) {
-        for (ProfileAccount profileAccount : profileAccounts) {
-            if(profileAccount.getUsername().equals(username)) {
-                return profileAccount;
-            }
-        }
-        return null;
-    }
 }

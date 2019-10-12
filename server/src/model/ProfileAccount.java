@@ -39,14 +39,6 @@ public class ProfileAccount {
         this.playlists = new ArrayList<>();
     }
 
-    public Playlist getPlaylist(String playlistName) {
-        for(Playlist playlist: playlists) {
-            if(playlist.getName().equals(playlistName))
-                return playlist;
-        }
-        return null;
-    }
-
     public String getUsername() {
         return username;
     }

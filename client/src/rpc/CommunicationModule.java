@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class CommunicationModule{
-    public final int FRAGMENT_SIZE = 8192;
+    public final int FRAGMENT_SIZE = 65000;
     private int serverPort;
     private InetAddress serverAddress;
     private DatagramSocket socket;
