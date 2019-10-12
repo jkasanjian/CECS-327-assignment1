@@ -19,10 +19,12 @@ import model.ProfileAccount;
 
 public class Dispatcher extends Thread implements DispatcherInterface {
     public HashMap<String, Object> ListOfObjects;
+    public HashMap<String, HashMap<String, String>> atMostOnce;
     
     public Dispatcher()
     {
         ListOfObjects = new HashMap<String, Object>();
+        atMostOnce    = new HashMap<>();
     }
     
     /* 
@@ -43,8 +45,18 @@ public class Dispatcher extends Thread implements DispatcherInterface {
         JsonObject jsonReturn = new JsonObject();
         JsonParser parser = new JsonParser();
         JsonObject jsonRequest = parser.parse(request).getAsJsonObject();
-        
+
         try {
+            if( jsonRequest.get("call_semantics").equals("At-most-once")){
+                if( atMostOnce.containsKey( jsonRequest.get("username") )){
+                    if( atMostOnce.get( jsonRequest.get("username") )
+                            .containsKey(jsonRequest.toString())){
+                        return atMostOnce.get( jsonRequest.get("username"))
+                                .get(jsonRequest.toString());
+                    }
+                }
+            }
+
             // Obtains the object pointing to SongServices
             Object object = ListOfObjects.get(jsonRequest.get("objectName").getAsString());
             Method[] methods = object.getClass().getMethods();
@@ -106,6 +118,14 @@ public class Dispatcher extends Thread implements DispatcherInterface {
             JsonObject obj = parser.parse(ret).getAsJsonObject();
             jsonReturn.add("ret", obj);
 
+            if( jsonRequest.get("call_semantics").equals("At-most-once")){
+                if( atMostOnce.containsKey( jsonRequest.get("username") )){
+                    atMostOnce.get(jsonRequest.get("username")).put( jsonRequest.toString(), jsonReturn.toString() );
+                }else{
+                    atMostOnce.put(jsonRequest.get("username").toString(), new HashMap<>());
+                    atMostOnce.get(jsonRequest.get("username")).put( jsonRequest.toString(), jsonReturn.toString() );
+                }
+            }
         } catch (InvocationTargetException | IllegalAccessException e)
         {
         //    System.out.println(e);
