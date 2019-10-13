@@ -1,14 +1,12 @@
 package model;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import rpc.SessionManager;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -85,7 +83,7 @@ public class ProfileDatabase {
 
     private ProfileAccount getProfile(int sessionID) throws FileNotFoundException {
         if(!doesFileExists()) return null;
-        ProfileAccount profileAccount = getProfile(SessionManager.sessionMap.get(sessionID));
+        ProfileAccount profileAccount = getProfile(new SessionManager().getActiveUsername(sessionID));
         return new ProfileAccount(profileAccount.getUsername(), profileAccount.getPassword(), profileAccount.getPlaylists());
     }
 
