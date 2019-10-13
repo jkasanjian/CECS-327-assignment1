@@ -1,12 +1,10 @@
 package controller;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.*;
 import model.*;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,20 +17,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import java.io.*;
-import java.lang.reflect.Type;
 import java.net.URL;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import rpc.Proxy;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
 import java.util.function.Predicate;
 
 
@@ -72,7 +64,7 @@ public class HomePageController implements Initializable {
 
     @FXML Button nextPageButton;
 
-    HashMap <String, ObservableList<MusicClass>> playlists = new HashMap<String, ObservableList<MusicClass>>();
+    private HashMap <String, ObservableList<MusicClass>> playlists = new HashMap<String, ObservableList<MusicClass>>();
 
     private MediaPlayer mediaPlayer;
 
@@ -94,17 +86,13 @@ public class HomePageController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources){
         pageNumber = 1;
+        prevPageButton.setVisible(false);
         currentPlaylist = "";
-        Proxy proxy = Proxy.GetInstance();
         SingletonProfile singletonProfile = SingletonProfile.GetInstance();
         sessionID = singletonProfile.getSessionID();
         System.out.println(sessionID);
         try {
-            JsonObject ret = proxy.synchExecution("getSongs", new String[]{"1", currentPlaylist, Integer.toString(pageNumber)});
-            Gson gson = new Gson();
-            Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
-            ObservableList<MusicClass> musicOList = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
-            master = musicOList;
+            master = getSongs(sessionID, currentPlaylist, pageNumber);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -134,8 +122,12 @@ public class HomePageController implements Initializable {
      */
     public TableView<MusicClass> populateTable(ObservableList<MusicClass> songs){
 
-        songTable.getColumns().clear();
-        songTable.getItems().clear();
+        try {
+            songTable.getColumns().clear();
+            songTable.getItems().clear();
+        } catch (Exception e){
+
+        }
 //
 //        // model.Song Name Column
 //        TableColumn<MusicClass,String> songIDColumn = new TableColumn<>("Song ID: ");
@@ -175,11 +167,11 @@ public class HomePageController implements Initializable {
      */
     @FXML
     public void button(ActionEvent event) throws IOException{
-
         if(event.getSource() == songButton) {
-            populateTable(master);
             currentPlaylist = "";
             pageNumber = 1;
+            master = getSongs(sessionID, currentPlaylist, pageNumber);
+            populateTable(master);
         } else if(event.getSource() == artistButton){
         } else if (event.getSource() == addSongToPlaylist){
             openAddSongToPlaylistWindow();
@@ -189,45 +181,25 @@ public class HomePageController implements Initializable {
             openDeletePlaylistWindow();
         } else if(event.getSource() == prevPageButton){
             pageNumber -= 1;
-            Proxy proxy = Proxy.GetInstance();
-            try {
-                JsonObject ret = proxy.synchExecution("getSongs", new String[]{sessionID, currentPlaylist, Integer.toString(pageNumber)});
-                Gson gson = new Gson();
-                Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
-                ObservableList<MusicClass> musicOList = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
-                master = musicOList;
-                populateTable(master);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if(pageNumber == 1){
-                prevPageButton.setVisible(false);
-                nextPageButton.setVisible(true);
-            }else{
-                prevPageButton.setVisible(true);
-                nextPageButton.setVisible(true);
-            }
+            master = getSongs(sessionID, currentPlaylist, pageNumber);
+            populateTable(master);
         } else if(event.getSource() == nextPageButton){
             pageNumber += 1;
-            Proxy proxy = Proxy.GetInstance();
             try {
-                JsonObject ret = proxy.synchExecution("getSongs", new String[]{sessionID, currentPlaylist, Integer.toString(pageNumber)});
-                Gson gson = new Gson();
-                Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
-                ObservableList<MusicClass> musicOList = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
-                master = musicOList;
+                master = getSongs(sessionID, currentPlaylist, pageNumber);
                 populateTable(master);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(master.size() < 20){
-                prevPageButton.setVisible(true);
-                nextPageButton.setVisible(false);
-            }else{
-                prevPageButton.setVisible(true);
-                nextPageButton.setVisible(true);
-            }
         }
+        if(pageNumber == 1)
+            prevPageButton.setVisible(false);
+        else
+            prevPageButton.setVisible(true);
+        if(master.size() == 0)
+            nextPageButton.setVisible(false);
+        else
+            nextPageButton.setVisible(true);
     }
 
     /**
@@ -257,16 +229,14 @@ public class HomePageController implements Initializable {
     {
         if (click.getClickCount() == 2) //Checking double click
         {
+            pageNumber = 1;
             String selectedPlaylist = displayPlaylists.getSelectionModel().getSelectedItem();
             currentPlaylist = selectedPlaylist;
-
-            Proxy proxy = Proxy.GetInstance();
+            prevPageButton.setVisible(false);
+            nextPageButton.setVisible(true);
             try {
-                JsonObject ret = proxy.synchExecution("getSongs", new String[]{sessionID, currentPlaylist, Integer.toString(pageNumber)});
-                Gson gson = new Gson();
-                Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
-                ObservableList<MusicClass> selectedPlaylistSongs = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
-                populateTable(selectedPlaylistSongs);
+                master = getSongs(sessionID, currentPlaylist, pageNumber);
+                populateTable(master);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -281,10 +251,7 @@ public class HomePageController implements Initializable {
     public void filter(String value){
         String lowerCase = value.toLowerCase();
         FilteredList<MusicClass> filteredData;
-        if(currentPlaylist == "master")
-            filteredData = new FilteredList<>(master);
-        else
-            filteredData = new FilteredList<>(playlists.get(currentPlaylist));
+        filteredData = new FilteredList<>(master);
 
         filteredData.setPredicate((Predicate<? super MusicClass>) musicClass ->{
             if (value.isEmpty() || value == null) return true;
@@ -322,6 +289,7 @@ public class HomePageController implements Initializable {
         displayPlaylists.getItems().add(playlistName);
         playlists.put(playlistName, playlistSongs);
         SingletonProfile profile = SingletonProfile.GetInstance();
+        System.out.println("FOUND ID: " + profile.getSessionID());
         profile.addNewPlaylist(playlistName, playlistSongs);
         Proxy.GetInstance().synchExecution("createPlaylist",
                 new String[]{profile.getSessionID(), playlistName});
@@ -351,14 +319,15 @@ public class HomePageController implements Initializable {
         newWindow.show();
     }
 
-    public void addNewSongToPlaylist(String playlistName){
+    public void addNewSongToPlaylist(String playlistName) throws IOException {
        ObservableList<MusicClass> mc = playlists.get(playlistName);
        MusicClass selectedSong = songTable.getSelectionModel().getSelectedItem();
        mc.add(selectedSong);
        playlists.put(playlistName,mc);
        SingletonProfile profile = SingletonProfile.GetInstance();
        profile.addToPlaylist(playlistName, selectedSong);
-       SingletonProfiles.GetInstance().sync(profile);
+       Proxy.GetInstance().synchExecution("addSongToPlaylist", new String[]{sessionID,
+               playlistName, selectedSong.getSongID()});
     }
 
     public void deletePlaylist(String playlistName) throws IOException {
@@ -372,27 +341,6 @@ public class HomePageController implements Initializable {
         profile.removePlaylist(playlistName);
         Proxy.GetInstance().asynchExecution("deletePlaylist",
                 new String[]{SingletonProfile.GetInstance().getSessionID(), playlistName});
-    }
-
-    /**
-     * Reads JSON file to retrieve music.
-     * @return
-     */
-    public static ObservableList<MusicClass> readMusicJSON() {
-        Gson gson = new Gson();
-        String fileName = "music.json";
-
-        try {
-            Type musicClassType = new TypeToken<ObservableList<MusicClass>>() {
-            }.getType();
-            ArrayList<MusicClass> musicList = gson.fromJson(new FileReader(fileName), musicClassType);
-            ObservableList<MusicClass> musicOList = FXCollections.observableArrayList(musicList);
-            // musicList has ArrayList of model.MusicClass objects
-            return musicOList;
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found.");
-        }
-        return null;
     }
 
     @FXML
@@ -429,6 +377,13 @@ public class HomePageController implements Initializable {
 //    }
 
 
+    private ObservableList<MusicClass> getSongs(String sessionID, String playlistName, int pageNum) throws IOException {
+        Proxy proxy = Proxy.GetInstance();
+        JsonObject ret = proxy.synchExecution("getSongs", new String[]{sessionID, playlistName, String.valueOf(pageNum)});
+        Gson gson = new Gson();
+        Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
+        return FXCollections.observableArrayList(playlistSongs.getMusicClassList());
+    }
 
 
 }

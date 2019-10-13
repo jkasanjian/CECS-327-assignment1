@@ -100,7 +100,7 @@ public class Proxy implements ProxyInterface {
         }
 
         jsonRequest.add("param", jsonParam);
-        jsonRequest.addProperty("call_semantic", remoteMethodObj.getCall_semantic());
+        jsonRequest.addProperty("call_semantics", remoteMethodObj.getCall_semantic());
 
         return jsonRequest;
     }

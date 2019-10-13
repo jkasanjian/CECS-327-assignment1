@@ -6,6 +6,7 @@ import javafx.stage.Stage;
 import rpc.CommunicationModule;
 import rpc.Proxy;
 
+import java.io.FileNotFoundException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
@@ -22,7 +23,7 @@ public class Main extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) throws SocketException, UnknownHostException {
+    public static void main(String[] args) throws SocketException, UnknownHostException, FileNotFoundException {
         CommunicationModule communicationModule = CommunicationModule.GetInstance();
         communicationModule.init(2345);
         Proxy proxy = Proxy.GetInstance();
