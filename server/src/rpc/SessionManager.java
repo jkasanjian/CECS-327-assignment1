@@ -1,34 +1,36 @@
+package rpc;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class SessionManager {
-    private static Map<Integer, String> sessionMap;
+    public static Map<Integer, String> sessionMap;
 
     public SessionManager(){
-        sessionMap = new HashMap<>();
+        SessionManager.sessionMap = new HashMap<>();
     }
 
     public int getSessionID( String username ){
         String time = java.time.LocalTime.now().toString();
         int hash = (username+time).hashCode();
-        if ( sessionMap.containsKey(hash) ){
-            if( sessionMap.get(hash).equals(username) ){
+        if ( SessionManager.sessionMap.containsKey(hash) ){
+            if( SessionManager.sessionMap.get(hash).equals(username) ){
                 return hash;
             }
         }else{
-            sessionMap.put(hash, username);
+            SessionManager.sessionMap.put(hash, username);
         }
         return hash;
     }
 
     public String getActiveUsername(int sessionID){
-        if( sessionMap.containsKey(sessionID) ){
-            return sessionMap.get(sessionID);
+        if( SessionManager.sessionMap.containsKey(sessionID) ){
+            return SessionManager.sessionMap.get(sessionID);
         }
             return null;
     }
 
     public void removeSession( String sessionID ){
-        sessionMap.remove( sessionID );
+        SessionManager.sessionMap.remove( sessionID );
     }
 }

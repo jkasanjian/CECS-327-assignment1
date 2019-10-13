@@ -1,5 +1,5 @@
-/**
-* SongDispatcher is the main responsable for obtaining the songs 
+package rpc; /**
+* rpc.SongDispatcher is the main responsable for obtaining the songs
 *
 * @author  Oscar Morales-Ponce
 * @version 0.15

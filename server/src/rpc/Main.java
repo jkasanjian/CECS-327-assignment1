@@ -1,11 +1,8 @@
+package rpc;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.FileReader;
-import java.io.FileNotFoundException;
-import javazoom.jl.player.*;
-import javazoom.jl.decoder.JavaLayerException;
+
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 public class Main {
    
@@ -32,12 +29,10 @@ public class Main {
        */
      
      /*
-     *  The function test the classes Dispatcher, SongDispatcher 
+     *  The function test the classes rpc.Dispatcher, rpc.SongDispatcher
      *  and CECS327InputStream. Proxy is incomplete.
     */
     public static void main(String[] args) throws IOException{
-        Integer i;
-        Gson gson = new Gson();
         Dispatcher dispatcher = new Dispatcher();
         SongDispatcher songDispatcher       = new SongDispatcher();
         AccountDispatcher accountDispatcher = new AccountDispatcher();
@@ -50,7 +45,7 @@ public class Main {
         comm.listen();
         //ProxyInterface proxy = new Proxy(dispatcher);
 
-        //Main player = new Main();
+        //rpc.Main player = new rpc.Main();
         //player.mp3play(490183L, proxy);
         System.out.println("End of the song");
 

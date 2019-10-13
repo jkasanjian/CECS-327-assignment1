@@ -1,5 +1,5 @@
-/**
-* The Dispatcher implements DispatcherInterface. 
+package rpc; /**
+* The rpc.Dispatcher implements rpc.DispatcherInterface.
 *
 * @author  Oscar Morales-Ponce
 * @version 0.15
@@ -9,12 +9,8 @@
 import java.util.HashMap;
 import java.util.*;
 import java.lang.reflect.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Base64;
 
 import com.google.gson.*;
-import model.ProfileAccount;
 
 
 public class Dispatcher extends Thread implements DispatcherInterface {
@@ -117,7 +113,6 @@ public class Dispatcher extends Thread implements DispatcherInterface {
             Gson gson = new GsonBuilder().create();
             JsonObject obj = parser.parse(ret).getAsJsonObject();
             jsonReturn.add("ret", obj);
-
             if( jsonRequest.get("call_semantics").equals("At-most-once")){
                 if( atMostOnce.containsKey( jsonRequest.get("username") )){
                     atMostOnce.get(jsonRequest.get("username")).put( jsonRequest.toString(), jsonReturn.toString() );
@@ -154,10 +149,10 @@ public class Dispatcher extends Thread implements DispatcherInterface {
     
     /*  Testing
     public static void main(String[] args) {
-        // Instance of the Dispatcher
-        Dispatcher dispatcher = new Dispatcher();
+        // Instance of the rpc.Dispatcher
+        rpc.Dispatcher dispatcher = new rpc.Dispatcher();
         // Instance of the services that te dispatcher can handle
-        SongDispatcher songDispatcher = new SongDispatcher();
+        rpc.SongDispatcher songDispatcher = new rpc.SongDispatcher();
         
         dispatcher.registerObject(songDispatcher, "SongServices");  
     

@@ -39,6 +39,13 @@ public class ProfileAccount {
         this.playlists = new ArrayList<>();
     }
 
+    public ProfileAccount(String username, String password, int session) {
+        this.username = username;
+        this.password = password;
+        this.sessionID = String.valueOf(session);
+        this.playlists = new ArrayList<>();
+    }
+
     public String getUsername() {
         return username;
     }
