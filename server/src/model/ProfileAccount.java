@@ -126,6 +126,6 @@ public class ProfileAccount {
     public void removeFromPlaylist(String playlistName, String songID) {
         Playlist playlist = getPlaylist(playlistName);
         if(playlist == null) return;
-        cplaylist.getMusicClassList().removeIf(x -> x.getSongID().equals(songID));
+        playlist.getMusicClassList().removeIf(x -> x.getSongID().equals(songID));
     }
 }
