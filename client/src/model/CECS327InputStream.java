@@ -1,5 +1,5 @@
-/**
- * The CECS327InputStream extends InputStream class. The class implements
+package model; /**
+ * The model.CECS327InputStream extends InputStream class. The class implements
  * markers that are used in AudioInputStream
  *
  * @author  Oscar Morales-Ponce
@@ -7,6 +7,7 @@
  * @since   2019-01-24
  */
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import rpc.Proxy;
 
@@ -74,7 +75,8 @@ public class CECS327InputStream extends InputStream {
         Proxy proxy = Proxy.GetInstance();
         JsonObject jsonObject = proxy.synchExecution("getSongChunk",
                 new String[]{fileName, String.valueOf(fragment)});
-        nextBuf = Base64.getDecoder().decode(jsonObject.toString());
+        ProfileAccount ret = new Gson().fromJson(jsonObject.get("ret"), ProfileAccount.class);
+        nextBuf = Base64.getDecoder().decode(ret.getUsername());
     }
 
     /**
