@@ -188,7 +188,7 @@
     "params": [
       {
         "name": "key",
-        "type": "Long"
+        "type": "String"
       },
       {
         "name": "fragment",

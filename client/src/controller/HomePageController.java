@@ -118,7 +118,7 @@ public class HomePageController implements Initializable {
         }
 
         try {
-            playSong("imperial.mp3");
+            playSong("NightChanges.mp3");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JavaLayerException e) {

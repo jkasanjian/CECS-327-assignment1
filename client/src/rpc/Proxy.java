@@ -99,9 +99,6 @@ public class Proxy implements ProxyInterface {
             } else if(p.getType().equals("Long")) {
                 jsonParam.addProperty(p.getName(), Long.parseLong(param[i]));
             }
-            else if(p.getType().equals("Long")){
-                jsonParam.addProperty(p.getName(), Long.parseLong(param[i]));
-            }
         }
 
         jsonRequest.add("param", jsonParam);

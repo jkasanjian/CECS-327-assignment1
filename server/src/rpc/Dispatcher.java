@@ -11,6 +11,7 @@ import java.util.*;
 import java.lang.reflect.*;
 
 import com.google.gson.*;
+import model.ProfileAccount;
 
 
 public class Dispatcher extends Thread implements DispatcherInterface {
@@ -79,8 +80,10 @@ public class Dispatcher extends Thread implements DispatcherInterface {
                 strParam[j++] = entry.getValue().getAsString();
             }
             // Prepare parameters
+            System.out.println(jsonRequest.toString());
             for (int i=0; i<types.length; i++)
             {
+                System.out.println(types[i].getCanonicalName());
                 switch (types[i].getCanonicalName())
                 {
                     case "java.lang.Long":
@@ -111,8 +114,13 @@ public class Dispatcher extends Thread implements DispatcherInterface {
                 }
 
             Gson gson = new GsonBuilder().create();
-            JsonObject obj = parser.parse(ret).getAsJsonObject();
-            jsonReturn.add("ret", obj);
+            JsonObject obj;
+            try {
+                obj = parser.parse(ret).getAsJsonObject();
+                jsonReturn.add("ret", obj);
+            } catch (Exception e) {
+                jsonReturn.add("ret", parser.parse(gson.toJson(new ProfileAccount(ret,""))));
+            }
             if( jsonRequest.get("call_semantics").equals("At-most-once")){
                 if( atMostOnce.containsKey( jsonRequest.get("username") )){
                     atMostOnce.get(jsonRequest.get("username")).put( jsonRequest.toString(), jsonReturn.toString() );

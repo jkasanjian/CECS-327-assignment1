@@ -29,7 +29,7 @@ public class SongDispatcher
     * @param fragment: The chunk corresponds to 
     * [fragment * FRAGMENT_SIZE, FRAGMENT_SIZE]
     */
-    public String getSongChunk(Long key, Long fragment) throws FileNotFoundException, IOException
+    public String getSongChunk(String key, Long fragment) throws FileNotFoundException, IOException
     {
         byte buf[] = new byte[FRAGMENT_SIZE];
 
