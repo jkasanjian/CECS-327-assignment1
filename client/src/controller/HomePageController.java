@@ -3,6 +3,8 @@ package controller;
 import com.google.gson.JsonObject;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.*;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
 import model.*;
 import com.google.gson.Gson;
 import javafx.collections.FXCollections;
@@ -17,6 +19,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -64,6 +68,8 @@ public class HomePageController implements Initializable {
 
     @FXML Button nextPageButton;
 
+    @FXML Button searchButton;
+
     private HashMap <String, ObservableList<MusicClass>> playlists = new HashMap<String, ObservableList<MusicClass>>();
 
     private MediaPlayer mediaPlayer;
@@ -102,11 +108,11 @@ public class HomePageController implements Initializable {
         //media = new Media(Paths.get(songFile).toUri().toString());
         //mediaPlayer = new MediaPlayer(media);
 
-        gSearchTextField.setOnKeyPressed(e ->{
-            gSearchTextField.textProperty().addListener((observable, oldValue, newValue) ->{
-                filter(newValue);
-            });
-        });
+//        gSearchTextField.setOnKeyPressed(e ->{
+//            gSearchTextField.textProperty().addListener((observable, oldValue, newValue) ->{
+//                filter(newValue);
+//            });
+//        });
 
         for (Playlist playlist : singletonProfile.getPlaylists()) {
             displayPlaylists.getItems().add(playlist.getName());
@@ -180,17 +186,34 @@ public class HomePageController implements Initializable {
         } else if(event.getSource() == deletePlaylist){
             openDeletePlaylistWindow();
         } else if(event.getSource() == prevPageButton){
-            pageNumber -= 1;
-            master = getSongs(sessionID, currentPlaylist, pageNumber);
-            populateTable(master);
-        } else if(event.getSource() == nextPageButton){
-            pageNumber += 1;
-            try {
+
+            if(!gSearchTextField.getText().isEmpty()){
+                pageNumber -= 1;
+                filter(gSearchTextField.getText());
+            }
+            else {
+                pageNumber -= 1;
                 master = getSongs(sessionID, currentPlaylist, pageNumber);
                 populateTable(master);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } else if(event.getSource() == nextPageButton){
+
+            if(!gSearchTextField.getText().isEmpty()){
+                pageNumber += 1;
+                filter(gSearchTextField.getText());
+            }
+            else {
+                pageNumber += 1;
+                try {
+                    master = getSongs(sessionID, currentPlaylist, pageNumber);
+                    populateTable(master);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if(event.getSource() == searchButton){
+            pageNumber = 1;
+            filter(gSearchTextField.getText());
         }
         if(pageNumber == 1)
             prevPageButton.setVisible(false);
@@ -208,16 +231,17 @@ public class HomePageController implements Initializable {
      * @param click
      */
     @FXML
-    public void clickSong(MouseEvent click)
-    {
+    public void clickSong(MouseEvent click) throws IOException, JavaLayerException {
         if (click.getClickCount() == 2) //Checking double click
         {
-            String songName = songTable.getSelectionModel().getSelectedItem().getSongTitle();
-            System.out.println(songName);
-            if(songName.equals("I Didn't Mean To")){
-                new Thread(String.valueOf(mediaPlayer)).start();
-                mediaPlayer.play();
-            }
+//            String songName = songTable.getSelectionModel().getSelectedItem().getSongTitle();
+//            System.out.println(songName);
+//            if(songName.equals("I Didn't Mean To")){
+//                new Thread(String.valueOf(mediaPlayer)).start();
+//                mediaPlayer.play();
+//            }
+            playSong("/Users/josh/Desktop/CECS-327H/CECS-327-assignment1/server/Radioactive.mp3");
+
         }
     }
 
@@ -250,20 +274,19 @@ public class HomePageController implements Initializable {
      * @param value
      */
     public void filter(String value){
-        String lowerCase = value.toLowerCase();
-        FilteredList<MusicClass> filteredData;
-        filteredData = new FilteredList<>(master);
 
-        filteredData.setPredicate((Predicate<? super MusicClass>) musicClass ->{
-            if (value.isEmpty() || value == null) return true;
-            if (musicClass.getSongID().contains(value)) return true;
-            if (musicClass.getSongTitle().toLowerCase().contains(lowerCase)) return true;
-            if (musicClass.getArtistName().toLowerCase().contains(lowerCase)) return true;
+        try {
+            JsonObject ret = Proxy.GetInstance().synchExecution("search", new String[]{sessionID, currentPlaylist, value, String.valueOf(pageNumber)});
+            Gson gson = new Gson();
+            Playlist playlistSongs = gson.fromJson(ret.get("ret"), Playlist.class);
 
-            return false;
-        });
+            ObservableList<MusicClass> songs = FXCollections.observableArrayList(playlistSongs.getMusicClassList());
+            songTable.setItems(songs);
 
-        songTable.setItems(filteredData);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -362,8 +385,8 @@ public class HomePageController implements Initializable {
 //     */
 //    public void mp3play(String file) {
 //        try {
-//            // It uses CECS327InputStream as InputStream to play the song
-//            InputStream is = new CECS327InputStream(file);
+//            // It uses model.CECS327InputStream as InputStream to play the song
+//            InputStream is = new model.CECS327InputStream(file);
 //            Player mp3player = new Player(is);
 //            mp3player.play();
 //        }
@@ -385,6 +408,15 @@ public class HomePageController implements Initializable {
         Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
         return FXCollections.observableArrayList(playlistSongs.getMusicClassList());
     }
+
+    private void playSong(String file) throws IOException, JavaLayerException {
+        System.out.println(file);
+        InputStream is = new CECS327InputStream(file);
+        Player player = new Player(is);
+        player.play();
+    }
+
+
 
 
 }

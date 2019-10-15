@@ -37,8 +37,8 @@ public class Main extends Application {
      * @param audioFilePath Path of the audio file.
     void mp3play(String file) {
         try {
-            // It uses CECS327InputStream as InputStream to play the song
-            InputStream is = new CECS327InputStream(file);
+            // It uses model.CECS327InputStream as InputStream to play the song
+            InputStream is = new model.CECS327InputStream(file);
             Player mp3player = new Player(is);
             mp3player.play();
         }

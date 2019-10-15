@@ -178,10 +178,10 @@
       },
       {
         "name" : "index",
-        "type" : "String"
+        "type" : "int"
       }
     ],
-    "call_semantic" : "Maybe",
+    "call_semantic" : "At-most-once",
     "returnType" : "String"
   },
 
@@ -192,7 +192,7 @@
     "params": [
       {
         "name": "key",
-        "type": "Long"
+        "type": "String"
       },
       {
         "name": "fragment",
@@ -210,7 +210,7 @@
     "params": [
       {
         "name": "key",
-        "type": "Long"
+        "type": "String"
       }
     ],
     "call_semantic": "Maybe",

@@ -1,5 +1,5 @@
 package sample; /**
-* The CECS327InputStream extends InputStream class. The class implements 
+* The model.CECS327InputStream extends InputStream class. The class implements
 * markers that are used in AudioInputStream
 *
 * @author  Oscar Morales-Ponce

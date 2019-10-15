@@ -1,185 +1,140 @@
-/**
-* The CECS327InputStream extends InputStream class. The class implements 
-* markers that are used in AudioInputStream
-*
-* @author  Oscar Morales-Ponce
-* @version 0.15
-* @since   2019-01-24 
-*/
+package model; /**
+ * The model.CECS327InputStream extends InputStream class. The class implements
+ * markers that are used in AudioInputStream
+ *
+ * @author  Oscar Morales-Ponce
+ * @version 0.15
+ * @since   2019-01-24
+ */
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import rpc.Proxy;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
-import com.google.gson.JsonObject;
-import rpc.ProxyInterface;
-
-import java.util.concurrent.Semaphore;
-
-
-
 
 
 public class CECS327InputStream extends InputStream {
     /**
-    * Total number of bytes in the file
-    */
+     * Total number of bytes in the file
+     */
     protected int total = 0;
     /**
-    * Marker
-    */
+     * Marker
+     */
     protected int mark = 0;
     /**
-    * Current reading position
-    */
+     * Current reading position
+     */
     protected int pos = 0;
-     /**
-     * It stores a buffer with FRAGMENT_SIZE bytes for the current reading. 
+    /**
+     * It stores a buffer with FRAGMENT_SIZE bytes for the current reading.
      * This variable is useful for UDP sockets. Thus bur is the datagram
      */
     protected byte buf[];
     /**
-     * It prepares for the nuext buffer. In UDP sockets you can read nextbufer 
+     * It prepares for the nuext buffer. In UDP sockets you can read nextbufer
      * while buf is in use
      */
     protected byte nextBuf[];
-     /**
+    /**
      * It is used to read the buffer
      */
     protected int fragment = 0;
-    protected static final int FRAGMENT_SIZE = 8192;
-     /**
+    protected int FRAGMENT_SIZE = 8192;
+    /**
      * File name to stream
      */
-    protected Long fileName;
-    /**
-    * Instance of an implementation of proxyInterface
-    */
-    protected ProxyInterface proxy;
-    
-    Semaphore sem; 
-
+    protected String fileName;
 
     /**
-     * Constructor of the class. Initialize the variables and reads the first 
+     * Constructor of the class. Initialize the variables and reads the first
      * frament in nextBuf
      * @param fileName The name of the file
-    */
-    public CECS327InputStream(Long fileName, ProxyInterface proxy) throws Exception {
-        sem = new Semaphore(1); 
-        try
-        {
-            sem.acquire(); 
-        } catch (InterruptedException exc) { 
-            System.out.println(exc);
-        }
-        this.proxy = proxy;
-        this.fileName = fileName;        
-        this.buf  = new byte[FRAGMENT_SIZE];	
-        this.nextBuf  = new byte[FRAGMENT_SIZE];	
-        String[] param = new String[1];
-        param[0] =  String.valueOf(this.fileName);
-        JsonObject jsonRet = proxy.synchExecution("getFileSize", param);
-        this.total = Integer.parseInt(jsonRet.get("ret").getAsString());
+     */
+    public CECS327InputStream(String fileName) throws IOException {
+        this.fileName = fileName;
+        File file = new File(fileName);
+        this.total =  (int)file.length();
+        this.buf  = new byte[FRAGMENT_SIZE];
+        this.nextBuf  = new byte[FRAGMENT_SIZE];
         getBuff(fragment);
         fragment++;
-     }
+    }
 
     /**
-     * getNextBuff reads the buffer. It gets the data using
-     * the remote method getSongChunk
-    */
-    protected void getBuff(int fragment) throws Exception
+     * getNextBuff reads the buffer. The fuction is used to
+     * simplify the integration of UDP sockets.
+     */
+    protected void getBuff(int fragment) throws IOException
     {
-        new Thread()
-        {
-            public void run() {
-                String[] param = new String[2];
-                param[0] = String.valueOf(fileName);
-                param[1] = String.valueOf(fragment);
-
-                JsonObject jsonRet = null;
-                try {
-                    jsonRet = proxy.synchExecution("getSongChunk", param);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                String s = jsonRet.get("ret").getAsString();
-                nextBuf = Base64.getDecoder().decode(s);
-                sem.release(); 
-                System.out.println("Read buffer");
-            }
-        }.start();
-       
-     }
+        Proxy proxy = Proxy.GetInstance();
+        JsonObject jsonObject = proxy.synchExecution("getSongChunk",
+                new String[]{fileName, String.valueOf(fragment)});
+        ProfileAccount ret = new Gson().fromJson(jsonObject.get("ret"), ProfileAccount.class);
+        System.out.println(jsonObject);
+        nextBuf = Base64.getDecoder().decode(ret.getUsername());
+    }
 
     /**
      * Reads the next byte of data from the input stream.
-    */
+     */
     @Override
     public synchronized int read() throws IOException {
-     
-     
-	  if (pos >= total) 
-	  {	
-            pos = 0;      
-            return -1;
-	  }
-	  int posmod = pos % FRAGMENT_SIZE;
-	  if (posmod == 0)
-	  {
-          try
-          {
-            sem.acquire(); 
-          }catch (InterruptedException exc) 
-          { 
-                System.out.println(exc);
-          }
-	      for (int i=0; i< FRAGMENT_SIZE; i++)
-		      buf[i] = nextBuf[i];
 
-          try {
-              getBuff(fragment);
-          } catch (Exception e) {
-              e.printStackTrace();
-          }
-          fragment++;
-	  }
-	  int p = pos % FRAGMENT_SIZE;
-	  pos ++;
-      return buf[p] & 0xff; 
+
+        if (pos >= total)
+        {
+            pos = 0;
+            return -1;
+        }
+        int posmod = pos % FRAGMENT_SIZE;
+        if (posmod == 0)
+        {
+            for (int i=0; i< FRAGMENT_SIZE; i++)
+                buf[i] = nextBuf[i];
+            getBuff(fragment);
+            fragment++;
+        }
+        int p = pos % FRAGMENT_SIZE;
+        pos ++;
+        return buf[p] & 0xff;
     }
 
     /**
      * Reads some number of bytes from the input stream and stores them
      * into the buffer array b.
-    */
+     */
     @Override
     public synchronized int read(byte b[], int off, int len)  throws IOException{
         if (b == null) {
             throw new NullPointerException();
-	    } else if (off < 0 || len < 0 || len > b.length - off) {
+        } else if (off < 0 || len < 0 || len > b.length - off) {
             throw new IndexOutOfBoundsException();
-	    }
+        }
 
-	    if (pos >= total) {
-     	    return -1;
-	    }
-	    int avail = total - pos;
-	    if (len > avail) {
-		  len = avail;
-	    }
-	    if (len <= 0) {
-		  return 0;
-	    }
-	    for (int i = off; i< off+len;  i++)
-		    b[i] = (byte)read();
-	    return len;
+        if (pos >= total) {
+            return -1;
+        }
+        int avail = total - pos;
+        if (len > avail) {
+            len = avail;
+        }
+        if (len <= 0) {
+            return 0;
+        }
+        for (int i = off; i< off+len;  i++)
+            b[i] = (byte)read();
+        return len;
     }
 
     /**
      * Skips over and discards n bytes of data from this input stream.
-    */
+     */
     @Override
     public synchronized long skip(long n) throws IOException {
         long k = total - pos;
@@ -189,25 +144,17 @@ public class CECS327InputStream extends InputStream {
 
         pos += k;
         fragment = (int)Math.floor(pos / FRAGMENT_SIZE);
-        try {
-            getBuff(fragment);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getBuff(fragment);
         fragment++;
-        try {
-            getBuff(fragment);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getBuff(fragment);
         return k;
     }
 
     /**
-     * Returns an estimate of the number of bytes that can be read 
-     * (or skipped over) from this input stream without blocking by 
+     * Returns an estimate of the number of bytes that can be read
+     * (or skipped over) from this input stream without blocking by
      * the next invocation of a method for this input stream.
-    */
+     */
     @Override
     public synchronized int available() {
         return total - pos;
@@ -215,47 +162,38 @@ public class CECS327InputStream extends InputStream {
 
     /**
      * Tests if this input stream supports the mark and reset methods.
-    */
+     */
     @Override
     public boolean markSupported() {
         return true;
     }
-	
+
     /**
      * Marks the current position in this input stream.
-    */
+     */
     @Override
     public void mark(int readAheadLimit) {
         mark = pos;
     }
 
     /**
-     * Repositions this stream to the position at the time the 
+     * Repositions this stream to the position at the time the
      * mark method was last called on this input stream.
-    */
+     */
     @Override
     public synchronized void reset() throws IOException {
         pos = mark;
         fragment = (int)Math.floor(pos / FRAGMENT_SIZE);
-        try {
-            getBuff(fragment);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getBuff(fragment);
         fragment++;
-        try {
-            getBuff(fragment);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        getBuff(fragment);
     }
-	
+
     /**
-     * Closes this input stream and releases any system resources 
+     * Closes this input stream and releases any system resources
      * associated with the stream.
-    */
+     */
     @Override
     public void close() throws IOException {
     }
-	
 }

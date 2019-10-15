@@ -35,7 +35,7 @@ public class CommunicationModule{
         socket = new DatagramSocket();
         asyncQueue = new LinkedList<>();
         serverPort = 9000;
-        socket.setSoTimeout(500);
+        socket.setSoTimeout(50000);
 
         new Thread(()->{
             DatagramPacket packet;

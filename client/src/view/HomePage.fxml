@@ -53,5 +53,6 @@
       <Button fx:id="addSongToPlaylist" layoutX="1200.0" layoutY="645.0" mnemonicParsing="false" onAction="#button" onMouseEntered="#enter" onMouseExited="#exit" prefHeight="62.0" prefWidth="148.0" style="-fx-background-color: #668FE8;" text="Add Song to Playlist" textFill="WHITE" />
       <Button fx:id="nextPageButton" layoutX="1465.0" layoutY="650.0" mnemonicParsing="false" onAction="#button" text="&gt;" />
       <Button fx:id="prevPageButton" layoutX="1436.0" layoutY="650.0" mnemonicParsing="false" onAction="#button" text="&lt;" />
+      <Button fx:id="searchButton" layoutX="1332.0" layoutY="21.0" mnemonicParsing="false" onAction="#button" text="Search" />
    </children>
 </AnchorPane>
