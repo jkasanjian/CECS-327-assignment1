@@ -96,8 +96,12 @@ public class Proxy implements ProxyInterface {
             }
             else if(p.getType().equals("int")){
                 jsonParam.addProperty(p.getName(), Integer.parseInt(param[i]));
-            } else if(p.getType().equals("Long"))
+            } else if(p.getType().equals("Long")) {
                 jsonParam.addProperty(p.getName(), Long.parseLong(param[i]));
+            }
+            else if(p.getType().equals("Long")){
+                jsonParam.addProperty(p.getName(), Long.parseLong(param[i]));
+            }
         }
 
         jsonRequest.add("param", jsonParam);
@@ -135,7 +139,7 @@ public class Proxy implements ProxyInterface {
         }
 
         catch(FileNotFoundException e){
-            System.out.println("HERE File not found.");
+            System.out.println("Catalog file not found.");
         }
         return null;
     }

@@ -59,7 +59,12 @@ public class MusicClass {
         double minutes = song.getDuration() / 60;
         int minutesInt = (int) Math.floor(minutes);
         int seconds = (int) ((minutes - minutesInt) * 60);
-        return String.valueOf(minutesInt) + ":" + String.valueOf(seconds);
+        String secondsStr = String.valueOf(seconds);
+        if(seconds < 10){
+            secondsStr = "0" + secondsStr;
+        }
+
+        return String.valueOf(minutesInt) + ":" + secondsStr;
 
     }
 
