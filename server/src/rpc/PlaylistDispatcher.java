@@ -43,11 +43,14 @@ public class PlaylistDispatcher {
     }
 
 
-    public String getSongsSearch(String sessionID, String playlistName, String query, int pageNumber) throws IOException{
+    public String search(String sessionID, String playlistName, String query, int pageNumber) throws IOException{
+        System.out.println("IN PLAYLIST DISPATCHER " + playlistName + query);
         if (playlistName.equals("")) {
+            System.out.println("IN PLAYLIST DISPATCHER: all songs ");
             return new Gson().toJson(new Playlist(playlistName,
                     MusicDatabase.GetInstance().getSongsSearch(pageNumber - 1, query)));
         } else {
+            System.out.println("IN PLAYLIST DISPATCHER: searching " + playlistName);
             return getSearch(sessionID, playlistName, query, pageNumber-1);
         }
 

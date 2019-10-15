@@ -11,6 +11,7 @@ import java.util.*;
 import java.lang.reflect.*;
 
 import com.google.gson.*;
+import model.ProfileAccount;
 
 
 public class Dispatcher extends Thread implements DispatcherInterface {
@@ -38,17 +39,20 @@ public class Dispatcher extends Thread implements DispatcherInterface {
     */
     public String dispatch(String request)
     {
+        System.out.println("IN DISPATCHER" + request);
         JsonObject jsonReturn = new JsonObject();
         JsonParser parser = new JsonParser();
         JsonObject jsonRequest = parser.parse(request).getAsJsonObject();
 
         try {
             if( jsonRequest.get("call_semantics").equals("At-most-once")){
-                if( atMostOnce.containsKey( jsonRequest.get("username") )){
+                if( (atMostOnce.containsKey( jsonRequest.get("username")) || (atMostOnce.containsKey( jsonRequest.get("sessionID"))) )){
                     if( atMostOnce.get( jsonRequest.get("username") )
                             .containsKey(jsonRequest.toString())){
                         return atMostOnce.get( jsonRequest.get("username"))
                                 .get(jsonRequest.toString());
+                    } else if(atMostOnce.get(jsonRequest.get("sessionID")).containsKey(jsonRequest.toString())){
+                        return atMostOnce.get(jsonRequest.get("sessionID")).get(jsonRequest.toString());
                     }
                 }
             }
@@ -86,6 +90,9 @@ public class Dispatcher extends Thread implements DispatcherInterface {
                     case "java.lang.Long":
                         parameter[i] =  Long.parseLong(strParam[i]);
                         break;
+                    case "int":
+                        parameter[i] =  Integer.parseInt(strParam[i]);
+                        break;
                     case "java.lang.Integer":
                         parameter[i] =  Integer.parseInt(strParam[i]);
                         break;
@@ -102,7 +109,7 @@ public class Dispatcher extends Thread implements DispatcherInterface {
                     case "java.lang.Long":
                         ret = method.invoke(object, parameter).toString();
                         break;
-                    case "java.lang.Integer":
+                    case "int":
                         ret = method.invoke(object, parameter).toString();
                         break;
                     case "java.lang.String":
@@ -111,15 +118,51 @@ public class Dispatcher extends Thread implements DispatcherInterface {
                 }
 
             Gson gson = new GsonBuilder().create();
-            JsonObject obj = parser.parse(ret).getAsJsonObject();
-            jsonReturn.add("ret", obj);
+
+            JsonObject obj;
+            try {
+                obj = parser.parse(ret).getAsJsonObject();
+                jsonReturn.add("ret", obj);
+            } catch (Exception e) {
+                jsonReturn.add("ret", parser.parse(gson.toJson(new ProfileAccount(ret,""))));
+            }
+
+
+            JsonObject goalParam = jsonRequest.get("param").getAsJsonObject();
+            String paramT ="";
+            for (Map.Entry<String, JsonElement>  entry  :  goalParam.entrySet())
+            {
+                paramT = entry.getValue().getAsString();
+                break;
+            }
+
+
             if( jsonRequest.get("call_semantics").equals("At-most-once")){
-                if( atMostOnce.containsKey( jsonRequest.get("username") )){
-                    atMostOnce.get(jsonRequest.get("username")).put( jsonRequest.toString(), jsonReturn.toString() );
-                }else{
-                    atMostOnce.put(jsonRequest.get("username").toString(), new HashMap<>());
-                    atMostOnce.get(jsonRequest.get("username")).put( jsonRequest.toString(), jsonReturn.toString() );
+
+
+
+
+                if( atMostOnce.containsKey( jsonRequest.get("username") )|| atMostOnce.containsKey( jsonRequest.get("sessionID"))) {
+
+                    if( atMostOnce.containsKey( jsonRequest.get("username") ) ) {
+                        atMostOnce.get(jsonRequest.get("username")).put( jsonRequest.toString(), jsonReturn.toString() );
+                    }
+                    else{
+                        atMostOnce.get(jsonRequest.get("sessionID")).put( jsonRequest.toString(), jsonReturn.toString() );
+                    }
                 }
+                else{
+
+                    if(paramT.equals("username")){
+                        atMostOnce.put(jsonRequest.get("username").toString(), new HashMap<>());
+                        atMostOnce.get(jsonRequest.get("username")).put( jsonRequest.toString(), jsonReturn.toString() );
+                    } else {
+                        atMostOnce.put(jsonRequest.get("sessionID").toString(), new HashMap<>());
+                        atMostOnce.get(jsonRequest.get("sessionID")).put( jsonRequest.toString(), jsonReturn.toString() );
+                    }
+                }
+
+
             }
         } catch (InvocationTargetException | IllegalAccessException e)
         {
