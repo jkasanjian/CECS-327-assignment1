@@ -188,6 +188,43 @@ public class ProfileDatabase {
         return ret;
     }
 
+    public List<MusicClass> getPageSearch(int sessionID, String playlistName, String query, int index) throws FileNotFoundException {
+        ProfileAccount profileAccount = getProfile(sessionID);
+        if(profileAccount.getPlaylist(playlistName)==null) return null;
+        List<MusicClass> searchedPlaylist = new ArrayList<>();
+        List<MusicClass> playlist = profileAccount.getPlaylist(playlistName).getMusicClassList();
+
+        // check if playlist contains query in song name or artist
+        query = query.toLowerCase();
+        for(MusicClass song : playlist){
+            if(song.getSongTitle().toLowerCase().contains(query)){
+                searchedPlaylist.add(song);
+            }
+            if(song.getArtistName().toLowerCase().contains(query)){
+                searchedPlaylist.add(song);
+            }
+        }
+        // searchedPlaylist now only has matches
+        List<MusicClass> ret = new ArrayList<>();
+        int max = PAGE_SIZE;
+        while(true) {
+            try {
+                ret = searchedPlaylist.subList(PAGE_SIZE*index, PAGE_SIZE*index + max);
+                break;
+            } catch (Exception e) {
+                max--;
+            } finally {
+                if(max == 0)
+                    break;
+            }
+        }
+
+        return ret;
+    }
+
+
+
+
     public void addSongToPlaylist(int sessionID, String playlistName, String songID) throws IOException {
         MusicClass musicClass = MusicDatabase.GetInstance().getSongByID(songID);
         ProfileAccount profileAccount = getProfile(sessionID);

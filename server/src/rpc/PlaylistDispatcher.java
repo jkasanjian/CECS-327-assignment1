@@ -41,4 +41,23 @@ public class PlaylistDispatcher {
         Playlist playlist = new Playlist(playlistName, profiles.getPage(Integer.parseInt(sessionID), playlistName, index));
         return new Gson().toJson(playlist);
     }
+
+
+    public String getSongsSearch(String sessionID, String playlistName, String query, int pageNumber) throws IOException{
+        if (playlistName.equals("")) {
+            return new Gson().toJson(new Playlist(playlistName,
+                    MusicDatabase.GetInstance().getSongsSearch(pageNumber - 1, query)));
+        } else {
+            return getSearch(sessionID, playlistName, query, pageNumber-1);
+        }
+
+    }
+
+
+    public String getSearch(String sessionID, String playlistName, String query, int index) throws IOException{
+        Playlist playlist = new Playlist(playlistName, profiles.getPageSearch(Integer.parseInt(sessionID), playlistName, query, index));
+        return new Gson().toJson(playlist);
+    }
+
+
 }

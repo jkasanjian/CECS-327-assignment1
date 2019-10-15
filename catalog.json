@@ -175,6 +175,10 @@
       {
         "name" : "query",
         "type" : "String"
+      },
+      {
+        "name" : "index",
+        "type" : "String"
       }
     ],
     "call_semantic" : "Maybe",

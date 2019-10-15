@@ -204,6 +204,7 @@ public class HomePageController implements Initializable {
 
     /**
      * If song is double clicked on table view it plays a song.
+     * TODO: implement with RPC
      * @param click
      */
     @FXML

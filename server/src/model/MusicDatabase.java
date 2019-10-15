@@ -52,4 +52,35 @@ public class MusicDatabase {
         }
         return ret;
     }
+
+    public List<MusicClass> getSongsSearch(int index, String query) throws FileNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(FILE_NAME);
+        Scanner scanner = new Scanner(fileInputStream).useDelimiter(MUSICCLASS_REGEX);
+        for(int i = 0; i < PAGE_SIZE*index; i++) {
+            if(scanner.hasNext())
+                scanner.next();
+            else
+                return null;
+        }
+        List<MusicClass> ret = new ArrayList<>();
+        query = query.toLowerCase();
+
+        int count = 0;
+        while(count < PAGE_SIZE){
+            if(scanner.hasNext()) {
+                String token = scanner.next();
+                MusicClass musicClass = new Gson().fromJson(token, MusicClass.class);
+                if(musicClass.getSongTitle().toLowerCase().contains(query)){
+                    ret.add(musicClass);
+                    count ++;
+                }
+                if(musicClass.getArtistName().toLowerCase().contains(query)){
+                    ret.add(musicClass);
+                    count++;
+                }
+            } else break;
+        }
+        return ret;
+    }
+
 }
