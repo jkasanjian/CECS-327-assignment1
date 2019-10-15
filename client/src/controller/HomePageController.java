@@ -3,6 +3,8 @@ package controller;
 import com.google.gson.JsonObject;
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.*;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
 import model.*;
 import com.google.gson.Gson;
 import javafx.collections.FXCollections;
@@ -17,6 +19,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.ResourceBundle;
@@ -111,6 +115,14 @@ public class HomePageController implements Initializable {
         for (Playlist playlist : singletonProfile.getPlaylists()) {
             displayPlaylists.getItems().add(playlist.getName());
             playlists.put(playlist.getName(), FXCollections.observableArrayList(playlist.getMusicClassList()));
+        }
+
+        try {
+            playSong("imperial.mp3");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JavaLayerException e) {
+            e.printStackTrace();
         }
 
     }
@@ -361,8 +373,8 @@ public class HomePageController implements Initializable {
 //     */
 //    public void mp3play(String file) {
 //        try {
-//            // It uses CECS327InputStream as InputStream to play the song
-//            InputStream is = new CECS327InputStream(file);
+//            // It uses model.CECS327InputStream as InputStream to play the song
+//            InputStream is = new model.CECS327InputStream(file);
 //            Player mp3player = new Player(is);
 //            mp3player.play();
 //        }
@@ -385,5 +397,10 @@ public class HomePageController implements Initializable {
         return FXCollections.observableArrayList(playlistSongs.getMusicClassList());
     }
 
+    private void playSong(String file) throws IOException, JavaLayerException {
+        InputStream is = new CECS327InputStream(file);
+        Player player = new Player(is);
+        player.play();
+    }
 
 }
