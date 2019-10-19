@@ -54,7 +54,7 @@ public class MusicDatabase {
     }
 
     public List<MusicClass> getSongsSearch(int index, String query) throws FileNotFoundException {
-        System.out.println("Searching index " + index);
+        System.out.println("Searching...");
         FileInputStream fileInputStream = new FileInputStream(FILE_NAME);
         Scanner scanner = new Scanner(fileInputStream).useDelimiter(MUSICCLASS_REGEX);
 
@@ -75,14 +75,14 @@ public class MusicDatabase {
                 if (musicClass.getArtistName().toLowerCase().contains(query)) {
                     ret.add(musicClass);
                 }
-                System.out.println(c);
+                //System.out.println(c);
                 c++;
 
             }catch (Exception e){
                 System.out.println(token);
             }
             }
-        System.out.println("we made it ");
+        System.out.println("Search completed.");
 
         return ret.subList(index*PAGE_SIZE, (index*PAGE_SIZE)+PAGE_SIZE);
     }

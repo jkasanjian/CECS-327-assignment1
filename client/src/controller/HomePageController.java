@@ -240,7 +240,7 @@ public class HomePageController implements Initializable {
 //                new Thread(String.valueOf(mediaPlayer)).start();
 //                mediaPlayer.play();
 //            }
-            playSong("/Users/josh/Desktop/CECS-327H/CECS-327-assignment1/server/Radioactive.mp3");
+            playSong("server/imperial.mp3");
 
         }
     }

@@ -35,7 +35,7 @@ public class CommunicationModule{
         socket = new DatagramSocket();
         asyncQueue = new LinkedList<>();
         serverPort = 9000;
-        socket.setSoTimeout(50000);
+        socket.setSoTimeout(50000); // TIME OUT
 
         new Thread(()->{
             DatagramPacket packet;
@@ -86,7 +86,8 @@ public class CommunicationModule{
                 socket.receive(recv);
                 break;
             } catch (SocketTimeoutException e) {
-                e.printStackTrace();
+                System.out.println("Timed out. Sending again...");
+                //e.printStackTrace();
             }
         }
 

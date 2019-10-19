@@ -39,23 +39,61 @@ public class Dispatcher extends Thread implements DispatcherInterface {
     */
     public String dispatch(String request)
     {
-        System.out.println("IN DISPATCHER" + request);
         JsonObject jsonReturn = new JsonObject();
         JsonParser parser = new JsonParser();
         JsonObject jsonRequest = parser.parse(request).getAsJsonObject();
 
-        try {
-            if( jsonRequest.get("call_semantics").equals("At-most-once")){
-                if( (atMostOnce.containsKey( jsonRequest.get("username")) || (atMostOnce.containsKey( jsonRequest.get("sessionID"))) )){
-                    if( atMostOnce.get( jsonRequest.get("username") )
-                            .containsKey(jsonRequest.toString())){
-                        return atMostOnce.get( jsonRequest.get("username"))
-                                .get(jsonRequest.toString());
-                    } else if(atMostOnce.get(jsonRequest.get("sessionID")).containsKey(jsonRequest.toString())){
-                        return atMostOnce.get(jsonRequest.get("sessionID")).get(jsonRequest.toString());
+
+        JsonObject allParams = jsonRequest.get("param").getAsJsonObject();
+        String firstParam ="";
+        for (Map.Entry<String, JsonElement>  entry  :  allParams.entrySet())
+        {
+            firstParam = entry.getKey();    // either "username" or "sessionID"
+            break;
+        }
+        System.out.println("first parameter: " +  firstParam);
+        System.out.println(allParams);
+
+
+        try {   // quotes included in "At-most-once"
+            if( jsonRequest.get("call_semantics").toString().equals("\"At-most-once\"")) {
+                // if request uses username
+                if (firstParam.equals("username")) {
+                    // if username not in map
+                    if (!atMostOnce.containsKey(allParams.get("username").toString())){
+                        // add username to map
+                        atMostOnce.put(allParams.get("username").toString(), new HashMap<>());
+                        // put in request and response as null
+                        atMostOnce.get(allParams.get("username").toString()).put(jsonRequest.toString(), null);
+                    }
+                    // if request in map
+                    else if (atMostOnce.get(allParams.get("username").toString()).containsKey(jsonRequest.toString())) {
+                        System.out.println("Request already in map");
+                        return atMostOnce.get(allParams.get("username").toString()).get(jsonRequest.toString());
+                    } else {
+                        // username in map, put request and response as null
+                        atMostOnce.get(allParams.get("username").toString()).put(jsonRequest.toString(), null);
+                    }
+                    // if request uses sessionID
+                } else if (firstParam.equals("sessionID")) {
+                    // if sessionID not in map
+                    if (!atMostOnce.containsKey(allParams.get("sessionID").toString())){
+                        // add sessionID to map
+                        atMostOnce.put(allParams.get("sessionID").toString(), new HashMap<>());
+                        // put request in and response as null
+                        atMostOnce.get(allParams.get("sessionID").toString()).put(jsonRequest.toString(), null);
+                    }
+                    // if request in map
+                    else if (atMostOnce.get(allParams.get("sessionID").toString()).containsKey(jsonRequest.toString())) {
+                        System.out.println("Request already in map");
+                        return atMostOnce.get(allParams.get("sessionID").toString()).get(jsonRequest.toString());
+                    } else {
+                        // sessionID in map, put request and response as null
+                        atMostOnce.get(allParams.get("sessionID").toString()).put(jsonRequest.toString(), null);
                     }
                 }
             }
+
 
             // Obtains the object pointing to SongServices
             Object object = ListOfObjects.get(jsonRequest.get("objectName").getAsString());
@@ -128,38 +166,12 @@ public class Dispatcher extends Thread implements DispatcherInterface {
             }
 
 
-            JsonObject goalParam = jsonRequest.get("param").getAsJsonObject();
-            String paramT ="";
-            for (Map.Entry<String, JsonElement>  entry  :  goalParam.entrySet())
-            {
-                paramT = entry.getValue().getAsString();
-                break;
-            }
-
-
-            if( jsonRequest.get("call_semantics").equals("At-most-once")){
-
-
-
-
-                if( atMostOnce.containsKey( jsonRequest.get("username") )|| atMostOnce.containsKey( jsonRequest.get("sessionID"))) {
-
-                    if( atMostOnce.containsKey( jsonRequest.get("username") ) ) {
-                        atMostOnce.get(jsonRequest.get("username")).put( jsonRequest.toString(), jsonReturn.toString() );
-                    }
-                    else{
-                        atMostOnce.get(jsonRequest.get("sessionID")).put( jsonRequest.toString(), jsonReturn.toString() );
-                    }
-                }
-                else{
-
-                    if(paramT.equals("username")){
-                        atMostOnce.put(jsonRequest.get("username").toString(), new HashMap<>());
-                        atMostOnce.get(jsonRequest.get("username")).put( jsonRequest.toString(), jsonReturn.toString() );
-                    } else {
-                        atMostOnce.put(jsonRequest.get("sessionID").toString(), new HashMap<>());
-                        atMostOnce.get(jsonRequest.get("sessionID")).put( jsonRequest.toString(), jsonReturn.toString() );
-                    }
+            // adding responses to hash map
+            if( jsonRequest.get("call_semantics").toString().equals("\"At-most-once\"")){
+                if(firstParam.equals("username")){
+                    atMostOnce.get(allParams.get("username").toString()).put( jsonRequest.toString(), jsonReturn.toString() );
+                } else if(firstParam.equals("sessionID")){
+                    atMostOnce.get(allParams.get("sessionID").toString()).put( jsonRequest.toString(), jsonReturn.toString() );
                 }
 
 
@@ -200,7 +212,7 @@ public class Dispatcher extends Thread implements DispatcherInterface {
         dispatcher.registerObject(songDispatcher, "SongServices");  
     
         // Testing  the dispatcher function
-        // First we read the request. In the final implementation the jsonRequest
+        // First we read the request. In the f2inal implementation the jsonRequest
         // is obtained from the communication module
         try {
             String jsonRequest = new String(Files.readAllBytes(Paths.get("./getSongChunk.json")));
