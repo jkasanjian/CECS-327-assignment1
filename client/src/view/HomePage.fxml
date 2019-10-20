@@ -39,8 +39,10 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="393.0" prefWidth="590.0">
                <children>
-                  <VBox fx:id="songList" layoutX="14.0" layoutY="49.0" prefHeight="593.0" prefWidth="1201.0" />
-                  <TableView fx:id="songTable" layoutX="2.0" layoutY="2.0" onMouseClicked="#clickSong" opacity="0.84" prefHeight="584.0" prefWidth="1186.0" />
+                  <VBox fx:id="songList" layoutX="14.0" layoutY="49.0" prefHeight="593.0" prefWidth="1201.0">
+                     <children>
+                        <TableView fx:id="songTable" onMouseClicked="#clickSong" opacity="0.84" prefHeight="584.0" prefWidth="1186.0" />
+                     </children></VBox>
                </children></AnchorPane>
         </items>
       </SplitPane>
@@ -54,5 +56,6 @@
       <Button fx:id="nextPageButton" layoutX="1465.0" layoutY="650.0" mnemonicParsing="false" onAction="#button" text="&gt;" />
       <Button fx:id="prevPageButton" layoutX="1436.0" layoutY="650.0" mnemonicParsing="false" onAction="#button" text="&lt;" />
       <Button fx:id="searchButton" layoutX="1332.0" layoutY="21.0" mnemonicParsing="false" onAction="#button" text="Search" />
+      <Button fx:id="musicButton" layoutX="409.0" layoutY="664.0" mnemonicParsing="false" onAction="#button" text="Play Music" />
    </children>
 </AnchorPane>

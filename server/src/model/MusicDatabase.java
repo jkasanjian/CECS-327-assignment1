@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class MusicDatabase {
     private static MusicDatabase musicDatabase = null;
-    private final String FILE_NAME = "music.json";
+    private final String FILE_NAME = "server/music.json";
     private final String MUSICCLASS_REGEX = "(\\,?\\[?\\s+)(?=\\{\\s+\"release\")";
     private final int PAGE_SIZE = 20;
 
