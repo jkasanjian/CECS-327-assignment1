@@ -129,7 +129,7 @@ public class Proxy implements ProxyInterface {
 
     public static ArrayList<Catalog> readCatalog(){
         Gson gson = new Gson();
-        String fileName = "catalog.json";// TODO: make relative path
+        String fileName = "client/catalog.json";// TODO: make relative path
 
         try{
             Type catalogType = new TypeToken<ArrayList<Catalog>>(){}.getType();

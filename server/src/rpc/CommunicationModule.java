@@ -28,6 +28,10 @@ public class CommunicationModule{
             String received = new String( dp.getData(), 0, dp.getLength() );
             String response = dispatcher.dispatch( received );
 
+            if (response == null){
+                return;
+            }
+
             InetAddress clientAddress = dp.getAddress();
             int port = dp.getPort();
             service  = response.getBytes();

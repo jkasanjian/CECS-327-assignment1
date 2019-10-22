@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class ProfileDatabase {
     private static ProfileDatabase profileDatabase = null;
-    private final String FILE_NAME = "profiles.json";
+    private final String FILE_NAME = "server/profiles.json";
     private final String PROFILE_REGEX = "(\\[?|\\,)(?=\\{\"username\":)";
     private final int PAGE_SIZE = 20;
 
