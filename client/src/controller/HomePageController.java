@@ -23,12 +23,14 @@ import javafx.stage.Stage;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import rpc.Proxy;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.function.Predicate;
 
 
@@ -64,13 +66,19 @@ public class HomePageController implements Initializable {
     @FXML
     TextField gSearchTextField;
 
-    @FXML Button prevPageButton;
+    @FXML
+    Button prevPageButton;
 
-    @FXML Button nextPageButton;
+    @FXML
+    Button nextPageButton;
 
-    @FXML Button searchButton;
+    @FXML
+    Button searchButton;
 
-    private HashMap <String, ObservableList<MusicClass>> playlists = new HashMap<String, ObservableList<MusicClass>>();
+    @FXML
+    Button musicButton;
+
+    private HashMap<String, ObservableList<MusicClass>> playlists = new HashMap<String, ObservableList<MusicClass>>();
 
     private MediaPlayer mediaPlayer;
 
@@ -84,15 +92,23 @@ public class HomePageController implements Initializable {
 
     private String sessionID;
 
+    private boolean musicState; // True = Music Playing, False = Music Not Playing/Paused
+
+    private Thread musicThread;
+
     /**
      * Initializes the table and the event listeners.
+     *
      * @param location
      * @param resources
      */
     @Override
-    public void initialize(URL location, ResourceBundle resources){
+    public void initialize(URL location, ResourceBundle resources) {
         pageNumber = 1;
         prevPageButton.setVisible(false);
+        musicButton.setVisible(false);
+        musicState = false;
+        musicThread = new Thread();
         currentPlaylist = "";
         SingletonProfile singletonProfile = SingletonProfile.GetInstance();
         sessionID = singletonProfile.getSessionID();
@@ -123,15 +139,16 @@ public class HomePageController implements Initializable {
 
     /**
      * Populates the table view with a given list.
+     *
      * @param songs The list of songs that should be shown in the table view.
      * @return The tableview populated with the corresponding collumns and songs.
      */
-    public TableView<MusicClass> populateTable(ObservableList<MusicClass> songs){
+    public TableView<MusicClass> populateTable(ObservableList<MusicClass> songs) {
 
         try {
             songTable.getColumns().clear();
             songTable.getItems().clear();
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 //
@@ -141,24 +158,24 @@ public class HomePageController implements Initializable {
 //        songIDColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("songID"));
 
         // model.Song Name Column
-        TableColumn<MusicClass,String> nameColumn = new TableColumn<>("Name: ");
+        TableColumn<MusicClass, String> nameColumn = new TableColumn<>("Name: ");
         nameColumn.setMinWidth(400);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("songTitle"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<MusicClass, String>("songTitle"));
 
         // model.Song model.Artist Column
-        TableColumn<MusicClass,String> artistColumn = new TableColumn<>("Artist: ");
+        TableColumn<MusicClass, String> artistColumn = new TableColumn<>("Artist: ");
         artistColumn.setMinWidth(200);
-        artistColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("artistName"));
+        artistColumn.setCellValueFactory(new PropertyValueFactory<MusicClass, String>("artistName"));
 
         // model.Song Duration Column
-        TableColumn<MusicClass,String> durationColumn = new TableColumn<>("Duration: ");
+        TableColumn<MusicClass, String> durationColumn = new TableColumn<>("Duration: ");
         durationColumn.setMinWidth(200);
-        durationColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,String>("durationTime"));
+        durationColumn.setCellValueFactory(new PropertyValueFactory<MusicClass, String>("durationTime"));
 
         // model.Song Year Released Column
-        TableColumn<MusicClass,Integer> yearColumn = new TableColumn<>("Year: ");
+        TableColumn<MusicClass, Integer> yearColumn = new TableColumn<>("Year: ");
         yearColumn.setMinWidth(200);
-        yearColumn.setCellValueFactory(new PropertyValueFactory<MusicClass,Integer>("songYear"));
+        yearColumn.setCellValueFactory(new PropertyValueFactory<MusicClass, Integer>("songYear"));
 
         songTable.getColumns().addAll(nameColumn, artistColumn, durationColumn, yearColumn);
         songTable.setItems(songs);
@@ -168,41 +185,40 @@ public class HomePageController implements Initializable {
 
     /**
      * Handles any button pressing events.
+     *
      * @param event The event that happens from a corresponding button press.
      * @throws IOException
      */
     @FXML
-    public void button(ActionEvent event) throws IOException{
-        if(event.getSource() == songButton) {
+    public void button(ActionEvent event) throws IOException, InterruptedException {
+        if (event.getSource() == songButton) {
             currentPlaylist = "";
             pageNumber = 1;
             master = getSongs(sessionID, currentPlaylist, pageNumber);
             populateTable(master);
-        } else if(event.getSource() == artistButton){
-        } else if (event.getSource() == addSongToPlaylist){
+        } else if (event.getSource() == artistButton) {
+        } else if (event.getSource() == addSongToPlaylist) {
             openAddSongToPlaylistWindow();
-        } else if(event.getSource() == createPlaylist){
+        } else if (event.getSource() == createPlaylist) {
             openCreatePlaylistWindow();
-        } else if(event.getSource() == deletePlaylist){
+        } else if (event.getSource() == deletePlaylist) {
             openDeletePlaylistWindow();
-        } else if(event.getSource() == prevPageButton){
+        } else if (event.getSource() == prevPageButton) {
 
-            if(!gSearchTextField.getText().isEmpty()){
+            if (!gSearchTextField.getText().isEmpty()) {
                 pageNumber -= 1;
                 filter(gSearchTextField.getText());
-            }
-            else {
+            } else {
                 pageNumber -= 1;
                 master = getSongs(sessionID, currentPlaylist, pageNumber);
                 populateTable(master);
             }
-        } else if(event.getSource() == nextPageButton){
+        } else if (event.getSource() == nextPageButton) {
 
-            if(!gSearchTextField.getText().isEmpty()){
+            if (!gSearchTextField.getText().isEmpty()) {
                 pageNumber += 1;
                 filter(gSearchTextField.getText());
-            }
-            else {
+            } else {
                 pageNumber += 1;
                 try {
                     master = getSongs(sessionID, currentPlaylist, pageNumber);
@@ -211,15 +227,20 @@ public class HomePageController implements Initializable {
                     e.printStackTrace();
                 }
             }
-        } else if(event.getSource() == searchButton){
+        } else if (event.getSource() == searchButton) {
             pageNumber = 1;
             filter(gSearchTextField.getText());
+        } else if (event.getSource() == musicButton) {
+            if (musicState == true) {
+                musicState = false;
+                musicButton.setVisible(false);
+            }
         }
-        if(pageNumber == 1)
+        if (pageNumber == 1)
             prevPageButton.setVisible(false);
         else
             prevPageButton.setVisible(true);
-        if(master.size() == 0)
+        if (master.size() == 0)
             nextPageButton.setVisible(false);
         else
             nextPageButton.setVisible(true);
@@ -228,6 +249,7 @@ public class HomePageController implements Initializable {
     /**
      * If song is double clicked on table view it plays a song.
      * TODO: implement with RPC
+     *
      * @param click
      */
     @FXML
@@ -240,18 +262,20 @@ public class HomePageController implements Initializable {
 //                new Thread(String.valueOf(mediaPlayer)).start();
 //                mediaPlayer.play();
 //            }
-            playSong("server/imperial.mp3");
+            musicState = true;
+            playSong("server/Radioactive.mp3");
+            musicButton.setVisible(true);
 
         }
     }
 
     /**
      * If playlist is double clicked it populates the table with the songs from the playlist.
+     *
      * @param click
      */
     @FXML
-    public void clickPlaylist(MouseEvent click)
-    {
+    public void clickPlaylist(MouseEvent click) {
         if (click.getClickCount() == 2) //Checking double click
         {
             pageNumber = 1;
@@ -271,9 +295,10 @@ public class HomePageController implements Initializable {
 
     /**
      * Filters the table view with the search text field.
+     *
      * @param value
      */
-    public void filter(String value){
+    public void filter(String value) {
 
         try {
             JsonObject ret = Proxy.GetInstance().synchExecution("search", new String[]{sessionID, currentPlaylist, value, String.valueOf(pageNumber)});
@@ -291,6 +316,7 @@ public class HomePageController implements Initializable {
 
     /**
      * Loads the create playlist window.
+     *
      * @throws IOException
      */
     public void openCreatePlaylistWindow() throws IOException {
@@ -306,7 +332,8 @@ public class HomePageController implements Initializable {
 
     /**
      * Adds a new playlist to the account.
-     * @param playlistName Name of playlist.
+     *
+     * @param playlistName  Name of playlist.
      * @param playlistSongs Songs.
      */
     public void addNewPlaylist(String playlistName, ObservableList<MusicClass> playlistSongs) throws IOException {
@@ -344,19 +371,19 @@ public class HomePageController implements Initializable {
     }
 
     public void addNewSongToPlaylist(String playlistName) throws IOException {
-       ObservableList<MusicClass> mc = playlists.get(playlistName);
-       MusicClass selectedSong = songTable.getSelectionModel().getSelectedItem();
-       mc.add(selectedSong);
-       playlists.put(playlistName,mc);
-       SingletonProfile profile = SingletonProfile.GetInstance();
-       profile.addToPlaylist(playlistName, selectedSong);
-       Proxy.GetInstance().synchExecution("addSongToPlaylist", new String[]{sessionID,
-               playlistName, selectedSong.getSongID()});
+        ObservableList<MusicClass> mc = playlists.get(playlistName);
+        MusicClass selectedSong = songTable.getSelectionModel().getSelectedItem();
+        mc.add(selectedSong);
+        playlists.put(playlistName, mc);
+        SingletonProfile profile = SingletonProfile.GetInstance();
+        profile.addToPlaylist(playlistName, selectedSong);
+        Proxy.GetInstance().synchExecution("addSongToPlaylist", new String[]{sessionID,
+                playlistName, selectedSong.getSongID()});
     }
 
     public void deletePlaylist(String playlistName) throws IOException {
-        for(int i = 0; i < displayPlaylists.getItems().size(); i++){
-            if(displayPlaylists.getItems().get((i)) == playlistName){
+        for (int i = 0; i < displayPlaylists.getItems().size(); i++) {
+            if (displayPlaylists.getItems().get((i)) == playlistName) {
                 displayPlaylists.getItems().remove(i);
             }
         }
@@ -368,14 +395,14 @@ public class HomePageController implements Initializable {
     }
 
     @FXML
-    public void enter( MouseEvent e ){
-        Button button = (Button)e.getSource();
+    public void enter(MouseEvent e) {
+        Button button = (Button) e.getSource();
         button.setStyle("-fx-background-color: #70C2FF");
     }
 
     @FXML
-    public void exit( MouseEvent e ){
-        Button button = (Button)e.getSource();
+    public void exit(MouseEvent e) {
+        Button button = (Button) e.getSource();
         button.setStyle("-fx-background-color: #668FE8");
     }
 
@@ -405,7 +432,7 @@ public class HomePageController implements Initializable {
         Proxy proxy = Proxy.GetInstance();
         JsonObject ret = proxy.synchExecution("getSongs", new String[]{sessionID, playlistName, String.valueOf(pageNum)});
         Gson gson = new Gson();
-        Playlist playlistSongs = gson.fromJson( ret.get("ret"), Playlist.class );
+        Playlist playlistSongs = gson.fromJson(ret.get("ret"), Playlist.class);
         return FXCollections.observableArrayList(playlistSongs.getMusicClassList());
     }
 
@@ -413,10 +440,19 @@ public class HomePageController implements Initializable {
         System.out.println(file);
         InputStream is = new CECS327InputStream(file);
         Player player = new Player(is);
-        player.play();
+        musicThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while(musicState){
+                        player.play();
+                    }
+                } catch (JavaLayerException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        musicThread.setName("musicThread");
+        musicThread.start();
     }
-
-
-
-
 }
