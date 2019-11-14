@@ -33,6 +33,10 @@ public class ProfileDatabase {
         return profileDatabase;
     }
 
+    public void setDFS(DFS dfs){
+        this.dfs = dfs;
+    }
+
     public boolean containsUsername(String username) throws FileNotFoundException {
         if(!doesFileExists()) return false;
         FileInputStream fileInputStream = new FileInputStream(FILE_NAME);
