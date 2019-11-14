@@ -27,33 +27,58 @@ public class MusicDatabase {
         return musicDatabase;
     }
 
-    public MusicClass getSongByID(String songID) throws FileNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(FILE_NAME);
-        Scanner scanner = new Scanner(fileInputStream).useDelimiter(MUSICCLASS_REGEX);
-        while(scanner.hasNext()) {
-            String token = scanner.next();
-            MusicClass musicClass = new Gson().fromJson(token, MusicClass.class);
-            if(musicClass.getSongID().equals(songID)) return musicClass;
+    public MusicClass getSongByID(String songID) throws Exception {
+        List<FileJson> fileJsonList = dfs.readMetaData().getFile();
+        FileJson fileJson = null;
+        for(FileJson fj : fileJsonList) {
+            if(fj.getName().equals(FILE_NAME)) {
+                fileJson = fj;
+                break;
+            }
+        }
+        if(fileJson == null) {
+            throw new Exception(FILE_NAME + " not found!");
+        }
+        for(int page = 1; page <= fileJson.getNumberOfPages(); page++) {
+            Scanner scanner = new Scanner(dfs.read(FILE_NAME, page)).useDelimiter(MUSICCLASS_REGEX);
+            while(scanner.hasNext()) {
+                String token = scanner.next();
+                MusicClass musicClass = new Gson().fromJson(token, MusicClass.class);
+                if(musicClass.getSongID().equals(songID)) return musicClass;
+            }
         }
         return null;
     }
 
-    public List<MusicClass> getSongs(int index) throws FileNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(FILE_NAME);
-        Scanner scanner = new Scanner(fileInputStream).useDelimiter(MUSICCLASS_REGEX);
-        List<MusicClass> ret = new ArrayList<>();
-        for(int i = 0; i < PAGE_SIZE*index; i++) {
-            if(scanner.hasNext())
-                scanner.next();
-            else
-                return null;
+    public List<MusicClass> getSongs(int index) throws Exception {
+        List<FileJson> fileJsonList = dfs.readMetaData().getFile();
+        FileJson fileJson = null;
+        for(FileJson fj : fileJsonList) {
+            if(fj.getName().equals(FILE_NAME)) {
+                fileJson = fj;
+                break;
+            }
         }
-        for(int i = 0; i < PAGE_SIZE; i++) {
-            if(scanner.hasNext()) {
-                String token = scanner.next();
-                MusicClass musicClass = new Gson().fromJson(token, MusicClass.class);
-                ret.add(musicClass);
-            } else break;
+        if(fileJson == null) {
+            throw new Exception(FILE_NAME + " not found!");
+        }
+        List<MusicClass> ret = new ArrayList<>();
+
+        for(int page = 1; page <= fileJson.getNumberOfPages(); page++) {
+            Scanner scanner = new Scanner(dfs.read(FILE_NAME, page)).useDelimiter(MUSICCLASS_REGEX);
+            for(int i = 0; i < PAGE_SIZE*index; i++) {
+                if(scanner.hasNext())
+                    scanner.next();
+                else
+                    return null;
+            }
+            for(int i = 0; i < PAGE_SIZE; i++) {
+                if(scanner.hasNext()) {
+                    String token = scanner.next();
+                    MusicClass musicClass = new Gson().fromJson(token, MusicClass.class);
+                    ret.add(musicClass);
+                } else break;
+            }
         }
         return ret;
     }

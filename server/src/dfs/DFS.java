@@ -262,6 +262,7 @@ public class DFS
                 pageJson.guid = md5(fileJson.name + pageJson.creationTS);
                 pageJsonList.add(pageJson);
                 fileJson.pages = pageJsonList;
+                fileJson.numberOfPages += 1;
                 writeMetaData(filesJson);
                 chord.locateSuccessor(pageJson.guid).put(pageJson.guid, data);
                 break;
