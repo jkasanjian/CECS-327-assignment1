@@ -268,5 +268,22 @@ public class DFS
             }
         }
     }
-    
+
+    public String search( String fileName, String targetString ) throws Exception{
+        FilesJson md = readMetaData();
+        FileJson music_file = null;
+        List<FileJson> files = md.getFile();
+        for ( FileJson fjson: files ) {
+            if( fjson.name.equals("MusicJson")){
+                music_file = fjson;
+                break;
+            }
+        }
+
+        if ( music_file == null ){
+            throw new Exception("NOT FOUND!");
+        }
+
+        return "";
+    }
 }
