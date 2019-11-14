@@ -3,6 +3,9 @@ package rpc;
 import java.io.IOException;
 
 import com.google.gson.Gson;
+import dfs.DFS;
+import model.MusicDatabase;
+import model.ProfileDatabase;
 
 public class Main {
    
@@ -32,7 +35,11 @@ public class Main {
      *  The function test the classes rpc.Dispatcher, rpc.SongDispatcher
      *  and CECS327InputStream. Proxy is incomplete.
     */
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws Exception {
+        DFS dfs = new DFS(9003);
+        dfs.join("127.0.0.1", 9000);
+        MusicDatabase.GetInstance().setDfs(dfs);
+        ProfileDatabase.GetInstance().setDfs(dfs);
         Dispatcher dispatcher = new Dispatcher();
         SongDispatcher songDispatcher       = new SongDispatcher();
         AccountDispatcher accountDispatcher = new AccountDispatcher();

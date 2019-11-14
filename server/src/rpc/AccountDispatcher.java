@@ -18,7 +18,7 @@ public class AccountDispatcher {
         manager  = new SessionManager();
     }
 
-    public String logIn( String username, String password ) throws FileNotFoundException {
+    public String logIn( String username, String password ) throws Exception {
         ProfileAccount account;
         int session = 0;
         if( profiles.verifyLogin( username, password ) ){
@@ -34,7 +34,7 @@ public class AccountDispatcher {
         return gson.toJson(account);
     }
 
-    public String registerAccount( String username, String password ) throws IOException {
+    public String registerAccount( String username, String password ) throws Exception {
         if( profiles.containsUsername(username) ){
             Gson gson = new Gson();
             return gson.toJson( new ProfileAccount() );

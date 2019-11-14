@@ -13,7 +13,7 @@ public class PlaylistDispatcher {
         profiles = ProfileDatabase.GetInstance();
     }
 
-    public String getSongs(String sessionID, String playlistName, String pageNum) throws FileNotFoundException {
+    public String getSongs(String sessionID, String playlistName, String pageNum) throws Exception {
         int pageNumber = Integer.parseInt(pageNum);
         if (playlistName.equals("")) {
             return new Gson().toJson(new Playlist(playlistName,
@@ -23,27 +23,27 @@ public class PlaylistDispatcher {
         }
     }
 
-    public String createPlaylist( String sessionID, String playlistName ) throws IOException {
+    public String createPlaylist( String sessionID, String playlistName ) throws Exception {
         profiles.createPlaylist(Integer.parseInt(sessionID), playlistName);
         return new Gson().toJson(new ProfileAccount());
     }
 
-    public String deletePlaylist( String sessionID, String playlistName ) throws IOException {
+    public String deletePlaylist( String sessionID, String playlistName ) throws Exception {
         profiles.deletePlaylist(Integer.parseInt(sessionID), playlistName);
         return new Gson().toJson(new ProfileAccount());
     }
 
-    public String addSongToPlaylist( String sessionID, String playlistName, String songId ) throws IOException {
+    public String addSongToPlaylist( String sessionID, String playlistName, String songId ) throws Exception {
         profiles.addSongToPlaylist(Integer.parseInt(sessionID), playlistName, songId);
         return new Gson().toJson(new ProfileAccount());
     }
-    public String getPage( String sessionID, String playlistName, int index ) throws FileNotFoundException {
+    public String getPage( String sessionID, String playlistName, int index ) throws Exception {
         Playlist playlist = new Playlist(playlistName, profiles.getPage(Integer.parseInt(sessionID), playlistName, index));
         return new Gson().toJson(playlist);
     }
 
 
-    public String search(String sessionID, String playlistName, String query, int pageNumber) throws IOException{
+    public String search(String sessionID, String playlistName, String query, int pageNumber) throws Exception {
         //System.out.println("IN PLAYLIST DISPATCHER " + playlistName + query);
         if (playlistName.equals("")) {
             //System.out.println("IN PLAYLIST DISPATCHER: all songs ");
@@ -57,7 +57,7 @@ public class PlaylistDispatcher {
     }
 
 
-    public String getSearch(String sessionID, String playlistName, String query, int index) throws IOException{
+    public String getSearch(String sessionID, String playlistName, String query, int index) throws Exception {
         Playlist playlist = new Playlist(playlistName, profiles.getPageSearch(Integer.parseInt(sessionID), playlistName, query, index));
         return new Gson().toJson(playlist);
     }
