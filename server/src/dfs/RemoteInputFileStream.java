@@ -8,7 +8,6 @@ package dfs;
 * @version 0.16
 * @since   03-3-2019
 */
-package dfs;
 
 import java.io.*;
 import java.nio.*;
