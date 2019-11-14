@@ -123,6 +123,7 @@ public class DFS
             RemoteInputFileStream metadataraw = peer.get(guid);
             metadataraw.connect();
             Scanner scan = new Scanner(metadataraw);
+            System.out.println(scan.next());
             scan.useDelimiter("\\A");
             String strMetaData = scan.next();
             System.out.println(strMetaData);
@@ -262,7 +263,7 @@ public class DFS
                 pageJson.guid = md5(fileJson.name + pageJson.creationTS);
                 pageJsonList.add(pageJson);
                 fileJson.pages = pageJsonList;
-                fileJson.numberOfPages += 1;
+                fileJson.setNnumberOfPages(fileJson.getNumberOfPages()+1);
                 writeMetaData(filesJson);
                 chord.locateSuccessor(pageJson.guid).put(pageJson.guid, data);
                 break;

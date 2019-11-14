@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class ProfileDatabase {
     private static ProfileDatabase profileDatabase = null;
-    private final String FILE_NAME = "profiles.json";
+    private final String FILE_NAME = "ProfilesJson";
     private final String PROFILE_REGEX = "(\\[?|\\,)(?=\\{\"username\":)";
     private final int PAGE_SIZE = 20;
     private DFS dfs;
@@ -24,8 +24,9 @@ public class ProfileDatabase {
     private ProfileDatabase(){}
 
     private boolean doesFileExists() {
-        File file = new File(FILE_NAME);
-        return file.exists();
+//        File file = new File(FILE_NAME);
+//        return file.exists();
+        return true;
     }
 
     public static ProfileDatabase GetInstance() {
@@ -54,7 +55,9 @@ public class ProfileDatabase {
 
     public boolean verifyLogin(String username, String password) throws Exception {
         if(!doesFileExists()) return false;
+        System.out.println(" bBBBBBBBBBBBB");
         RemoteInputFileStream fileInputStream = dfs.read(FILE_NAME, 1);
+        System.out.println(fileInputStream + " AAAAAAAAAAAAAAAAAAA");
         Scanner scanner = new Scanner(fileInputStream).useDelimiter(PROFILE_REGEX);
         while(scanner.hasNext()) {
             String token = scanner.next();
