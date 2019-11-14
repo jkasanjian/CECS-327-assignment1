@@ -1,6 +1,7 @@
 package model;
 
 import com.google.gson.Gson;
+import dfs.DFS;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import rpc.SessionManager;
@@ -17,6 +18,7 @@ public class ProfileDatabase {
     private final String FILE_NAME = "server/profiles.json";
     private final String PROFILE_REGEX = "(\\[?|\\,)(?=\\{\"username\":)";
     private final int PAGE_SIZE = 20;
+    private DFS dfs;
 
     private ProfileDatabase(){}
 
@@ -29,6 +31,10 @@ public class ProfileDatabase {
         if(profileDatabase==null)
             profileDatabase = new ProfileDatabase();
         return profileDatabase;
+    }
+
+    public void setDFS(DFS dfs){
+        this.dfs = dfs;
     }
 
     public boolean containsUsername(String username) throws FileNotFoundException {
