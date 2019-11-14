@@ -269,5 +269,29 @@ public class DFS
             }
         }
     }
+
+    public InputStream read(String fileName) throws Exception {
+        FilesJson md = readMetaData();
+        List<FileJson> files = md.getFile();
+        FileJson target = new FileJson();   // initialized, but will be replaced
+        for ( FileJson fjson: files) {
+            if (fjson.name.equals(fileName)) {
+                target = fjson;
+                break;
+            }
+        }
+
+        Vector vector = new Vector();
+        for(int page = 1; page <= target.getNumberOfPages(); page++) {
+            target.setReadTS(java.time.LocalDateTime.now().toString());
+            Long guid = target.getPages().get(page).getGuid();
+            ChordMessageInterface peer = chord.locateSuccessor(guid);
+            vector.add(peer.get(guid));
+        }
+
+        SequenceInputStream sequenceInputStream = new SequenceInputStream(vector.elements());
+
+        return sequenceInputStream;
+    }
     
 }
