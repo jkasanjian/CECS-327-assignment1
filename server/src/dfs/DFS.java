@@ -270,28 +270,22 @@ public class DFS
         }
     }
 
-    public InputStream read(String fileName) throws Exception {
+
+    public String search( String fileName, String targetString ) throws Exception{
         FilesJson md = readMetaData();
+        FileJson music_file = null;
         List<FileJson> files = md.getFile();
-        FileJson target = new FileJson();   // initialized, but will be replaced
-        for ( FileJson fjson: files) {
-            if (fjson.name.equals(fileName)) {
-                target = fjson;
+        for ( FileJson fjson: files ) {
+            if( fjson.name.equals("MusicJson")){
+                music_file = fjson;
                 break;
             }
         }
 
-        Vector vector = new Vector();
-        for(int page = 1; page <= target.getNumberOfPages(); page++) {
-            target.setReadTS(java.time.LocalDateTime.now().toString());
-            Long guid = target.getPages().get(page).getGuid();
-            ChordMessageInterface peer = chord.locateSuccessor(guid);
-            vector.add(peer.get(guid));
+        if ( music_file == null ){
+            throw new Exception("NOT FOUND!");
         }
 
-        SequenceInputStream sequenceInputStream = new SequenceInputStream(vector.elements());
-
-        return sequenceInputStream;
+        return "";
     }
-    
 }

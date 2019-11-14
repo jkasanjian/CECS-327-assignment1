@@ -83,7 +83,49 @@ public class MusicDatabase {
         return ret;
     }
 
-    public List<MusicClass> getSongsSearch(int index, String query) throws FileNotFoundException {
+    public List<MusicClass> getSongsSearch(int index, String query) throws Exception {
+        FilesJson md  = dfs.readMetaData();
+        FileJson file = null;
+
+        for( FileJson fj : md.getFile() ){
+            if( fj.getName() == FILE_NAME ){
+                file = fj;
+                break;
+            }
+        }
+
+        if ( file == null ){
+            throw new Exception(FILE_NAME + " not found!");
+        }
+
+        List<MusicClass> ret = new ArrayList<>();
+        query = query.toLowerCase();
+        for( int page = 1; page <= file.getNumberOfPages(); page++ ){
+            Scanner scanner = new Scanner( dfs.read(FILE_NAME, page) ).useDelimiter(MUSICCLASS_REGEX);
+
+            while( scanner.hasNext() ){
+                String token = scanner.next();
+                if(token.endsWith("]")){
+                    token = token.substring(0, token.length()-1);
+                }
+
+                try {
+                    MusicClass musicClass = new Gson().fromJson(token, MusicClass.class);
+                    if (musicClass.getSongTitle().toLowerCase().contains(query)) {
+                        ret.add(musicClass);
+                    }
+                    if (musicClass.getArtistName().toLowerCase().contains(query)) {
+                        ret.add(musicClass);
+                    }
+
+                }catch (Exception e){
+                    System.out.println(token);
+                }
+            }
+
+        }
+
+        /*
         System.out.println("Searching...");
         FileInputStream fileInputStream = new FileInputStream(FILE_NAME);
         Scanner scanner = new Scanner(fileInputStream).useDelimiter(MUSICCLASS_REGEX);
@@ -113,6 +155,7 @@ public class MusicDatabase {
             }
             }
         System.out.println("Search completed.");
+        */
 
         return ret.subList(index*PAGE_SIZE, (index*PAGE_SIZE)+PAGE_SIZE);
     }
