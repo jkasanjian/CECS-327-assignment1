@@ -2,6 +2,7 @@ package model;
 
 import com.google.gson.Gson;
 import dfs.DFS;
+import dfs.RemoteInputFileStream;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import rpc.SessionManager;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class ProfileDatabase {
     private static ProfileDatabase profileDatabase = null;
-    private final String FILE_NAME = "server/profiles.json";
+    private final String FILE_NAME = "profiles.json";
     private final String PROFILE_REGEX = "(\\[?|\\,)(?=\\{\"username\":)";
     private final int PAGE_SIZE = 20;
     private DFS dfs;
@@ -37,9 +38,9 @@ public class ProfileDatabase {
         this.dfs = dfs;
     }
 
-    public boolean containsUsername(String username) throws FileNotFoundException {
+    public boolean containsUsername(String username) throws Exception {
         if(!doesFileExists()) return false;
-        FileInputStream fileInputStream = new FileInputStream(FILE_NAME);
+        RemoteInputFileStream fileInputStream = dfs.read(FILE_NAME, 1);
         Scanner scanner = new Scanner(fileInputStream).useDelimiter(PROFILE_REGEX);
         while(scanner.hasNext()) {
             String token = scanner.next().toLowerCase();
@@ -51,9 +52,9 @@ public class ProfileDatabase {
         return false;
     }
 
-    public boolean verifyLogin(String username, String password) throws FileNotFoundException {
+    public boolean verifyLogin(String username, String password) throws Exception {
         if(!doesFileExists()) return false;
-        FileInputStream fileInputStream = new FileInputStream(FILE_NAME);
+        RemoteInputFileStream fileInputStream = dfs.read(FILE_NAME, 1);
         Scanner scanner = new Scanner(fileInputStream).useDelimiter(PROFILE_REGEX);
         while(scanner.hasNext()) {
             String token = scanner.next();
@@ -70,9 +71,9 @@ public class ProfileDatabase {
         return false;
     }
 
-    private ProfileAccount getProfile(String username) throws FileNotFoundException {
+    private ProfileAccount getProfile(String username) throws Exception {
         if(!doesFileExists()) return null;
-        FileInputStream fileInputStream = new FileInputStream(FILE_NAME);
+        RemoteInputFileStream fileInputStream = dfs.read(FILE_NAME, 1);
         Scanner scanner = new Scanner(fileInputStream).useDelimiter(PROFILE_REGEX);
         while(scanner.hasNext()) {
             StringBuilder token = new StringBuilder(scanner.next());
@@ -87,7 +88,7 @@ public class ProfileDatabase {
         return null;
     }
 
-    private ProfileAccount getProfile(int sessionID) throws FileNotFoundException {
+    private ProfileAccount getProfile(int sessionID) throws Exception {
         if(!doesFileExists()) return null;
         ProfileAccount profileAccount = getProfile(new SessionManager().getActiveUsername(sessionID));
         return new ProfileAccount(profileAccount.getUsername(), profileAccount.getPassword(), profileAccount.getPlaylists());
@@ -112,7 +113,7 @@ public class ProfileDatabase {
         fileWriter.close();
     }
 
-    public void deletePlaylist(String username, String playlistName) throws IOException {
+    public void deletePlaylist(String username, String playlistName) throws Exception {
         ProfileAccount newProfile = getProfile(username);
         ProfileAccount oldProfile = getProfile(username);
         if(newProfile==null) return;
@@ -121,7 +122,7 @@ public class ProfileDatabase {
         sync(oldProfile, newProfile);
     }
 
-    public void deletePlaylist(int sessionID, String playlistName) throws IOException {
+    public void deletePlaylist(int sessionID, String playlistName) throws Exception {
         ProfileAccount newProfile = getProfile(sessionID);
         if(newProfile==null) return;
         if(newProfile.getPlaylist(playlistName) == null) return;
@@ -129,7 +130,7 @@ public class ProfileDatabase {
         sync(getProfile(sessionID), newProfile);
     }
 
-    public void createPlaylist(String username, String playlistName) throws IOException {
+    public void createPlaylist(String username, String playlistName) throws Exception {
         ProfileAccount profileAccount = getProfile(username);
         if(!containsUsername(username)) return;
         for(Playlist playlist : profileAccount.getPlaylists())
@@ -138,7 +139,7 @@ public class ProfileDatabase {
         sync(getProfile(username), profileAccount);
     }
 
-    public void createPlaylist(int sessionID, String playlistName) throws IOException {
+    public void createPlaylist(int sessionID, String playlistName) throws Exception {
         ProfileAccount profileAccount = getProfile(sessionID);
         System.out.println(profileAccount.getUsername()+ " LOL");
         if(!containsUsername(profileAccount.getUsername())) return;
@@ -149,7 +150,7 @@ public class ProfileDatabase {
         sync(getProfile(sessionID), profileAccount);
     }
 
-    public void addProfile(ProfileAccount profileAccount) throws IOException {
+    public void addProfile(ProfileAccount profileAccount) throws Exception {
         if(containsUsername(profileAccount.getUsername())) return;
         if(!doesFileExists()) {
             File file = new File(FILE_NAME);
@@ -175,7 +176,7 @@ public class ProfileDatabase {
         fileWriter.close();
     }
 
-    public List<MusicClass> getPage(int sessionID, String playlistName, int index) throws FileNotFoundException {
+    public List<MusicClass> getPage(int sessionID, String playlistName, int index) throws Exception {
         ProfileAccount profileAccount = getProfile(sessionID);
         if(profileAccount.getPlaylist(playlistName)==null) return null;
         List<MusicClass> ret = new ArrayList<>();
@@ -194,7 +195,7 @@ public class ProfileDatabase {
         return ret;
     }
 
-    public List<MusicClass> getPageSearch(int sessionID, String playlistName, String query, int index) throws FileNotFoundException {
+    public List<MusicClass> getPageSearch(int sessionID, String playlistName, String query, int index) throws Exception {
         ProfileAccount profileAccount = getProfile(sessionID);
         if(profileAccount.getPlaylist(playlistName)==null) return null;
         List<MusicClass> searchedPlaylist = new ArrayList<>();
@@ -231,7 +232,7 @@ public class ProfileDatabase {
 
 
 
-    public void addSongToPlaylist(int sessionID, String playlistName, String songID) throws IOException {
+    public void addSongToPlaylist(int sessionID, String playlistName, String songID) throws Exception {
         MusicClass musicClass = MusicDatabase.GetInstance().getSongByID(songID);
         ProfileAccount profileAccount = getProfile(sessionID);
         Playlist musicClassList = profileAccount.getPlaylist(playlistName);
@@ -243,13 +244,13 @@ public class ProfileDatabase {
         sync(getProfile(sessionID), profileAccount);
     }
 
-    public void removeSongFromPlaylist(int sessionID, String playlistName, String songID) throws IOException {
+    public void removeSongFromPlaylist(int sessionID, String playlistName, String songID) throws Exception {
         ProfileAccount profileAccount = getProfile(sessionID);
         profileAccount.removeFromPlaylist(playlistName, songID);
         sync(getProfile(sessionID), profileAccount);
     }
 
-    public void createPlaylist(int sessionID, String playlistName, ObservableList<MusicClass> list) throws IOException {
+    public void createPlaylist(int sessionID, String playlistName, ObservableList<MusicClass> list) throws Exception {
         ProfileAccount profileAccount = getProfile(sessionID);
         if(!containsUsername(profileAccount.getUsername())) return;
         for(Playlist playlist : profileAccount.getPlaylists())
@@ -258,7 +259,7 @@ public class ProfileDatabase {
         sync(getProfile(sessionID), profileAccount);
     }
 
-    public List<Playlist> getPlaylistNames(int session) throws FileNotFoundException {
+    public List<Playlist> getPlaylistNames(int session) throws Exception {
         ProfileAccount profileAccount = getProfile(session);
         List<Playlist> ret = new ArrayList<>();
         for(Playlist playlist : profileAccount.getPlaylists()) {
