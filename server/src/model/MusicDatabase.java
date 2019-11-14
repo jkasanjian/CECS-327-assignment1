@@ -1,6 +1,8 @@
 package model;
 
 import com.google.gson.Gson;
+import dfs.DFS;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -10,9 +12,10 @@ import java.util.Scanner;
 
 public class MusicDatabase {
     private static MusicDatabase musicDatabase = null;
-    private final String FILE_NAME = "server/music.json";
+    private final String FILE_NAME = "music.json";
     private final String MUSICCLASS_REGEX = "(\\,?\\[?\\s+)(?=\\{\\s+\"release\")";
     private final int PAGE_SIZE = 20;
+    private DFS dfs;
 
     private MusicDatabase(){}
 
@@ -87,4 +90,7 @@ public class MusicDatabase {
         return ret.subList(index*PAGE_SIZE, (index*PAGE_SIZE)+PAGE_SIZE);
     }
 
+    public void setDfs(DFS dfs) {
+        this.dfs = dfs;
+    }
 }
