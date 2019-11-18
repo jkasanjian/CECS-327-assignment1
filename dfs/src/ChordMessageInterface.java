@@ -1,5 +1,6 @@
-import java.rmi.*;
-import java.io.*;
+import java.io.IOException;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 public interface ChordMessageInterface extends Remote
 {

@@ -36,7 +36,7 @@ public class Main {
      *  and CECS327InputStream. Proxy is incomplete.
     */
     public static void main(String[] args) throws Exception {
-        DFS dfs = new DFS(9003);
+        DFS dfs = new DFS(9002);
         dfs.join("127.0.0.1", 9000);
         MusicDatabase.GetInstance().setDfs(dfs);
         ProfileDatabase.GetInstance().setDfs(dfs);

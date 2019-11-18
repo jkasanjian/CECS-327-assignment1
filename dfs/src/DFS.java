@@ -1,13 +1,13 @@
-import java.rmi.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-import java.nio.file.*;
-import java.math.BigInteger;
-import java.security.*;
 import com.google.gson.Gson;
-import java.io.InputStream;
-import java.util.*;
+
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 /* JSON Format
 
