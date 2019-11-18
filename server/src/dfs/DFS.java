@@ -204,19 +204,23 @@ public class DFS
         writeMetaData(metadata);
 
     }
-    
-/**
- * delete file 
-  *
- * @param fileName Name of the file
- */
+
+    /**
+     * delete file
+     *
+     * @param fileName Name of the file
+     */
     public void delete(String fileName) throws Exception
     {
         FilesJson md = readMetaData();
-        List<FileJson> fileJsonList = md.getFile();
 
-        for( FileJson fJson : fileJsonList ){
+        ArrayList<Long> GUIDs = md.getGUIDs(fileName);
+        md.deleteFile(fileName);
+        writeMetaData(md);
 
+        for(Long guid : GUIDs){
+            ChordMessageInterface peer = chord.locateSuccessor(guid);
+            peer.delete(guid);
         }
     }
     
