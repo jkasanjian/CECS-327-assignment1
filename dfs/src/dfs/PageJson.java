@@ -1,36 +1,26 @@
-import java.util.ArrayList;
+package dfs;
+import java.util.Date;
 
 
-public class FileJson
+public class PageJson
 {
-    String name;
+    long guid;
     long size;
     String creationTS;
     String readTS;
     String writeTS;
     int referenceCount;
-    int numberOfPages;
-    ArrayList<PageJson> pages;
-
-    public FileJson()
+    public PageJson()
     {
-        
-    }
-
-    public FileJson(String fileName){
-        name = fileName;
-        size = 0;
-        creationTS = java.time.LocalDateTime.now().toString();
-        readTS = "";
-        writeTS = "";
+        creationTS = String.valueOf(new Date().getTime());
+        writeTS = String.valueOf(new Date().getTime());
         referenceCount = 0;
-        numberOfPages = 0;
-        pages = new ArrayList<PageJson>();
     }
-
     // getters
-    public String getName(){ return this.name; }
-    public Long getSize(){
+    public long getGuid(){
+        return this.guid;
+    }
+    public long getSize(){
         return this.size;
     }
     public String getCreationTS(){
@@ -45,17 +35,11 @@ public class FileJson
     public int getReferenceCount(){
         return this.referenceCount;
     }
-    public int getNumberOfPages(){
-        return this.numberOfPages;
-    }
-    public ArrayList<PageJson> getPages(){
-        return pages;
-    }
-
     // setters
-    public void setName(String name) { this.name = name; }
-
-    public void setSize(Long size){
+    public void setGuid(long guid){
+        this.guid = guid;
+    }
+    public void setSize(long size){
         this.size = size;
     }
     public void setCreationTS(String creationTS){
@@ -70,8 +54,6 @@ public class FileJson
     public void setReferenceCount(int referenceCount){
             this.referenceCount = referenceCount;
     }
-    public void setNnumberOfPages(int numberOfPages){
-            this.numberOfPages = numberOfPages;
-    }
+
 
 };
