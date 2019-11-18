@@ -1,9 +1,11 @@
 package rpc;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 import com.google.gson.Gson;
 import dfs.DFS;
+import dfs.RemoteInputFileStream;
 import model.MusicDatabase;
 import model.ProfileDatabase;
 
@@ -38,6 +40,24 @@ public class Main {
     public static void main(String[] args) throws Exception {
         DFS dfs = new DFS(9002);
         dfs.join("127.0.0.1", 9000);
+
+        RemoteInputFileStream remoteInputFileStream = new RemoteInputFileStream("profiles.json");
+        remoteInputFileStream.connect();
+        dfs.create("ProfilesJson");
+        dfs.append("ProfilesJson", remoteInputFileStream);
+//        while(true) {
+//            Scanner scanner = new Scanner(System.in);
+//            System.out.print("Enter Command: ");
+//            String token = scanner.nextLine();
+//            if(token.equals("print"))
+//                dfs.print();
+//            else if(token.equals("ls"))
+//                dfs.lists();
+//            else {
+//                System.out.println("Invalid Command");
+//                break;
+//            }
+//        }
         MusicDatabase.GetInstance().setDfs(dfs);
         ProfileDatabase.GetInstance().setDfs(dfs);
         Dispatcher dispatcher = new Dispatcher();
