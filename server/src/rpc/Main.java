@@ -38,6 +38,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         DFS dfs = new DFS(9002);
         dfs.join("127.0.0.1", 9000);
+
         MusicDatabase.GetInstance().setDfs(dfs);
         ProfileDatabase.GetInstance().setDfs(dfs);
         Dispatcher dispatcher = new Dispatcher();

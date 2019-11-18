@@ -42,6 +42,7 @@ public class ProfileDatabase {
     public boolean containsUsername(String username) throws Exception {
         if(!doesFileExists()) return false;
         RemoteInputFileStream fileInputStream = dfs.read(FILE_NAME, 1);
+        fileInputStream.connect();
         Scanner scanner = new Scanner(fileInputStream).useDelimiter(PROFILE_REGEX);
         while(scanner.hasNext()) {
             String token = scanner.next().toLowerCase();
@@ -57,6 +58,7 @@ public class ProfileDatabase {
         if(!doesFileExists()) return false;
         System.out.println(" bBBBBBBBBBBBB");
         RemoteInputFileStream fileInputStream = dfs.read(FILE_NAME, 1);
+        fileInputStream.connect();
         System.out.println(fileInputStream + " AAAAAAAAAAAAAAAAAAA");
         Scanner scanner = new Scanner(fileInputStream).useDelimiter(PROFILE_REGEX);
         while(scanner.hasNext()) {
@@ -77,6 +79,7 @@ public class ProfileDatabase {
     private ProfileAccount getProfile(String username) throws Exception {
         if(!doesFileExists()) return null;
         RemoteInputFileStream fileInputStream = dfs.read(FILE_NAME, 1);
+        fileInputStream.connect();
         Scanner scanner = new Scanner(fileInputStream).useDelimiter(PROFILE_REGEX);
         while(scanner.hasNext()) {
             StringBuilder token = new StringBuilder(scanner.next());
