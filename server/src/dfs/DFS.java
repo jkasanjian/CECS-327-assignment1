@@ -123,7 +123,6 @@ public class DFS
             RemoteInputFileStream metadataraw = peer.get(guid);
             metadataraw.connect();
             Scanner scan = new Scanner(metadataraw);
-            System.out.println(scan.next());
             scan.useDelimiter("\\A");
             String strMetaData = scan.next();
             System.out.println(strMetaData);
