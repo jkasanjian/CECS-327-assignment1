@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 public interface ChordMessageInterface extends Remote, Serializable
 {
@@ -14,6 +15,7 @@ public interface ChordMessageInterface extends Remote, Serializable
     public void notify(ChordMessageInterface j) throws RemoteException;
     public boolean isAlive() throws RemoteException;
     public long getId() throws RemoteException;
+    public List<MusicClass> search( String file, String queryString );
     
     
     public void put(long guidObject, RemoteInputFileStream inputStream) throws IOException, RemoteException;
