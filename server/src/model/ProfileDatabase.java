@@ -101,23 +101,26 @@ public class ProfileDatabase {
         return new ProfileAccount(profileAccount.getUsername(), profileAccount.getPassword(), profileAccount.getPlaylists());
     }
 
-    private void sync(ProfileAccount oldProfile, ProfileAccount newProfile) throws IOException {
+    private void sync(ProfileAccount oldProfile, ProfileAccount newProfile) throws Exception {
         String oldProf = new Gson().toJson(new ProfileAccount(oldProfile.getUsername(),
                 oldProfile.getPassword(), oldProfile.getPlaylists()));
         String newProf = new Gson().toJson(new ProfileAccount(newProfile.getUsername(),
                 newProfile.getPassword(), newProfile.getPlaylists()));
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_NAME));
+        Scanner bufferedReader = new Scanner(dfs.read(FILE_NAME, 1));
         String st;
         StringBuilder ret = new StringBuilder();
-        while ((st = bufferedReader.readLine()) != null)
-            ret.append(st + "\n");
+//        while ((st = bufferedReader.readLine()) != null)
+//            ret.append(st + "\n");
+        st = bufferedReader.nextLine();
+        ret.append(st + "\n");
         st = ret.toString();
         st = st.replace(oldProf, newProf);
-        FileWriter fileWriter = new FileWriter(FILE_NAME);
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        bufferedWriter.write(st);
-        bufferedWriter.close();
-        fileWriter.close();
+        dfs.updatePage("ProfilesJson", 1, st);
+//        FileWriter fileWriter = new FileWriter(FILE_NAME);
+//        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+//        bufferedWriter.write(st);
+//        bufferedWriter.close();
+//        fileWriter.close();
     }
 
     public void deletePlaylist(String username, String playlistName) throws Exception {
