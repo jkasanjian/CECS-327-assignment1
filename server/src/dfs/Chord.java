@@ -561,7 +561,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 
     public List<MusicClass> search(String file, String queryString ) throws Exception{
         final String MUSICCLASS_REGEX = "(\\,?\\[?\\s+)(?=\\{\\s+\"release\")";
-        File f = new File(file);
+        File f = new File(getPrefix() + "/" + file);
         Scanner scanner = new Scanner( f ).useDelimiter(MUSICCLASS_REGEX);
 
         List<MusicClass> ret = new ArrayList<>();

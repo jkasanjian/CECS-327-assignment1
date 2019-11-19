@@ -56,8 +56,14 @@ public class DFS implements Serializable
 
         public void run(){
             try{
-                collection = peer.search(file, targetString);
+                System.out.println("CHECKING RUN1");
+                synchronized (peer){
+                    collection = peer.search(file, targetString);
+                }
+
+                System.out.println("CHECKING RUN 2");
             }catch(Exception e){
+                System.out.println("we in here");
                 System.out.println(e.getMessage());
                 System.out.println(e.getStackTrace());
             }

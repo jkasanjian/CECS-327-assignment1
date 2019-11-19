@@ -55,7 +55,12 @@ public class DFS implements Serializable
 
         public void run(){
             try{
-                collection = peer.search(file, targetString);
+                System.out.println("checking run 1");
+                synchronized (peer){
+                    collection = peer.search(file, targetString);
+                }
+                System.out.println("checking run 2");
+                System.out.println(collection.size());
             }catch(Exception e){
                 System.out.println(e.getMessage());
                 System.out.println(e.getStackTrace());
@@ -337,13 +342,15 @@ public class DFS implements Serializable
 
             threads = new Thread[ music_file.getNumberOfPages() ];
             peers   = new PeerSearch[ music_file.getNumberOfPages() ];
-            for( int page = 1; page <= music_file.getNumberOfPages(); page++ ){
-                Long guid = music_file.getPages().get(page-1).getGuid();
-                ChordMessageInterface peer = chord.locateSuccessor(guid);
-                peers[page - 1] = new PeerSearch(peer, guid.toString(), targetString );
-                threads[page - 1] = new Thread( peers[page - 1]);
-                threads[page - 1].run();
-            }
+
+
+                for (int page = 1; page <= music_file.getNumberOfPages(); page++) {
+                    Long guid = music_file.getPages().get(page - 1).getGuid();
+                    ChordMessageInterface peer = chord.locateSuccessor(guid);
+                    peers[page - 1] = new PeerSearch(peer, guid.toString(), targetString);
+                    threads[page - 1] = new Thread(peers[page - 1]);
+                    threads[page - 1].run();
+                }
 
             for( Thread thread : threads ){
                 thread.join();
@@ -351,6 +358,9 @@ public class DFS implements Serializable
 
             for( PeerSearch peer : peers ){
                 ret.addAll( peer.getCollection() );
+                System.out.println("IN DFS NOW");
+                System.out.println(ret.size());
+
             }
         }
 
