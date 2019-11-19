@@ -7,6 +7,8 @@ import java.nio.file.*;
 import java.math.BigInteger;
 import java.security.*;
 import com.google.gson.Gson;
+import model.MusicClass;
+
 import java.io.InputStream;
 import java.util.*;
 
@@ -39,7 +41,33 @@ public class DFS implements Serializable
     int port;
     Chord  chord;
     
-    
+        public class PeerSearch implements Runnable{
+        ChordMessageInterface peer;
+        List<MusicClass> collection;
+        String targetString;
+        String file;
+
+        public PeerSearch( ChordMessageInterface peer, String file, String targetString ){
+            this.peer = peer;
+            this.collection = new ArrayList<>();
+            this.targetString = targetString;
+            this.file = file;
+        }
+
+        public void run(){
+            try{
+                collection = peer.search(file, targetString);
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+                System.out.println(e.getStackTrace());
+            }
+        }
+
+        public List<MusicClass> getCollection(){
+            return collection;
+        }
+    }
+
     private long md5(String objectName)
     {
         try
@@ -287,8 +315,7 @@ public class DFS implements Serializable
         }
     }
 
-
-    public String search( String fileName, String targetString ) throws Exception{
+    public List<MusicClass> search( String fileName, String targetString ) throws Exception{
         FilesJson md = readMetaData();
         FileJson music_file = null;
         List<FileJson> files = md.getFile();
@@ -299,10 +326,31 @@ public class DFS implements Serializable
             }
         }
 
+        Thread [] threads = null;
+        PeerSearch [] peers = null;
+        ArrayList<MusicClass> ret = new ArrayList<>();
         if ( music_file == null ){
             throw new Exception("NOT FOUND!");
+        }else{
+
+            threads = new Thread[ music_file.getNumberOfPages() ];
+            for( int page = 1; page <= music_file.getNumberOfPages(); page++ ){
+                Long guid = music_file.getPages().get(page-1).getGuid();
+                ChordMessageInterface peer = chord.locateSuccessor(guid);
+                peers[page - 1] = new PeerSearch(peer, guid.toString(), targetString );
+                threads[page - 1] = new Thread( peers[page - 1]);
+                threads[page - 1].run();
+            }
+
+            for( Thread thread : threads ){
+                thread.join();
+            }
+
+            for( PeerSearch peer : peers ){
+                ret.addAll( peer.getCollection() );
+            }
         }
 
-        return "";
+        return ret;
     }
 }

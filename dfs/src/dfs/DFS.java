@@ -54,7 +54,12 @@ public class DFS implements Serializable
         }
 
         public void run(){
-            collection = peer.search(file, targetString);
+            try{
+                collection = peer.search(file, targetString);
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+                System.out.println(e.getStackTrace());
+            }
         }
 
         public List<MusicClass> getCollection(){

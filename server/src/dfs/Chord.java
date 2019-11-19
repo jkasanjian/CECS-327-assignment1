@@ -7,6 +7,9 @@ package dfs;
 * @since   03-3-2019
 */
 
+import com.google.gson.Gson;
+import model.MusicClass;
+
 import java.rmi.*;
 import java.rmi.registry.*;
 import java.rmi.server.*;
@@ -551,5 +554,36 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
         catch(RemoteException e){
 	       System.out.println("Cannot retrive id of successor or predecessor");
         }
+    }
+
+    public List<MusicClass> search(String file, String queryString ) throws Exception{
+        final String MUSICCLASS_REGEX = "(\\,?\\[?\\s+)(?=\\{\\s+\"release\")";
+        File f = new File(file);
+        Scanner scanner = new Scanner( f ).useDelimiter(MUSICCLASS_REGEX);
+
+        List<MusicClass> ret = new ArrayList<>();
+        queryString = queryString.toLowerCase();
+
+        while( scanner.hasNext() ){
+            String token = scanner.next();
+            if(token.endsWith("]")){
+                token = token.substring(0, token.length()-1);
+            }
+
+            try {
+                MusicClass musicClass = new Gson().fromJson(token, MusicClass.class);
+                if (musicClass.getSongTitle().toLowerCase().contains(queryString)) {
+                    ret.add(musicClass);
+                }
+                if (musicClass.getArtistName().toLowerCase().contains(queryString)) {
+                    ret.add(musicClass);
+                }
+
+            }catch (Exception e){
+                System.out.println(token);
+            }
+        }
+
+        return ret;
     }
 }
