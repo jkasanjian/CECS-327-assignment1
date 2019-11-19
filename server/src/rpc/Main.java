@@ -61,19 +61,19 @@ public class Main implements Serializable {
 //            }
 //        }
 
-        dfs.create("ProfilesJson");
-        RemoteInputFileStream remoteInputFileStream0 = new RemoteInputFileStream("profiles.json");
-        dfs.append("ProfilesJson", remoteInputFileStream0);
-
-        dfs.create("MusicJson");
-        RemoteInputFileStream remoteInputFileStream1 = new RemoteInputFileStream("music1.json");
-        RemoteInputFileStream remoteInputFileStream2 = new RemoteInputFileStream("music2.json");
-        RemoteInputFileStream remoteInputFileStream3 = new RemoteInputFileStream("music3.json");
-        RemoteInputFileStream remoteInputFileStream4 = new RemoteInputFileStream("music4.json");
-        dfs.append("MusicJson", remoteInputFileStream1);
-        dfs.append("MusicJson", remoteInputFileStream2);
-        dfs.append("MusicJson", remoteInputFileStream3);
-        dfs.append("MusicJson", remoteInputFileStream4);
+//        dfs.create("ProfilesJson");
+//        RemoteInputFileStream remoteInputFileStream0 = new RemoteInputFileStream("profiles.json");
+//        dfs.append("ProfilesJson", remoteInputFileStream0);
+//
+//        dfs.create("MusicJson");
+//        RemoteInputFileStream remoteInputFileStream1 = new RemoteInputFileStream("music1.json");
+//        RemoteInputFileStream remoteInputFileStream2 = new RemoteInputFileStream("music2.json");
+//        RemoteInputFileStream remoteInputFileStream3 = new RemoteInputFileStream("music3.json");
+//        RemoteInputFileStream remoteInputFileStream4 = new RemoteInputFileStream("music4.json");
+//        dfs.append("MusicJson", remoteInputFileStream1);
+//        dfs.append("MusicJson", remoteInputFileStream2);
+//        dfs.append("MusicJson", remoteInputFileStream3);
+//        dfs.append("MusicJson", remoteInputFileStream4);
         System.out.println("Done.....");
         MusicDatabase.GetInstance().setDfs(dfs);
         ProfileDatabase.GetInstance().setDfs(dfs);

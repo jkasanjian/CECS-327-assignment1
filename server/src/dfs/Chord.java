@@ -559,7 +559,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
         }
     }
 
-    public List<MusicClass> search(String file, String queryString ) throws Exception{
+    public List<MusicClass> search(String file, String queryString ) throws RemoteException, FileNotFoundException{
         final String MUSICCLASS_REGEX = "(\\,?\\[?\\s+)(?=\\{\\s+\"release\")";
         File f = new File(getPrefix() + "/" + file);
         Scanner scanner = new Scanner( f ).useDelimiter(MUSICCLASS_REGEX);
@@ -575,10 +575,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 
             try {
                 MusicClass musicClass = new Gson().fromJson(token, MusicClass.class);
-                if (musicClass.getSongTitle().toLowerCase().contains(queryString)) {
-                    ret.add(musicClass);
-                }
-                if (musicClass.getArtistName().toLowerCase().contains(queryString)) {
+                if (musicClass.getSongTitle().toLowerCase().contains(queryString) ||(musicClass.getSongTitle().toLowerCase().contains(queryString))) {
                     ret.add(musicClass);
                 }
 

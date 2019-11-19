@@ -70,6 +70,11 @@ public class DFS implements Serializable
         }
 
         public List<MusicClass> getCollection(){
+
+            if (collection == null ){
+                System.out.println("NULL");
+                collection = new ArrayList<>();
+            }
             return collection;
         }
     }
@@ -350,14 +355,17 @@ public class DFS implements Serializable
             }
 
             for( Thread thread : threads ){
+                System.out.println("Joining before");
                 thread.join();
+                System.out.println("Joining after");
             }
 
             for( PeerSearch peer : peers ){
                 ret.addAll( peer.getCollection() );
             }
         }
-
+        System.out.println("returning...");
+        System.out.println(ret.size());
         return ret;
     }
 }

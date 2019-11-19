@@ -163,8 +163,9 @@ public class MusicDatabase {
             }
         System.out.println("Search completed.");
         */
-        return ret;
-        //return ret.subList(index*PAGE_SIZE, (index*PAGE_SIZE)+PAGE_SIZE);
+        //return ret;
+        return ret.subList(index*PAGE_SIZE, (index*PAGE_SIZE)+PAGE_SIZE);
+
     }
 
     public void setDfs(DFS dfs) {

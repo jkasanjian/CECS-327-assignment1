@@ -1,4 +1,5 @@
 package dfs;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.Remote;
@@ -15,7 +16,7 @@ public interface ChordMessageInterface extends Remote, Serializable
     public void notify(ChordMessageInterface j) throws RemoteException;
     public boolean isAlive() throws RemoteException;
     public long getId() throws RemoteException;
-    public List<MusicClass> search( String file, String queryString ) throws Exception;
+    public List<MusicClass> search( String file, String queryString ) throws RemoteException, FileNotFoundException;
     
     
     public void put(long guidObject, RemoteInputFileStream inputStream) throws IOException, RemoteException;

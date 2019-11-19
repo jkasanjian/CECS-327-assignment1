@@ -560,7 +560,7 @@ public class Chord extends UnicastRemoteObject implements ChordMessageInterface,
         }
     }
 
-    public List<MusicClass> search( String file, String queryString ) throws Exception{
+    public List<MusicClass> search( String file, String queryString ) throws  RemoteException, FileNotFoundException{
         final String MUSICCLASS_REGEX = "(\\,?\\[?\\s+)(?=\\{\\s+\"release\")";
         File f = new File("./" + guid + "/repository/" + file);
         Scanner scanner = new Scanner( f ).useDelimiter(MUSICCLASS_REGEX);
@@ -577,16 +577,13 @@ public class Chord extends UnicastRemoteObject implements ChordMessageInterface,
             try {
                 MusicClass musicClass = new Gson().fromJson(token, MusicClass.class);
                 //System.out.println("we made it boys");
-                if (musicClass.getSongTitle().toLowerCase().contains(queryString)) {
-                    ret.add(musicClass);
-                }
-                if (musicClass.getArtistName().toLowerCase().contains(queryString)) {
+                if (musicClass.getSongTitle().toLowerCase().contains(queryString) ||(musicClass.getSongTitle().toLowerCase().contains(queryString))) {
                     ret.add(musicClass);
                 }
 
             }catch (Exception e){
                 System.out.println("IN PEER EXCEPTION");
-                //System.out.println(token);
+                System.out.println(token);
                 e.printStackTrace();
             }
         }
