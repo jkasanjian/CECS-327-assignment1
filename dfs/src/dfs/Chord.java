@@ -199,6 +199,10 @@ public class Chord extends UnicastRemoteObject implements ChordMessageInterface,
         return guid;
     }
 
+    public String getPrefix(){
+        return prefix;
+    }
+
 /**
  * It is used to detect that the peer is still alive
  * <p>
@@ -558,7 +562,7 @@ public class Chord extends UnicastRemoteObject implements ChordMessageInterface,
 
     public List<MusicClass> search( String file, String queryString ) throws Exception{
         final String MUSICCLASS_REGEX = "(\\,?\\[?\\s+)(?=\\{\\s+\"release\")";
-        File f = new File(file);
+        File f = new File(getPrefix() + "/" + file);
         Scanner scanner = new Scanner( f ).useDelimiter(MUSICCLASS_REGEX);
 
         List<MusicClass> ret = new ArrayList<>();

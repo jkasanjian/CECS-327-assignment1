@@ -199,6 +199,9 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
         return guid;
     }
 
+    public String getPrefix(){
+        return prefix;
+    }
 /**
  * It is used to detect that the peer is still alive
  * <p>

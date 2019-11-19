@@ -334,10 +334,11 @@ public class DFS implements Serializable
         }else{
 
             threads = new Thread[ music_file.getNumberOfPages() ];
+            peers   = new PeerSearch[ music_file.getNumberOfPages() ];
             for( int page = 1; page <= music_file.getNumberOfPages(); page++ ){
                 Long guid = music_file.getPages().get(page-1).getGuid();
                 ChordMessageInterface peer = chord.locateSuccessor(guid);
-                peers[page - 1] = new PeerSearch(peer, guid.toString(), targetString );
+                peers[page - 1] = new PeerSearch( peer, guid.toString(), targetString );
                 threads[page - 1] = new Thread( peers[page - 1]);
                 threads[page - 1].run();
             }

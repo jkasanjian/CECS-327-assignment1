@@ -75,8 +75,12 @@ public class MusicDatabase {
             for(int i = 0; i < PAGE_SIZE; i++) {
                 if(scanner.hasNext()) {
                     String token = scanner.next();
-                    MusicClass musicClass = new Gson().fromJson(token, MusicClass.class);
-                    ret.add(musicClass);
+                    try{
+                        MusicClass musicClass = new Gson().fromJson(token, MusicClass.class);
+                        ret.add(musicClass);
+                    }catch(Exception e){
+                        break;
+                    }
                 } else break;
             }
         }
@@ -84,6 +88,8 @@ public class MusicDatabase {
     }
 
     public List<MusicClass> getSongsSearch(int index, String query) throws Exception {
+        List<MusicClass> ret =  dfs.search("MusicJson", query);
+        /*
         FilesJson md  = dfs.readMetaData();
         FileJson file = null;
 
@@ -124,7 +130,7 @@ public class MusicDatabase {
             }
 
         }
-
+        */
         /*
         System.out.println("Searching...");
         FileInputStream fileInputStream = new FileInputStream(FILE_NAME);
@@ -156,8 +162,8 @@ public class MusicDatabase {
             }
         System.out.println("Search completed.");
         */
-
-        return ret.subList(index*PAGE_SIZE, (index*PAGE_SIZE)+PAGE_SIZE);
+        return ret;
+        //return ret.subList(index*PAGE_SIZE, (index*PAGE_SIZE)+PAGE_SIZE);
     }
 
     public void setDfs(DFS dfs) {
