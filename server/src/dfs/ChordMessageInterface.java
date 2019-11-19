@@ -2,7 +2,7 @@ package dfs;
 import java.rmi.*;
 import java.io.*;
 
-public interface ChordMessageInterface extends Remote
+public interface ChordMessageInterface extends Remote, Serializable
 {
     public ChordMessageInterface getPredecessor()  throws RemoteException;
     ChordMessageInterface locateSuccessor(long key) throws RemoteException;

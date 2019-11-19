@@ -1,8 +1,9 @@
 package dfs;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class FileJson
+public class FileJson implements Serializable
 {
     String name;
     long size;

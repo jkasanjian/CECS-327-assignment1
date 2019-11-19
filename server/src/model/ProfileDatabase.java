@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import rpc.SessionManager;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -156,10 +157,14 @@ public class ProfileDatabase {
     public void addProfile(ProfileAccount profileAccount) throws Exception {
         if(containsUsername(profileAccount.getUsername())) return;
         if(!doesFileExists()) {
+            System.out.println("File Does Not Exist - Error in Profile Database addProfile Method");
             File file = new File(FILE_NAME);
             file.createNewFile();
         }
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_NAME));
+        RemoteInputFileStream fileInputStream = dfs.read(FILE_NAME, 1);
+        System.out.println(fileInputStream.toString());
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream, "UTF-8"));
+        //BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_NAME));
         String st;
         String ret = "";
         while ((st = bufferedReader.readLine()) != null)
@@ -172,11 +177,14 @@ public class ProfileDatabase {
         else
             ret += ("[" + new Gson().toJson(new ProfileAccount(profileAccount.getUsername(),
                     profileAccount.getPassword(), profileAccount.getPlaylists())) + "]");
-        FileWriter fileWriter = new FileWriter(FILE_NAME);
-        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        bufferedWriter.write(ret);
-        bufferedWriter.close();
-        fileWriter.close();
+        System.out.println("RET: " + ret);
+        dfs.updatePage(FILE_NAME, 1, ret);
+//        InputStream stream = new ByteArrayInputStream(ret.getBytes(StandardCharsets.UTF_8));
+//        FileWriter fileWriter = new FileWriter(FILE_NAME);
+//        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+//        bufferedWriter.write(ret);
+//        bufferedWriter.close();
+//        fileWriter.close();
     }
 
     public List<MusicClass> getPage(int sessionID, String playlistName, int index) throws Exception {

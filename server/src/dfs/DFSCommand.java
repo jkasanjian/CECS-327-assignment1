@@ -8,7 +8,7 @@ import com.google.gson.stream.*;
 
 
 
-public class DFSCommand
+public class DFSCommand implements Serializable
 {
     DFS dfs;
         

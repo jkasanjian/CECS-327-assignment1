@@ -1,8 +1,9 @@
 package dfs;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilesJson 
+public class FilesJson implements Serializable
 {
         List<FileJson> file;
         public FilesJson() 

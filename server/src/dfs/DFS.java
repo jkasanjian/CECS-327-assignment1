@@ -33,7 +33,7 @@ import java.util.*;
 */
 
 
-public class DFS
+public class DFS implements Serializable
 {
     
     int port;
@@ -270,6 +270,19 @@ public class DFS
                 writeMetaData(filesJson);
                 chord.locateSuccessor(pageJson.guid).put(pageJson.guid, data);
                 break;
+            }
+        }
+    }
+
+    public void updatePage(String fileName, int pageNumber, String data) throws Exception {
+        FilesJson metadata = readMetaData();
+        List<FileJson> fileJsonList = metadata.getFile();
+        for ( FileJson fileJson: fileJsonList) {
+            if (fileJson.name.equals(fileName)) {
+                ArrayList<PageJson> pageJsonList = fileJson.pages;
+                long guid = fileJson.getPages().get(pageNumber-1).getGuid();
+                ChordMessageInterface peer = chord.locateSuccessor(guid);
+                peer.put(guid, data);
             }
         }
     }
