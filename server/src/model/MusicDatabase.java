@@ -64,7 +64,7 @@ public class MusicDatabase {
         }
         List<MusicClass> ret = new ArrayList<>();
 
-        for(int page = 0; page < fileJson.getNumberOfPages(); page++) {
+        for(int page = 1; page < fileJson.getNumberOfPages(); page++) {
             Scanner scanner = new Scanner(dfs.read(FILE_NAME, page)).useDelimiter(MUSICCLASS_REGEX);
             for(int i = 0; i < PAGE_SIZE*index; i++) {
                 if(scanner.hasNext())
