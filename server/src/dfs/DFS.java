@@ -33,7 +33,7 @@ import java.util.*;
 */
 
 
-public class DFS
+public class DFS implements Serializable
 {
     
     int port;
@@ -123,7 +123,6 @@ public class DFS
             RemoteInputFileStream metadataraw = peer.get(guid);
             metadataraw.connect();
             Scanner scan = new Scanner(metadataraw);
-            //System.out.println(scan.next());
             scan.useDelimiter("\\A");
             String strMetaData = scan.next();
             System.out.println(strMetaData);
@@ -204,19 +203,23 @@ public class DFS
         writeMetaData(metadata);
 
     }
-    
-/**
- * delete file 
-  *
- * @param fileName Name of the file
- */
+
+    /**
+     * delete file
+     *
+     * @param fileName Name of the file
+     */
     public void delete(String fileName) throws Exception
     {
         FilesJson md = readMetaData();
-        List<FileJson> fileJsonList = md.getFile();
 
-        for( FileJson fJson : fileJsonList ){
+        ArrayList<Long> GUIDs = md.getGUIDs(fileName);
+        md.deleteFile(fileName);
+        writeMetaData(md);
 
+        for(Long guid : GUIDs){
+            ChordMessageInterface peer = chord.locateSuccessor(guid);
+            peer.delete(guid);
         }
     }
     
@@ -267,6 +270,19 @@ public class DFS
                 writeMetaData(filesJson);
                 chord.locateSuccessor(pageJson.guid).put(pageJson.guid, data);
                 break;
+            }
+        }
+    }
+
+    public void updatePage(String fileName, int pageNumber, String data) throws Exception {
+        FilesJson metadata = readMetaData();
+        List<FileJson> fileJsonList = metadata.getFile();
+        for ( FileJson fileJson: fileJsonList) {
+            if (fileJson.name.equals(fileName)) {
+                ArrayList<PageJson> pageJsonList = fileJson.pages;
+                long guid = fileJson.getPages().get(pageNumber-1).getGuid();
+                ChordMessageInterface peer = chord.locateSuccessor(guid);
+                peer.put(guid, data);
             }
         }
     }

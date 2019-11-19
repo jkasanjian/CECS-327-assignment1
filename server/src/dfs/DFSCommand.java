@@ -8,7 +8,7 @@ import com.google.gson.stream.*;
 
 
 
-public class DFSCommand
+public class DFSCommand implements Serializable
 {
     DFS dfs;
         
@@ -51,9 +51,7 @@ public class DFSCommand
 
             if (result[0].equals("delete"))  // deletes a file
             {
-                System.out.println("Enter name of file to be deleted: ");
-                String fileName = buffer.readLine();
-                dfs.delete(fileName);
+                dfs.delete(result[1]);
             }
 
             if (result[0].equals("append")){

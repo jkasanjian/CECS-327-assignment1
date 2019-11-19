@@ -1,18 +1,9 @@
 package dfs;
-import java.rmi.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-import java.nio.file.*;
-import java.math.BigInteger;
-import java.security.*;
-import com.google.gson.Gson;
-import java.io.InputStream;
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
 
 
-
-public class FileJson 
+public class FileJson implements Serializable
 {
     String name;
     long size;
@@ -25,7 +16,7 @@ public class FileJson
 
     public FileJson()
     {
-        
+
     }
 
     public FileJson(String fileName){
@@ -79,10 +70,9 @@ public class FileJson
         this.writeTS = writeTS;
     }
     public void setReferenceCount(int referenceCount){
-            this.referenceCount = referenceCount;
+        this.referenceCount = referenceCount;
     }
     public void setNnumberOfPages(int numberOfPages){
-            this.numberOfPages = numberOfPages;
+        this.numberOfPages = numberOfPages;
     }
-
 };

@@ -1,22 +1,15 @@
 package dfs;
-import java.rmi.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-import java.nio.file.*;
-import java.math.BigInteger;
-import java.security.*;
-import com.google.gson.Gson;
-import java.io.InputStream;
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-public class FilesJson 
+public class FilesJson implements Serializable
 {
-        List<FileJson> file;
-        public FilesJson() 
-        {
-            file = new ArrayList<FileJson>();
-        }
+    List<FileJson> file;
+    public FilesJson()
+    {
+        file = new ArrayList<FileJson>();
+    }
     // getters
     public List<FileJson> getFile(){
         return this.file;
@@ -27,6 +20,29 @@ public class FilesJson
     }
     // Adding a file to list
     public void addFile(FileJson file) {(this.file).add(file);}
+
+    public ArrayList<Long> getGUIDs(String fileName){
+        ArrayList<Long> ret = new ArrayList<>();
+        for (FileJson f : this.file){
+            if(f.name.equals(fileName)){
+                for(PageJson p : f.pages){
+                    ret.add(p.guid);
+                }
+            }
+        }
+        return ret;
+    }
+
+    public void deleteFile(String fileName){
+        ArrayList<Long> ret = new ArrayList<>();
+        for (FileJson f : this.file){
+            if(f.name.equals(fileName)){
+                file.remove(f);
+            }
+        }
+    }
+
+
 };
 
     

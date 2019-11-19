@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.util.*;
     
 
-public class PageJson
+public class PageJson implements Serializable
 {
     long guid;
     long size;

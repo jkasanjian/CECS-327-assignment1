@@ -1,6 +1,8 @@
 package rpc;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.lang.invoke.SerializedLambda;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
@@ -9,7 +11,7 @@ import dfs.RemoteInputFileStream;
 import model.MusicDatabase;
 import model.ProfileDatabase;
 
-public class Main {
+public class Main implements Serializable {
    
       /**
      * Play a given audio file.
@@ -41,10 +43,10 @@ public class Main {
         DFS dfs = new DFS(9002);
         dfs.join("127.0.0.1", 9000);
 
-        RemoteInputFileStream remoteInputFileStream = new RemoteInputFileStream("profiles.json");
+        //RemoteInputFileStream remoteInputFileStream = new RemoteInputFileStream("profiles.json");
         //remoteInputFileStream.connect();
-        dfs.create("ProfilesJson");
-        dfs.append("ProfilesJson", remoteInputFileStream);
+        //dfs.create("ProfilesJson");
+        //dfs.append("ProfilesJson", remoteInputFileStream);
 //        while(true) {
 //            Scanner scanner = new Scanner(System.in);
 //            System.out.print("Enter Command: ");

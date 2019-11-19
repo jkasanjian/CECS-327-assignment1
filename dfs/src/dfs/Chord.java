@@ -7,10 +7,7 @@ package dfs;
 * @since   03-3-2019
 */
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -24,7 +21,7 @@ import java.util.TimerTask;
  * It implements the ChordMessageInterface
  *
  */
-public class Chord extends UnicastRemoteObject implements ChordMessageInterface
+public class Chord extends UnicastRemoteObject implements ChordMessageInterface, Serializable
 {
     // Numbers of fingers
     public static final int M = 2;
