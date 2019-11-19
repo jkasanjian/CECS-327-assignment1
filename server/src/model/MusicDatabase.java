@@ -79,6 +79,7 @@ public class MusicDatabase {
                     ret.add(musicClass);
                 } else break;
             }
+            break;
         }
         return ret;
     }
