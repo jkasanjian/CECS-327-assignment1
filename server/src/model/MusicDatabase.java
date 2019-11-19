@@ -83,6 +83,7 @@ public class MusicDatabase {
                     }
                 } else break;
             }
+            break;
         }
         return ret;
     }
