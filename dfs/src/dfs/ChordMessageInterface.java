@@ -15,7 +15,7 @@ public interface ChordMessageInterface extends Remote, Serializable
     public void notify(ChordMessageInterface j) throws RemoteException;
     public boolean isAlive() throws RemoteException;
     public long getId() throws RemoteException;
-    public List<MusicClass> search( String file, String queryString );
+    public List<MusicClass> search( String file, String queryString ) throws Exception;
     
     
     public void put(long guidObject, RemoteInputFileStream inputStream) throws IOException, RemoteException;
