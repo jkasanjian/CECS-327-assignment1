@@ -123,7 +123,6 @@ public class DFS
             RemoteInputFileStream metadataraw = peer.get(guid);
             metadataraw.connect();
             Scanner scan = new Scanner(metadataraw);
-            System.out.println(scan.next());
             scan.useDelimiter("\\A");
             String strMetaData = scan.next();
             System.out.println(strMetaData);
@@ -242,7 +241,7 @@ public class DFS
         Long guid = target.getPages().get(pageNumber-1).getGuid();
         ChordMessageInterface peer = chord.locateSuccessor(guid);
         RemoteInputFileStream dataraw = peer.get(guid);
-
+        dataraw.connect();
         return dataraw;
     }
     

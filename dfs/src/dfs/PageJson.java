@@ -1,8 +1,9 @@
 package dfs;
+import java.io.Serializable;
 import java.util.Date;
 
 
-public class PageJson
+public class PageJson implements Serializable
 {
     long guid;
     long size;
