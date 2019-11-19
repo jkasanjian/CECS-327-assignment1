@@ -101,7 +101,7 @@ public class MusicDatabase {
 
         List<MusicClass> ret = new ArrayList<>();
         query = query.toLowerCase();
-        for( int page = 0; page < file.getNumberOfPages(); page++ ){
+        for( int page = 1; page < file.getNumberOfPages(); page++ ){
             Scanner scanner = new Scanner( dfs.read(FILE_NAME, page) ).useDelimiter(MUSICCLASS_REGEX);
 
             while( scanner.hasNext() ){
