@@ -47,7 +47,7 @@ public class Main implements Serializable {
         //remoteInputFileStream.connect();
         //dfs.create("ProfilesJson");
         //dfs.append("ProfilesJson", remoteInputFileStream);
-//        while(true) {
+//        while(true)
 //            Scanner scanner = new Scanner(System.in);
 //            System.out.print("Enter Command: ");
 //            String token = scanner.nextLine();
