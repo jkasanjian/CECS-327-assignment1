@@ -40,8 +40,11 @@ public class DFS implements Serializable
     
     int port;
     Chord  chord;
-    
-        public class PeerSearch implements Runnable{
+
+    /**
+     * Class used to create threads for searching
+     */
+    public class PeerSearch implements Runnable{
         ChordMessageInterface peer;
         List<MusicClass> collection;
         String targetString;
@@ -54,16 +57,16 @@ public class DFS implements Serializable
             this.file = file;
         }
 
+        /**
+         * When a thread is created, it calls the search method a peer
+         */
         public void run(){
             try{
-                System.out.println("CHECKING RUN1");
                 synchronized (peer){
                     collection = peer.search(file, targetString);
                 }
 
-                System.out.println("CHECKING RUN 2");
             }catch(Exception e){
-                System.out.println("we in here");
                 System.out.println(e.getMessage());
                 System.out.println(e.getStackTrace());
             }
@@ -326,12 +329,19 @@ public class DFS implements Serializable
         }
     }
 
+    /**
+     * Method to search by song name or artist
+     * @param fileName name of file to be searched (MusicJson)
+     * @param targetString query to be searched
+     * @return list of MusicClass that contain the query in the name or artist
+     * @throws Exception
+     */
     public List<MusicClass> search( String fileName, String targetString ) throws Exception{
         FilesJson md = readMetaData();
         FileJson music_file = null;
         List<FileJson> files = md.getFile();
         for ( FileJson fjson: files ) {
-            if( fjson.name.equals("MusicJson")){
+            if( fjson.name.equals(fileName)){
                 music_file = fjson;
                 break;
             }
@@ -355,17 +365,13 @@ public class DFS implements Serializable
             }
 
             for( Thread thread : threads ){
-                System.out.println("Joining before");
                 thread.join();
-                System.out.println("Joining after");
             }
 
             for( PeerSearch peer : peers ){
                 ret.addAll( peer.getCollection() );
             }
         }
-        System.out.println("returning...");
-        System.out.println(ret.size());
         return ret;
     }
 }

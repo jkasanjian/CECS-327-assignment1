@@ -40,6 +40,9 @@ public class DFS implements Serializable
     int port;
     Chord  chord;
 
+    /**
+     * Class used to create threads for searching
+     */
     public class PeerSearch implements Runnable{
         ChordMessageInterface peer;
         List<MusicClass> collection;
@@ -55,11 +58,9 @@ public class DFS implements Serializable
 
         public void run(){
             try{
-                System.out.println("checking run 1");
                 synchronized (peer){
                     collection = peer.search(file, targetString);
                 }
-                System.out.println("checking run 2");
                 System.out.println(collection.size());
             }catch(Exception e){
                 System.out.println(e.getMessage());
@@ -321,7 +322,13 @@ public class DFS implements Serializable
             }
         }
     }
-
+    /**
+     * Method to search by song name or artist
+     * @param fileName name of file to be searched (MusicJson)
+     * @param targetString query to be searched
+     * @return list of MusicClass that contain the query in the name or artist
+     * @throws Exception
+     */
     public List<MusicClass> search( String fileName, String targetString ) throws Exception{
         FilesJson md = readMetaData();
         FileJson music_file = null;
@@ -358,7 +365,6 @@ public class DFS implements Serializable
 
             for( PeerSearch peer : peers ){
                 ret.addAll( peer.getCollection() );
-                System.out.println("IN DFS NOW");
                 System.out.println(ret.size());
 
             }

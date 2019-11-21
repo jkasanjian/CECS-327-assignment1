@@ -555,10 +555,18 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
             }
         }
         catch(RemoteException e){
-	       System.out.println("Cannot retrive id of successor or predecessor");
+	       System.out.println("Cannot retrieve id of successor or predecessor");
         }
     }
 
+    /**
+     * Searches a peer for songs matching the query
+     * @param file fileName (GUID of page)
+     * @param queryString query to be searched for
+     * @return List of MusicClass matching the query in song name or artist
+     * @throws RemoteException
+     * @throws FileNotFoundException
+     */
     public List<MusicClass> search(String file, String queryString ) throws RemoteException, FileNotFoundException{
         final String MUSICCLASS_REGEX = "(\\,?\\[?\\s+)(?=\\{\\s+\"release\")";
         File f = new File(getPrefix() + "/" + file);

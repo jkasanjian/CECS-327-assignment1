@@ -89,81 +89,8 @@ public class MusicDatabase {
     }
 
     public List<MusicClass> getSongsSearch(int index, String query) throws Exception {
-        List<MusicClass> ret =  dfs.search("MusicJson", query);
-        /*
-        FilesJson md  = dfs.readMetaData();
-        FileJson file = null;
+        List<MusicClass> ret =  dfs.search(FILE_NAME, query);
 
-        for( FileJson fj : md.getFile() ){
-            if( fj.getName() == FILE_NAME ){
-                file = fj;
-                break;
-            }
-        }
-
-        if ( file == null ){
-            throw new Exception(FILE_NAME + " not found!");
-        }
-
-        List<MusicClass> ret = new ArrayList<>();
-        query = query.toLowerCase();
-        for( int page = 1; page < file.getNumberOfPages(); page++ ){
-            Scanner scanner = new Scanner( dfs.read(FILE_NAME, page) ).useDelimiter(MUSICCLASS_REGEX);
-
-            while( scanner.hasNext() ){
-                String token = scanner.next();
-                if(token.endsWith("]")){
-                    token = token.substring(0, token.length()-1);
-                }
-
-                try {
-                    MusicClass musicClass = new Gson().fromJson(token, MusicClass.class);
-                    if (musicClass.getSongTitle().toLowerCase().contains(query)) {
-                        ret.add(musicClass);
-                    }
-                    if (musicClass.getArtistName().toLowerCase().contains(query)) {
-                        ret.add(musicClass);
-                    }
-
-                }catch (Exception e){
-                    System.out.println(token);
-                }
-            }
-
-        }
-        */
-        /*
-        System.out.println("Searching...");
-        FileInputStream fileInputStream = new FileInputStream(FILE_NAME);
-        Scanner scanner = new Scanner(fileInputStream).useDelimiter(MUSICCLASS_REGEX);
-
-        List<MusicClass> ret = new ArrayList<>();
-        query = query.toLowerCase();
-
-        int c = 0;
-        while(scanner.hasNext()){
-            String token = scanner.next();
-            if(token.endsWith("]")){
-                token = token.substring(0, token.length()-1);
-            }
-            try {
-                MusicClass musicClass = new Gson().fromJson(token, MusicClass.class);
-                if (musicClass.getSongTitle().toLowerCase().contains(query)) {
-                    ret.add(musicClass);
-                }
-                if (musicClass.getArtistName().toLowerCase().contains(query)) {
-                    ret.add(musicClass);
-                }
-                //System.out.println(c);
-                c++;
-
-            }catch (Exception e){
-                System.out.println(token);
-            }
-            }
-        System.out.println("Search completed.");
-        */
-        //return ret;
         return ret.subList(index*PAGE_SIZE, (index*PAGE_SIZE)+PAGE_SIZE);
 
     }
