@@ -26,18 +26,21 @@ public class FilesJson implements Serializable
             for (FileJson f : this.file){
                 if(f.name.equals(fileName)){
                     for(PageJson p : f.pages){
-                        ret.add(p.guid);
+                        ret.addAll(p.getGuids());
+
                     }
                 }
             }
             return ret;
     }
 
+
     public void deleteFile(String fileName){
-        ArrayList<Long> ret = new ArrayList<>();
         for (FileJson f : this.file){
             if(f.name.equals(fileName)){
-                file.remove(f);
+                this.file.remove(f);
+                System.out.println("Found");
+                break;
                 }
             }
         }

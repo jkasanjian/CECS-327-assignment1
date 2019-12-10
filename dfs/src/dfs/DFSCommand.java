@@ -54,7 +54,7 @@ public class DFSCommand implements Serializable
             }
 
             if (result[0].equals("append")){
-                dfs.append(result[1], new RemoteInputFileStream(result[2]));
+                dfs.append(result[1], result[2]);
             }
 
             if (result[0].equals("read"))  // reads a page from a file

@@ -1,9 +1,11 @@
 package dfs;
-import model.MusicClass;
-
-import java.rmi.*;
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Serializable;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.List;
+import model.MusicClass;
 
 public interface ChordMessageInterface extends Remote, Serializable
 {
@@ -15,8 +17,8 @@ public interface ChordMessageInterface extends Remote, Serializable
     public void notify(ChordMessageInterface j) throws RemoteException;
     public boolean isAlive() throws RemoteException;
     public long getId() throws RemoteException;
-    public List<MusicClass> search(String file, String queryString ) throws RemoteException, FileNotFoundException;
-
+    public List<MusicClass> search( String file, String queryString ) throws RemoteException, FileNotFoundException;
+    
     
     public void put(long guidObject, RemoteInputFileStream inputStream) throws IOException, RemoteException;
     public void put(long guidObject, String text) throws IOException, RemoteException;

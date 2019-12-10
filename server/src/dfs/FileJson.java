@@ -16,7 +16,7 @@ public class FileJson implements Serializable
 
     public FileJson()
     {
-
+        
     }
 
     public FileJson(String fileName){
@@ -70,9 +70,10 @@ public class FileJson implements Serializable
         this.writeTS = writeTS;
     }
     public void setReferenceCount(int referenceCount){
-        this.referenceCount = referenceCount;
+            this.referenceCount = referenceCount;
     }
-    public void setNnumberOfPages(int numberOfPages){
-        this.numberOfPages = numberOfPages;
+    public void setNumberOfPages(int numberOfPages){
+            this.numberOfPages = numberOfPages;
     }
+
 };

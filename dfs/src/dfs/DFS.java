@@ -213,7 +213,7 @@ public class DFS implements Serializable
         FilesJson md = readMetaData();
         List<FileJson> files = md.getFile();
         String listOfFiles = "";
-        for ( FileJson fjson: files) {
+        for ( FileJson fjson : files) {
             listOfFiles += (fjson.getName() + "\n");
         }
         return listOfFiles;
@@ -278,7 +278,8 @@ public class DFS implements Serializable
             }
         }
         target.setReadTS(java.time.LocalDateTime.now().toString());
-        Long guid = target.getPages().get(pageNumber-1).getGuid();
+        // reads first replication
+        Long guid = target.getPages().get(pageNumber-1).getGuids().get(0);
         ChordMessageInterface peer = chord.locateSuccessor(guid);
         RemoteInputFileStream dataraw = peer.get(guid);
         dataraw.connect();
@@ -289,22 +290,47 @@ public class DFS implements Serializable
  * Add a page to the file                
   *
  * @param fileName Name of the file
- * @param data RemoteInputStream. 
+ * @param dataFile filename of remote .
  */
-    public void append(String fileName, RemoteInputFileStream data) throws Exception
+    public void append(String fileName, String dataFile) throws Exception
     {
+        RemoteInputFileStream data1 = new RemoteInputFileStream(dataFile);
+        RemoteInputFileStream data2 = new RemoteInputFileStream(dataFile);
+        RemoteInputFileStream data3 = new RemoteInputFileStream(dataFile);
+
         FilesJson filesJson = readMetaData();
         List<FileJson> fileJsonList = filesJson.getFile();
         for(FileJson fileJson : fileJsonList) {
             if(fileJson.name.equals(fileName)) {
                 ArrayList<PageJson> pageJsonList = fileJson.pages;
                 PageJson pageJson = new PageJson();
-                pageJson.guid = md5(fileJson.name + pageJson.creationTS);
+
+                long guid1 = md5(fileJson.name + pageJson.creationTS + "1");
+                long guid2 = md5(fileJson.name + pageJson.creationTS + "2");
+                long guid3 = md5(fileJson.name + pageJson.creationTS + "3");
+                ArrayList<Long> guids = new ArrayList<>();
+                guids.add(guid1);
+                guids.add(guid2);
+                guids.add(guid3);
+                pageJson.setGuids(guids);
+
                 pageJsonList.add(pageJson);
                 fileJson.pages = pageJsonList;
-                fileJson.setNnumberOfPages(fileJson.getNumberOfPages()+1);
+                fileJson.setNumberOfPages(fileJson.getNumberOfPages()+1);
                 writeMetaData(filesJson);
-                chord.locateSuccessor(pageJson.guid).put(pageJson.guid, data);
+
+                chord.locateSuccessor(guid1).put(guid1, data1);
+                System.out.println("ADDED replication 1");
+
+                chord.locateSuccessor(guid2).put(guid2, data2);
+                System.out.println("ADDED replication 2");
+
+                chord.locateSuccessor(guid3).put(guid3, data3);
+                System.out.println("ADDED replication 3");
+
+
+
+
                 break;
             }
         }
@@ -316,12 +342,18 @@ public class DFS implements Serializable
         for ( FileJson fileJson: fileJsonList) {
             if (fileJson.name.equals(fileName)) {
                 ArrayList<PageJson> pageJsonList = fileJson.pages;
-                long guid = fileJson.getPages().get(pageNumber-1).getGuid();
-                ChordMessageInterface peer = chord.locateSuccessor(guid);
-                peer.put(guid, data);
+                ArrayList<Long> guids = fileJson.getPages().get(pageNumber-1).getGuids();
+
+                for (long guid : guids){
+                    ChordMessageInterface peer = chord.locateSuccessor(guid);
+                    peer.put(guid, data);
+                }
+
             }
         }
     }
+
+
     /**
      * Method to search by song name or artist
      * @param fileName name of file to be searched (MusicJson)
@@ -352,7 +384,7 @@ public class DFS implements Serializable
 
 
                 for (int page = 1; page <= music_file.getNumberOfPages(); page++) {
-                    Long guid = music_file.getPages().get(page - 1).getGuid();
+                    Long guid = music_file.getPages().get(page - 1).getGuids().get(0);
                     ChordMessageInterface peer = chord.locateSuccessor(guid);
                     peers[page - 1] = new PeerSearch(peer, guid.toString(), targetString);
                     threads[page - 1] = new Thread(peers[page - 1]);

@@ -1,11 +1,10 @@
 package dfs;
-import java.io.*;
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.Scanner;
-
-import com.google.gson.*;
-import com.google.gson.stream.*;
-
-
 
 
 public class DFSCommand implements Serializable
@@ -55,7 +54,7 @@ public class DFSCommand implements Serializable
             }
 
             if (result[0].equals("append")){
-                dfs.append(result[1], new RemoteInputFileStream(result[2]));
+                dfs.append(result[1], result[2]);
             }
 
             if (result[0].equals("read"))  // reads a page from a file

@@ -72,7 +72,7 @@ public class FileJson implements Serializable
     public void setReferenceCount(int referenceCount){
             this.referenceCount = referenceCount;
     }
-    public void setNnumberOfPages(int numberOfPages){
+    public void setNumberOfPages(int numberOfPages){
             this.numberOfPages = numberOfPages;
     }
 

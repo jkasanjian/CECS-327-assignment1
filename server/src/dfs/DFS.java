@@ -1,16 +1,16 @@
 package dfs;
-import java.rmi.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-import java.nio.file.*;
-import java.math.BigInteger;
-import java.security.*;
 import com.google.gson.Gson;
-import model.MusicClass;
 
-import java.io.InputStream;
-import java.util.*;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import model.MusicClass;
 
 /* JSON Format
 
@@ -57,15 +57,12 @@ public class DFS implements Serializable
             this.file = file;
         }
 
-        /**
-         * When a thread is created, it calls the search method a peer
-         */
         public void run(){
             try{
                 synchronized (peer){
                     collection = peer.search(file, targetString);
                 }
-
+                System.out.println(collection.size());
             }catch(Exception e){
                 System.out.println(e.getMessage());
                 System.out.println(e.getStackTrace());
@@ -73,15 +70,13 @@ public class DFS implements Serializable
         }
 
         public List<MusicClass> getCollection(){
-
-            if (collection == null ){
-                System.out.println("NULL");
-                collection = new ArrayList<>();
-            }
             return collection;
         }
     }
 
+
+    
+    
     private long md5(String objectName)
     {
         try
@@ -219,7 +214,7 @@ public class DFS implements Serializable
         FilesJson md = readMetaData();
         List<FileJson> files = md.getFile();
         String listOfFiles = "";
-        for ( FileJson fjson: files) {
+        for ( FileJson fjson : files) {
             listOfFiles += (fjson.getName() + "\n");
         }
         return listOfFiles;
@@ -245,12 +240,12 @@ public class DFS implements Serializable
         writeMetaData(metadata);
 
     }
-
-    /**
-     * delete file
-     *
-     * @param fileName Name of the file
-     */
+    
+/**
+ * delete file 
+  *
+ * @param fileName Name of the file
+ */
     public void delete(String fileName) throws Exception
     {
         FilesJson md = readMetaData();
@@ -284,7 +279,8 @@ public class DFS implements Serializable
             }
         }
         target.setReadTS(java.time.LocalDateTime.now().toString());
-        long guid = target.getPages().get(pageNumber-1).getGuid();
+        // reads first replication
+        Long guid = target.getPages().get(pageNumber-1).getGuids().get(0);
         ChordMessageInterface peer = chord.locateSuccessor(guid);
         RemoteInputFileStream dataraw = peer.get(guid);
         dataraw.connect();
@@ -295,22 +291,47 @@ public class DFS implements Serializable
  * Add a page to the file                
   *
  * @param fileName Name of the file
- * @param data RemoteInputStream. 
+ * @param dataFile filename of remote .
  */
-    public void append(String fileName, RemoteInputFileStream data) throws Exception
+    public void append(String fileName, String dataFile) throws Exception
     {
+        RemoteInputFileStream data1 = new RemoteInputFileStream(dataFile);
+        RemoteInputFileStream data2 = new RemoteInputFileStream(dataFile);
+        RemoteInputFileStream data3 = new RemoteInputFileStream(dataFile);
+
         FilesJson filesJson = readMetaData();
         List<FileJson> fileJsonList = filesJson.getFile();
         for(FileJson fileJson : fileJsonList) {
             if(fileJson.name.equals(fileName)) {
                 ArrayList<PageJson> pageJsonList = fileJson.pages;
                 PageJson pageJson = new PageJson();
-                pageJson.guid = md5(fileJson.name + pageJson.creationTS);
+
+                long guid1 = md5(fileJson.name + pageJson.creationTS + "1");
+                long guid2 = md5(fileJson.name + pageJson.creationTS + "2");
+                long guid3 = md5(fileJson.name + pageJson.creationTS + "3");
+                ArrayList<Long> guids = new ArrayList<>();
+                guids.add(guid1);
+                guids.add(guid2);
+                guids.add(guid3);
+                pageJson.setGuids(guids);
+
                 pageJsonList.add(pageJson);
                 fileJson.pages = pageJsonList;
-                fileJson.setNnumberOfPages(fileJson.getNumberOfPages()+1);
+                fileJson.setNumberOfPages(fileJson.getNumberOfPages()+1);
                 writeMetaData(filesJson);
-                chord.locateSuccessor(pageJson.guid).put(pageJson.guid, data);
+
+                chord.locateSuccessor(guid1).put(guid1, data1);
+                System.out.println("ADDED replication 1");
+
+                chord.locateSuccessor(guid2).put(guid2, data2);
+                System.out.println("ADDED replication 2");
+
+                chord.locateSuccessor(guid3).put(guid3, data3);
+                System.out.println("ADDED replication 3");
+
+
+
+
                 break;
             }
         }
@@ -322,12 +343,17 @@ public class DFS implements Serializable
         for ( FileJson fileJson: fileJsonList) {
             if (fileJson.name.equals(fileName)) {
                 ArrayList<PageJson> pageJsonList = fileJson.pages;
-                long guid = fileJson.getPages().get(pageNumber-1).getGuid();
-                ChordMessageInterface peer = chord.locateSuccessor(guid);
-                peer.put(guid, data);
+                ArrayList<Long> guids = fileJson.getPages().get(pageNumber-1).getGuids();
+
+                for (long guid : guids){
+                    ChordMessageInterface peer = chord.locateSuccessor(guid);
+                    peer.put(guid, data);
+                }
+
             }
         }
     }
+
 
     /**
      * Method to search by song name or artist
@@ -341,7 +367,7 @@ public class DFS implements Serializable
         FileJson music_file = null;
         List<FileJson> files = md.getFile();
         for ( FileJson fjson: files ) {
-            if( fjson.name.equals(fileName)){
+            if( fjson.name.equals("MusicJson")){
                 music_file = fjson;
                 break;
             }
@@ -356,13 +382,15 @@ public class DFS implements Serializable
 
             threads = new Thread[ music_file.getNumberOfPages() ];
             peers   = new PeerSearch[ music_file.getNumberOfPages() ];
-            for( int page = 1; page <= music_file.getNumberOfPages(); page++ ){
-                Long guid = music_file.getPages().get(page-1).getGuid();
-                ChordMessageInterface peer = chord.locateSuccessor(guid);
-                peers[page - 1] = new PeerSearch( peer, guid.toString(), targetString );
-                threads[page - 1] = new Thread( peers[page - 1]);
-                threads[page - 1].run();
-            }
+
+
+                for (int page = 1; page <= music_file.getNumberOfPages(); page++) {
+                    Long guid = music_file.getPages().get(page - 1).getGuids().get(0);
+                    ChordMessageInterface peer = chord.locateSuccessor(guid);
+                    peers[page - 1] = new PeerSearch(peer, guid.toString(), targetString);
+                    threads[page - 1] = new Thread(peers[page - 1]);
+                    threads[page - 1].run();
+                }
 
             for( Thread thread : threads ){
                 thread.join();
@@ -370,8 +398,11 @@ public class DFS implements Serializable
 
             for( PeerSearch peer : peers ){
                 ret.addAll( peer.getCollection() );
+                System.out.println(ret.size());
+
             }
         }
+
         return ret;
     }
 }

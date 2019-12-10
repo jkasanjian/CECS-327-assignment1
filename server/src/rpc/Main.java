@@ -43,37 +43,17 @@ public class Main implements Serializable {
         DFS dfs = new DFS(9002);
         dfs.join("127.0.0.1", 9000);
 
-        //RemoteInputFileStream remoteInputFileStream = new RemoteInputFileStream("profiles.json");
-        //remoteInputFileStream.connect();
-        //dfs.create("ProfilesJson");
-        //dfs.append("ProfilesJson", remoteInputFileStream);
-//        while(true)
-//            Scanner scanner = new Scanner(System.in);
-//            System.out.print("Enter Command: ");
-//            String token = scanner.nextLine();
-//            if(token.equals("print"))
-//                dfs.print();
-//            else if(token.equals("ls"))
-//                dfs.lists();
-//            else {
-//                System.out.println("Invalid Command");
-//                break;
-//            }
-//        }
 
-//        dfs.create("ProfilesJson");
-//        RemoteInputFileStream remoteInputFileStream0 = new RemoteInputFileStream("profiles.json");
-//        dfs.append("ProfilesJson", remoteInputFileStream0);
-//
-//        dfs.create("MusicJson");
-//        RemoteInputFileStream remoteInputFileStream1 = new RemoteInputFileStream("music1.json");
-//        RemoteInputFileStream remoteInputFileStream2 = new RemoteInputFileStream("music2.json");
-//        RemoteInputFileStream remoteInputFileStream3 = new RemoteInputFileStream("music3.json");
-//        RemoteInputFileStream remoteInputFileStream4 = new RemoteInputFileStream("music4.json");
-//        dfs.append("MusicJson", remoteInputFileStream1);
-//        dfs.append("MusicJson", remoteInputFileStream2);
-//        dfs.append("MusicJson", remoteInputFileStream3);
-//        dfs.append("MusicJson", remoteInputFileStream4);
+
+        dfs.create("ProfilesJson");
+        dfs.append("ProfilesJson", "profiles.json");
+
+        dfs.create("MusicJson");
+        dfs.append("MusicJson", "music1.json");
+        dfs.append("MusicJson", "music2.json");
+        dfs.append("MusicJson", "music3.json");
+        dfs.append("MusicJson", "music4.json");
+
         System.out.println("Done.....");
         MusicDatabase.GetInstance().setDfs(dfs);
         ProfileDatabase.GetInstance().setDfs(dfs);

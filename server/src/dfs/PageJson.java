@@ -1,19 +1,12 @@
 package dfs;
-import java.rmi.*;
-import java.net.*;
-import java.util.*;
-import java.io.*;
-import java.nio.file.*;
-import java.math.BigInteger;
-import java.security.*;
-import com.google.gson.Gson;
-import java.io.InputStream;
-import java.util.*;
-    
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+
 
 public class PageJson implements Serializable
 {
-    long guid;
+    ArrayList<Long> guids;
     long size;
     String creationTS;
     String readTS;
@@ -26,8 +19,8 @@ public class PageJson implements Serializable
         referenceCount = 0;
     }
     // getters
-    public long getGuid(){
-        return this.guid;
+    public ArrayList<Long> getGuids(){
+        return this.guids;
     }
     public long getSize(){
         return this.size;
@@ -45,8 +38,8 @@ public class PageJson implements Serializable
         return this.referenceCount;
     }
     // setters
-    public void setGuid(long guid){
-        this.guid = guid;
+    public void setGuids(ArrayList<Long> guids){
+        this.guids = guids;
     }
     public void setSize(long size){
         this.size = size;
