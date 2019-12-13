@@ -618,7 +618,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
         if(getTranID() < ID){
             writeID(ID);
 
-            String fileName = guid + "/temp/" + fileGuid;
+            String fileName = guid + "/tmp/" + fileGuid;
             FileOutputStream output = new FileOutputStream(fileName);
             output.write(data.getBytes());
             output.close();
@@ -647,7 +647,7 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 
 
     public void commit(Long fileGuid, int currentID) throws RemoteException, Exception{
-        RemoteInputFileStream newData = new RemoteInputFileStream( guid + "/temp/" + fileGuid);
+        RemoteInputFileStream newData = new RemoteInputFileStream( guid + "/tmp/" + fileGuid);
         put(fileGuid, newData);
 
     }
