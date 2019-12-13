@@ -45,14 +45,14 @@ public class Main implements Serializable {
 
 
 
-        dfs.create("ProfilesJson");
-        dfs.append("ProfilesJson", "profiles.json");
-
-        dfs.create("MusicJson");
-        dfs.append("MusicJson", "music1.json");
-        dfs.append("MusicJson", "music2.json");
-        dfs.append("MusicJson", "music3.json");
-        dfs.append("MusicJson", "music4.json");
+//        dfs.create("ProfilesJson");
+//        dfs.append("ProfilesJson", "profiles.json");
+//
+//        dfs.create("MusicJson");
+//        dfs.append("MusicJson", "music1.json");
+//        dfs.append("MusicJson", "music2.json");
+//        dfs.append("MusicJson", "music3.json");
+//        dfs.append("MusicJson", "music4.json");
 
         System.out.println("Done.....");
         MusicDatabase.GetInstance().setDfs(dfs);

@@ -1,7 +1,7 @@
 package dfs;
 import com.google.gson.Gson;
 
-import java.io.Serializable;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -38,6 +38,7 @@ public class DFS implements Serializable
 {
     
     int port;
+    String pathToID;
     Chord  chord;
 
     /**
@@ -48,6 +49,7 @@ public class DFS implements Serializable
         List<MusicClass> collection;
         String targetString;
         String file;
+
 
         public PeerSearch( ChordMessageInterface peer, String file, String targetString ){
             this.peer = peer;
@@ -105,11 +107,17 @@ public class DFS implements Serializable
         chord = new Chord(port, guid);
         Files.createDirectories(Paths.get(guid+"/repository"));
         Files.createDirectories(Paths.get(guid+"/tmp"));
+        this.pathToID = guid + "/repository/ID.txt";
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 chord.leave();
             }
         });
+
+        if(!new File(pathToID).exists()){
+            writeID(1);
+        }
+
         
     }
     
@@ -404,4 +412,56 @@ public class DFS implements Serializable
 
         return ret;
     }
+
+
+    public int getLatestID() throws FileNotFoundException {
+        // read file and return latest ID
+        Scanner sc = new Scanner(new File(this.pathToID));
+        int ret = sc.nextInt();
+        sc.close();
+        return ret;
+    }
+
+
+    public void writeID(int ID) throws FileNotFoundException, UnsupportedEncodingException {
+        // writes ID to file
+        PrintWriter writer = new PrintWriter(this.pathToID, "UTF-8");
+        writer.println((ID));
+        writer.close();
+    }
+
+
+    public RemoteInputFileStream propose(String fileName){
+
+        FilesJson md = null;
+        try {
+
+            int votes = 0;
+            md = readMetaData();
+            int currentID = getLatestID();
+            RemoteInputFileStream newData = new RemoteInputFileStream(fileName);
+            ArrayList<Long> guids = md.getGUIDs(fileName);
+
+            ArrayList<Boolean> votes = new ArrayList<>();
+
+            for(Long guid : guids){
+                ChordMessageInterface peer = chord.locateSuccessor(guid);
+                votes += peer.promise(currentID, ) ? 1 : 0;
+
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
+    }
+
+
+
+
 }
