@@ -2,6 +2,7 @@ package dfs;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -18,11 +19,17 @@ public interface ChordMessageInterface extends Remote, Serializable
     public boolean isAlive() throws RemoteException;
     public long getId() throws RemoteException;
     public List<MusicClass> search( String file, String queryString ) throws RemoteException, FileNotFoundException;
-    
-    
+    public boolean promise(int ID) throws RemoteException, Exception;
+
     public void put(long guidObject, RemoteInputFileStream inputStream) throws IOException, RemoteException;
     public void put(long guidObject, String text) throws IOException, RemoteException;
-    public RemoteInputFileStream get(long guidObject) throws IOException, RemoteException;   
-    public byte[] get(long guidObject, long offset, int len) throws IOException, RemoteException;  
+    public RemoteInputFileStream get(long guidObject) throws IOException, RemoteException;
+    public byte[] get(long guidObject, long offset, int len) throws IOException, RemoteException;
     public void delete(long guidObject) throws IOException, RemoteException;
+
+    boolean promise(int currentID, String newData, Long fileGuid) throws RemoteException, Exception;
+
+    public void commit(Long guid, int currentID) throws RemoteException, Exception;
+    public int getTranID() throws RemoteException, Exception;
+    public void writeID(int ID) throws RemoteException, Exception;
 }

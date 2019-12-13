@@ -5,6 +5,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.rmi.RemoteException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -275,6 +276,13 @@ public class DFS implements Serializable
  */
     public RemoteInputFileStream read(String fileName, int pageNumber) throws Exception
     {
+        RemoteInputFileStream dataraw = null;
+
+        while(!proposeRead(fileName)){
+            System.out.println("Arriving at consensus...");
+
+        }
+
         FilesJson md = readMetaData();
         List<FileJson> files = md.getFile();
         FileJson target = new FileJson();   // initialized, but will be replaced
@@ -289,10 +297,37 @@ public class DFS implements Serializable
         // reads first replication
         Long guid = target.getPages().get(pageNumber-1).getGuids().get(0);
         ChordMessageInterface peer = chord.locateSuccessor(guid);
-        RemoteInputFileStream dataraw = peer.get(guid);
+        dataraw = peer.get(guid);
         dataraw.connect();
         return dataraw;
+
+
     }
+
+
+    public Long getHighestGUID(String fileName) throws RemoteException, Exception{
+
+        FilesJson md = readMetaData();
+        int currentID = getLatestID();
+
+        ArrayList<Long> guids = md.getGUIDs(fileName);
+
+        Long targetID = 0L;
+        int maxID = 0;
+
+        for(Long guid : guids){
+            ChordMessageInterface peer = chord.locateSuccessor(guid);
+            if(peer.getTranID() > maxID){
+                targetID = guid;
+                maxID = peer.getTranID();
+            }
+
+        }
+
+        return targetID;
+
+    }
+
     
  /**
  * Add a page to the file                
@@ -347,18 +382,21 @@ public class DFS implements Serializable
     public void updatePage(String fileName, int pageNumber, String data) throws Exception {
         FilesJson metadata = readMetaData();
         List<FileJson> fileJsonList = metadata.getFile();
-        for ( FileJson fileJson: fileJsonList) {
-            if (fileJson.name.equals(fileName)) {
-                ArrayList<PageJson> pageJsonList = fileJson.pages;
-                ArrayList<Long> guids = fileJson.getPages().get(pageNumber-1).getGuids();
 
-                for (long guid : guids){
-                    ChordMessageInterface peer = chord.locateSuccessor(guid);
-                    peer.put(guid, data);
+        boolean isSuccessful = false;
+
+        while(!isSuccessful){
+            for ( FileJson fileJson: fileJsonList) {
+                if (fileJson.name.equals(fileName)) {
+                    ArrayList<PageJson> pageJsonList = fileJson.pages;
+                    ArrayList<Long> guids = fileJson.getPages().get(pageNumber-1).getGuids();
+                    isSuccessful = proposeWrite(guids, data);
+
                 }
-
             }
         }
+        System.out.println("success");
+
     }
 
 
@@ -431,37 +469,72 @@ public class DFS implements Serializable
     }
 
 
-    public RemoteInputFileStream propose(String fileName){
-
+    public boolean proposeRead(String fileName) throws RemoteException, Exception {
+        // flag either 1 or 0
         FilesJson md = null;
-        try {
+        RemoteInputFileStream ret;
+
+            int currentID = getLatestID();
+
 
             int votes = 0;
             md = readMetaData();
-            int currentID = getLatestID();
-            RemoteInputFileStream newData = new RemoteInputFileStream(fileName);
+
             ArrayList<Long> guids = md.getGUIDs(fileName);
 
-            ArrayList<Boolean> votes = new ArrayList<>();
-
             for(Long guid : guids){
-                ChordMessageInterface peer = chord.locateSuccessor(guid);
-                votes += peer.promise(currentID, ) ? 1 : 0;
+                    ChordMessageInterface peer = chord.locateSuccessor(guid);
+                    votes += peer.promise(currentID) ? 1 : 0;
+                }
+            currentID ++;
+            writeID(currentID);
 
-            }
+            return(votes >= 2); // TODO: not hardcode
+    }
+
+    public boolean proposeWrite(ArrayList<Long> guids, String newData) throws RemoteException, Exception {
+
+        FilesJson md = null;
+        RemoteInputFileStream ret;
 
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        int votes = 0;
+        md = readMetaData();
+        int currentID = getLatestID();
+
+
+        for (Long guid : guids) {
+            ChordMessageInterface peer = chord.locateSuccessor(guid);
+            votes += peer.promise(currentID, newData, guid) ? 1 : 0;
+
         }
 
-
-
-
+        if(votes >= 2){
+            for(Long guid : guids){
+                ChordMessageInterface peer = chord.locateSuccessor(guid);
+                peer.commit(guid, currentID);
+            }
+        }
+        return(votes >= 2);
 
     }
 
 
 
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -120,12 +120,10 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
         try {
             String fileName = prefix + guidObject;
             FileOutputStream output = new FileOutputStream(fileName);
-            System.out.println("going into while loop");
 
             while (stream.available() > 0)
                 output.write(stream.read());
 
-            System.out.println("out of loop");
             output.close();
         }
         catch (IOException e) {
@@ -195,6 +193,8 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
         File file = new File(prefix + guidObject);
         file.delete();
     }
+
+
 
     /**
      * returns the id of the peer
@@ -598,4 +598,62 @@ public class Chord extends java.rmi.server.UnicastRemoteObject implements ChordM
 
         return ret;
     }
+
+
+
+    @Override
+    public boolean promise(int ID)throws RemoteException, Exception{
+        if(getTranID() < ID){
+            writeID(ID);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean promise(int ID, String data, Long fileGuid) throws RemoteException, Exception{
+
+        if(getTranID() < ID){
+            writeID(ID);
+
+            String fileName = guid + "/temp/" + fileGuid;
+            FileOutputStream output = new FileOutputStream(fileName);
+            output.write(data.getBytes());
+            output.close();
+
+            return true;
+        }
+            return false;
+
+        }
+
+
+    public int getTranID() throws RemoteException, Exception{
+        // read file and return latest ID
+        Scanner sc = new Scanner(new File(guid + "/repository/ID.txt"));
+        int ret = sc.nextInt();
+        sc.close();
+        return ret;
+    }
+
+    public void writeID(int ID) throws RemoteException, Exception {
+        // writes ID to file
+        PrintWriter writer = new PrintWriter(guid + "/repository/ID.txt", "UTF-8");
+        writer.println((ID));
+        writer.close();
+    }
+
+
+    public void commit(Long fileGuid, int currentID) throws RemoteException, Exception{
+        RemoteInputFileStream newData = new RemoteInputFileStream( guid + "/temp/" + fileGuid);
+        put(fileGuid, newData);
+
+    }
+
+
+
+
+
 }
